@@ -41,6 +41,11 @@
 			return $wpdb->insert( $this->getTable(), $data );
 		}
 		
+		function update( $id, $data ){
+			global $wpdb;
+			return $wpdb->update( $this->getTable(), $data, array( 'ID' => $id ) );
+		}
+		
 		// WRAPPER AROUND WPDB->GET_RESULTS
 		function get_results( $sql ){
 			global $wpdb;
@@ -62,8 +67,18 @@
 		// GET SINGLE ROW USING UNIQUE ID
 		function get_row( $ID ){
 			global $wpdb;
-			$query = "SELECT * FROM ".$this->getTable." WHERE ID=".$ID;
+			
+			$table = $this->getTable();
+			
+			$query = "SELECT * FROM $table WHERE ID=$ID;"; 
+			
 			return $wpdb->get_row( $query );
+		}
+		
+		function results(){
+			$table = $this->getTable();
+			$sql = "SELECT * FROM $table;";
+			return $this->get_results( $sql );
 		}
 	}
 	
@@ -73,6 +88,10 @@
 			$this->setTableSlug( 'question' );
 			parent::__construct();
 			$this->create();
+		}
+		
+		function getData(){
+			
 		}
 		
 		function create(){

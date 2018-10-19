@@ -3,7 +3,7 @@
 	
 	class SPACE_FORM{
 		
-		function display(){
+		function display( $form_fields ){
 			include 'templates/form.php';
 		}
 		
@@ -13,7 +13,7 @@
 				return 0;
 			}
 			
-			$field['value'] = isset( $field['value'] ) ? $field['value'] : isset( $field['default'] ) ? $field['default'] : '';
+			$field['value'] = isset( $field['value'] ) ? $field['value'] : ( isset( $field['default'] ) ? $field['default'] : '' );
 			
 			if( isset( $field['label'] ) ){
 				_e('<p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="'.$field['slug'].'">'.$field['label'].'</label></p>');
@@ -22,7 +22,15 @@
 			if( $field['type'] == 'dropdown' && isset( $field['options'] ) ){
 				_e('<select name="'.$field['slug'].'" id="'.$field['slug'].'">');
 				foreach( $field['options'] as $option_slug => $option ){
-					_e('<option value="'.$option_slug.'">'.$option.'</option>');
+					$optionIsSelected = $field['value'] == $option_slug ? true : false;
+					
+					_e("<option value='$option_slug'");
+					
+					if( $optionIsSelected ){
+						_e(" selected='selected'");	
+					}
+					
+					_e(">$option</option>");
 				}
 				_e('</select>');
 									

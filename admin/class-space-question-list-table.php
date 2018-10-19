@@ -4,7 +4,11 @@
 		
 		var $example_data;
 		
+		var $singular_edit_page;
+		
 		function __construct(){
+			
+			$this->singular_edit_page = 'space-question-edit';
 			
 			$this->example_data = array(
 				array('ID' => 1, 'question' => 'Quarter Share', 'author' => 'Nathan Lowell','isbn' => '978-0982514542'),
@@ -14,6 +18,8 @@
 				array('ID' => 5, 'question' => 'Max Quick: The Pocket and the Pendant', 'author' => 'Mark Jeffrey', 'isbn' => '978-0061988929'),
 				array('ID' => 6, 'question' => 'Jack Wakes Up: A Novel', 'author' => 'Seth Harwood', 'isbn' => '978-0307454355')
 			);
+			
+			
 			
 			$this->screen = get_current_screen();
 			
@@ -26,10 +32,10 @@
 		
 		function column_default( $item, $column_name ) {
 			switch( $column_name ) {
-				case 'question':
-				case 'author':
-				case 'isbn':
-					return $item[ $column_name ];
+				case 'desc':
+					return $item->description;
+				case 'type':
+					return $item->type;
 				default:
 					return print_r( $item, true ) ; //Show the whole array for troubleshooting purposes
 			}
@@ -49,15 +55,15 @@
 		function get_columns(){
 			$columns = array(
 				'cb'		=> '<input type="checkbox" />',
-				'question' => 'Title',
-				'author'    => 'Author',
-				'isbn'      => 'ISBN'
+				'question' 	=> 'Title',
+				'desc'    	=> 'Description',
+				'type'      => 'Type'
 			);
 			return $columns;
 		}
 		
 		function column_cb( $item ) {
-			return '<input type="checkbox" name="question[]" value="'.$item['ID'].'" />';
+			return '<input type="checkbox" name="question[]" value="'.$item->ID.'" />';
 		}
 		
 		function prepare_items() {
@@ -68,7 +74,9 @@
 			$sortable = $this->get_sortable_columns();
 			
 			$this->_column_headers = array($columns, $hidden, $sortable);
-			$this->items = $this->example_data;;
+			
+			$question_db = SPACE_DB_QUESTION::getInstance();
+			$this->items = $question_db->results();
 		}
 		
 		// Setup Hidden columns and return them
@@ -78,10 +86,10 @@
 		
 		function column_question($item) {
 			$actions = array(
-				'edit'	=> sprintf('<a href="?page=custom_detail_page&user=%s">Edit</a>',$item['ID']),
-				'trash'	=> sprintf('<a href="?page=custom_list_page&action=trash&user=%s">Trash</a>',$item['ID']),
+				'edit'	=> sprintf('<a href="?page=%s&ID=%s">Edit</a>', $this->singular_edit_page, $item->ID ),
+				'trash'	=> sprintf('<a href="?page=%s&action=trash&ID=%s">Trash</a>', $this->singular_edit_page, $item->ID ),
 			);
-			return sprintf('%1$s %2$s', $item['question'], $this->row_actions($actions) );
+			return sprintf('%1$s %2$s', $item->title, $this->row_actions( $actions ) );
 		}
 		
 		function get_bulk_actions(){
