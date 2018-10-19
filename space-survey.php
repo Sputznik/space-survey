@@ -13,10 +13,8 @@
 		exit;
 	}
 	$inc_files = array(
-		//'menu.php'
-		//'class-space-list-table.php',
-		//'class-space-question-list-table.php',
-		'admin/class-space-admin.php'
+		'admin/class-space-admin.php',
+		'db/class-space-survey-tables.php'
 	);
 
 	foreach( $inc_files as $inc_file ){
