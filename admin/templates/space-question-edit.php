@@ -1,5 +1,7 @@
 <?php
 	
+	$question_db = SPACE_DB_QUESTION::getInstance();
+	
 	$form = new SPACE_FORM;
 	
 	/* CONTENT IN THE MAIN BODY */

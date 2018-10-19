@@ -13,8 +13,9 @@
 		exit;
 	}
 	$inc_files = array(
+		'db/class-space-survey-tables.php',
 		'admin/class-space-admin.php',
-		'db/class-space-survey-tables.php'
+		
 	);
 
 	foreach( $inc_files as $inc_file ){

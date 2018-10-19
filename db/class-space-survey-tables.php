@@ -67,7 +67,7 @@
 		}
 	}
 	
-	class SPACE_DB_QUESTION{
+	class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		
 		function __construct(){
 			$this->setTableSlug( 'question' );
