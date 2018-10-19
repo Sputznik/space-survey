@@ -37,7 +37,7 @@
 			}
 			
 			if( $field['type'] == 'textarea' ){
-				_e('<textarea placeholder="'.$field['placeholder'].'" style="width:100%;padding:10px;" rows="10">'.$field['value'].'</textarea>');
+				_e('<textarea placeholder="'.$field['placeholder'].'" name="'.$field['slug'].'"  style="width:100%;padding:10px;" rows="10">'.$field['value'].'</textarea>');
 			}
 		}
 		

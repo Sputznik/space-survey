@@ -72,6 +72,7 @@
 		function __construct(){
 			$this->setTableSlug( 'question' );
 			parent::__construct();
+			$this->create();
 		}
 		
 		function create(){
