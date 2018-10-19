@@ -1,6 +1,6 @@
 <?php
 
-class YKA_SURVEY_TABLES {
+class SPACE_SURVEY_TABLES {
 	private $question_tbl;
 
 	function __construct(){
@@ -40,10 +40,10 @@ class YKA_SURVEY_TABLES {
 	function get_table_prefix(){
 		global $wpdb;
 
-		return $wpdb->prefix.'yka_survey_'; 
+		return $wpdb->prefix.'space_survey_'; 
 	}
 
 
 }
 
-$test_obj = new YKA_SURVEY_TABLES();
+$obj_setup_tbl = new SPACE_SURVEY_TABLES();
