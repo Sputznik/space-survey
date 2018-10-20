@@ -119,6 +119,10 @@
 		
 	});
 	
+	$page_title = isset( $_GET['ID'] ) ? 'Edit Question' : 'Add New Question';
+	
+	_e("<h1>$page_title</h1>");
+	
 	$form->display( $form_fields );
 	
 ?>

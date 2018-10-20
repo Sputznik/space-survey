@@ -48,7 +48,7 @@
 					'menu'	=> 'space-survey'
 				),
 				'space-question-edit' => array(
-					'title'	=> 'Add/Edit Question',
+					'title'	=> 'Edit Question',
 					'menu'	=> 'space-survey'
 				),
 			);
@@ -109,7 +109,6 @@
 		function menu_page(){
 			$page = $_GET[ 'page' ];
 			_e( '<div class="wrap">' );
-			_e( '<h1>'.$this->menu[ $page ][ 'title' ].'</h1>');
 			include( 'templates/'.$page.'.php' );
 			_e( '</div>' );
 		}

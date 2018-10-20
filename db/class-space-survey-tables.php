@@ -75,10 +75,18 @@
 			return $wpdb->get_row( $query );
 		}
 		
-		function results(){
+		function results( $page, $per_page ){
+			$data = array();
 			$table = $this->getTable();
-			$sql = "SELECT * FROM $table;";
-			return $this->get_results( $sql );
+			
+			// QUERY TO GET TOTAL NUMBER OF ROWS
+			$data['num_rows'] = $this->get_var( "SELECT COUNT(*) FROM $table;" );
+			
+			// QUERY TO GET PAGINATED RESPONSE
+			$offset = ( $page-1 ) * $per_page;
+			$data['results'] = $this->get_results( "SELECT * FROM $table LIMIT $offset,$per_page;" );
+			
+			return $data;
 		}
 	}
 	
