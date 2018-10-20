@@ -36,79 +36,96 @@
 		) 
 	);
 	
+	// CURRENT PAGE - USED WITHIN THE ACTION HOOKS
+	$current_page = $_GET['page']; 		
 	
-	
-	$question_db = SPACE_DB_QUESTION::getInstance();
-	
-	$form = new SPACE_FORM;
-
-	
-	
-	/*SAVING FORM DATA INTO DB*/
-	if( isset( $_POST['publish'] ) ) {
+	add_action( $current_page.'-form-init', function( $form ){
 		
-		//print_r( $_POST );
+		$question_db = SPACE_DB_QUESTION::getInstance();
 		
-		$form_data = array(
-			'title' 		=> sanitize_text_field($_POST['title']),
-			'description'	=> sanitize_text_field($_POST['desc']),
-			'rank' 			=> absint( $_POST['order'] ),
-			'type' 			=> $_POST['type'],
-			'author_id'		=> get_current_user_id(),
-			'parent' 		=> absint( $_POST['parent'] ),
-		);
+		/*
+		* DELETE ACTION HAS BEEN CHOSEN - DELETE BY ROW ID
+		* AFTER DELETING THE ROW, REDIRECT TO THE MAIN LIST
+		* REDIRECTING USING JS AS WP REDIRECT WAS CAUSING CONFLICTS WITH HEADER INFORMATION ALREADY BEING SENT
+		*/
+		if( isset( $_GET['ID'] ) && $_GET['ID'] && isset( $_GET['action'] ) && 'trash' == $_GET['action'] ){
+			$question_db->delete_row( $_GET['ID'] );
+			_e( "<script>location.href='?page=space-questions';</script>" );
+			wp_die();	
+		}
 		
-		// CHECK IF DATA EXISTS THEN IT NEEDS TO BE UPDATED
+		/* 
+		* SAVING FORM DATA INTO DB WHEN THE METHOD:POST IS INVOKED. 
+		* CHOOSE BETWEEN UPDATING OR INSERTING THE ROW IN THE DATABASE BASED ON THE PRESENCE OF THE ID
+		*/
+		if( isset( $_POST['publish'] ) ) {
+			
+			$form_data = array(
+				'title' 		=> sanitize_text_field($_POST['title']),
+				'description'	=> sanitize_text_field($_POST['desc']),
+				'rank' 			=> absint( $_POST['order'] ),
+				'type' 			=> $_POST['type'],
+				'author_id'		=> get_current_user_id(),
+				'parent' 		=> absint( $_POST['parent'] ),
+			);
+			
+			// CHECK IF DATA EXISTS THEN IT NEEDS TO BE UPDATED
+			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
+				$question_db->update( $_GET['ID'], $form_data );	
+			}
+			else{
+				$question_db->insert( $form_data );	
+			}
+		}
+		
+		/*
+		* IF ID HAS BEEN PASSED THEN GET DATA FROM THE TABLE/DB AND FILL IT INSIDE THE FORM FIELDS
+		*/
 		if( isset( $_GET['ID'] ) && $_GET['ID'] ){
-			$question_db->update( $_GET['ID'], $form_data );	
+			$row = $question_db->get_row( $_GET['ID'] );
+			
+			$fields = $form->getFields();
+			$fields['title']['value'] = $row->title;
+			$fields['desc']['value'] = $row->description;
+			$fields['type']['value'] = $row->type;
+			$fields['parent']['value'] = $row->parent;
+			$fields['order']['value'] = $row->rank;
+			$form->setFields( $fields );
 		}
-		else{
-			$question_db->insert( $form_data );	
-		}
-	}
-	
-	/* IF ID HAS BEEN PASSED THEN GET DATA FROM THE TABLE */
-	if( isset( $_GET['ID'] ) && $_GET['ID'] ){
-		$row = $question_db->get_row( $_GET['ID'] );
 		
-		// FILLING THE DATA FROM THE DB INTO THE FORM FIELDS
-		$form_fields['title']['value'] = $row->title;
-		$form_fields['desc']['value'] = $row->description;
-		$form_fields['type']['value'] = $row->type;
-		$form_fields['parent']['value'] = $row->parent;
-		$form_fields['order']['value'] = $row->rank;
-	}
-	
+		
+	});
 	
 	/* CONTENT IN THE MAIN BODY */
-	add_action( 'space-question-edit-body-div', function( $data ){
+	add_action( $current_page.'-body-div', function( $form ){
 		
-		$data['form']->display_field( $data['fields']['title'] );
+		$form->display_field( $form->fields['title'] );
 		
-		$data['form']->display_field( $data['fields']['desc'] );
+		$form->display_field( $form->fields['desc'] );
 		
 	});
 	
 	/* CONTENT IN THE SETTINGS SECTION */
-	add_action( 'space-question-edit-settings-div', function( $data ){
+	add_action( $current_page.'-settings-div', function( $form ){
 		
-		$data['form']->display_field( $data['fields']['type'] );
+		$form->display_field( $form->fields['type'] );
 		
-		$data['form']->display_field( $data['fields']['parent'] );
+		$form->display_field( $form->fields['parent'] );
 		
-		$data['form']->display_field( $data['fields']['order'] );
+		$form->display_field( $form->fields['order'] );
 		
 	});
 	
 	/* CONTENT BELOW THE SETTINGS SECTION */
-	add_action( 'space-question-edit-delete-div', function( $data ){
+	add_action( $current_page.'-delete-div', function( $form ){
 		
 		if( isset( $_GET['ID'] ) && $_GET['ID'] ){
 			_e('<a class="submitdelete" href="?page='.$_GET['page'].'&ID='.$_GET['ID'].'&action=trash">Move to Trash</a>');	
 		}
 	});
 	
-	add_action( 'space-question-edit-publish-div', function( $data ){
+	/* PUBLISH OR UPDATE BUTTON */
+	add_action( $current_page.'-publish-div', function( $form ){
 		
 		if( isset( $_GET['ID'] ) && $_GET['ID'] ){
 			_e('<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="Update">');
@@ -119,10 +136,11 @@
 		
 	});
 	
-	$page_title = isset( $_GET['ID'] ) ? 'Edit Question' : 'Add New Question';
+	$form = new SPACE_FORM( 
+		$form_fields, 										// FORM FIELDS THAT NEEDS TO BE DISPLAYED WITHIN THE FORM PASSED FOR LATER REFERENCE
+		isset( $_GET['ID'] ) ? 'Edit Question' : 'Add New Question', 		// PAGE TITLE BEFORE THE FORM BEGINS
+		$current_page
+	);
 	
-	_e("<h1>$page_title</h1>");
-	
-	$form->display( $form_fields );
-	
-?>
+	// DISPLAY THE 2 COLUMN FORM
+	$form->display();

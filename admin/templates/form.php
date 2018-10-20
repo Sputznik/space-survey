@@ -1,15 +1,10 @@
-<?php 
-	
-	$page = $_GET['page'];
-	
-	$action_data = array( 'form' => $this, 'fields' => $form_fields );
-?>
+<h1><?php _e( $this->getPageTitle() );?></h1>
 <form action="" method="post">
 	<div id="poststuff">
 		<div id="post-body" class="metabox-holder columns-2">
 			
 			<div id="post-body-content" style="position: relative;">
-				<?php do_action( $page.'-body-div', $action_data );?>
+				<?php $this->do_action('body-div');?>
 			</div><!-- /post-body-content -->
 
 			<div id="postbox-container-1" class="postbox-container">
@@ -19,14 +14,14 @@
 						<div class="inside">
 							<div class="submitbox" id="submitpost">
 								<div style='padding:0 15px 15px 15px;'>
-									<?php do_action( $page.'-settings-div', $action_data );?>
+									<?php $this->do_action('settings-div');?>
 								</div>
 								<div id="major-publishing-actions">
 									<div id="delete-action">
-										<?php do_action( $page.'-delete-div', $action_data );?>
+										<?php $this->do_action('delete-div');?>
 									</div>
 									<div id="publishing-action">
-										<?php do_action( $page.'-publish-div', $action_data );?>
+										<?php $this->do_action('publish-div');?>
 									</div>
 									<div class="clear"></div>
 								</div>	

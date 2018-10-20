@@ -32,7 +32,7 @@
 		// WRAPPER AROUND WPDB->QUERY
 		function query( $sql ){
 			global $wpdb;
-			$result = $wpdb->query( $sql );
+			return $wpdb->query( $sql );
 		}
 		
 		// WRAPPER AROUND WPDB->INSERT
@@ -87,6 +87,12 @@
 			$data['results'] = $this->get_results( "SELECT * FROM $table LIMIT $offset,$per_page;" );
 			
 			return $data;
+		}
+		
+		function delete_row( $ID ){
+			$table = $this->getTable();
+			$sql = "DELETE FROM $table WHERE ID = $ID";
+			$this->query( $sql );
 		}
 	}
 	
