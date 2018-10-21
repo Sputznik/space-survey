@@ -41,7 +41,9 @@
 	
 	add_action( $current_page.'-form-init', function( $form ){
 		
+		require_once( plugin_dir_path(__FILE__).'../../db/class-space-db-question.php' );
 		$question_db = SPACE_DB_QUESTION::getInstance();
+		
 		
 		/*
 		* DELETE ACTION HAS BEEN CHOSEN - DELETE BY ROW ID
@@ -66,7 +68,7 @@
 				'rank' 			=> absint( $_POST['order'] ),
 				'type' 			=> $_POST['type'],
 				'author_id'		=> get_current_user_id(),
-				'parent' 		=> absint( $_POST['parent'] ),
+				'parent' 		=> 0, //absint( $_POST['parent'] ),
 			);
 			
 			// CHECK IF DATA EXISTS THEN IT NEEDS TO BE UPDATED
@@ -103,6 +105,12 @@
 		
 		$form->display_field( $form->fields['desc'] );
 		
+		require_once( plugin_dir_path(__FILE__).'../../forms/class-space-choice-form.php' );
+		
+		$choice_form = new SPACE_CHOICE_FORM;
+		
+		$choice_form->display();
+		
 	});
 	
 	/* CONTENT IN THE SETTINGS SECTION */
@@ -110,7 +118,7 @@
 		
 		$form->display_field( $form->fields['type'] );
 		
-		$form->display_field( $form->fields['parent'] );
+		//$form->display_field( $form->fields['parent'] );
 		
 		$form->display_field( $form->fields['order'] );
 		
@@ -136,7 +144,7 @@
 		
 	});
 	
-	$form = new SPACE_FORM( 
+	$form = new SPACE_ADMIN_FORM( 
 		$form_fields, 										// FORM FIELDS THAT NEEDS TO BE DISPLAYED WITHIN THE FORM PASSED FOR LATER REFERENCE
 		isset( $_GET['ID'] ) ? 'Edit Question' : 'Add New Question', 		// PAGE TITLE BEFORE THE FORM BEGINS
 		$current_page

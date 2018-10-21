@@ -10,10 +10,11 @@
 			
 			/* INCLUDE FILES */
 			$this->includes = array(
-				'class-space-form.php',
+				plugin_dir_path(__FILE__).'../forms/class-space-admin-form.php',
 				'class-space-list-table.php',
 				'class-space-question-list-table.php',
 			);
+			
 			foreach( $this->includes as $inc_file ){
 				require_once( $inc_file );
 			}
@@ -67,6 +68,40 @@
 					
 				}
 			} );
+			
+			
+			/* ENQUEUE SCRIPTS AND STYLES ON ADMIN DASHBOARD */
+			add_action( 'admin_enqueue_scripts', array( $this, 'assets') );	
+			
+		}
+		
+		// LOAD ASSETS INCLUDING CSS AND JS
+		function assets( $hook ) {
+			
+			$plugin_assets_folder = 'space-survey/assets/';
+			
+			wp_enqueue_style( 
+				'space-admin', 													// SLUG OF THE CSS
+				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
+				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
+				"1.0.2" 														// VERSION
+			);
+			
+			wp_enqueue_script(	
+				'space-autosize', 
+				plugins_url( $plugin_assets_folder.'js/autosize.js' ), 
+				array( 'jquery'), 
+				'1.0.0', 
+				true 
+			);
+			
+			wp_enqueue_script(	
+				'space-checkbox', 
+				plugins_url( $plugin_assets_folder.'js/choice-form.js' ), 
+				array( 'jquery', 'space-autosize'), 
+				'1.0.2', 
+				true 
+			);
 			
 		}
 		

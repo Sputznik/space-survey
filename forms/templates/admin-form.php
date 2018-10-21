@@ -1,3 +1,9 @@
+<?php
+/*
+* Template: called from display() of space-survey/admin/class-space-form.php
+* Idea: to create a reusable dashboard that looks similar to `Edit Post` 
+*/
+?>
 <h1><?php _e( $this->getPageTitle() );?></h1>
 <form action="" method="post">
 	<div id="poststuff">
@@ -35,16 +41,3 @@
 		<br class="clear">
 	</div>
 </form>
-<style>
-	.big-text{
-		padding: 3px 8px;
-		font-size: 1.7em;
-		line-height: 100%;
-		height: 1.7em;
-		width: 100%;
-		outline: 0;
-	}
-	#post-body-content input{
-		margin-bottom: 20px;
-	}
-</style>

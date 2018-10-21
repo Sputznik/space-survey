@@ -1,17 +1,10 @@
 <?php
 /**
- * Administration API: SPACE_LIST_TABLE class
- *
+ * Administration API: SPACE_LIST_TABLE class. Base class for displaying a list of items in an ajaxified HTML table.
+ * @ Cloned from WP_LIST_TABLE because that particular class is marked as private. 
  * @package WordPress
  * @subpackage List_Table
- * @since 3.1.0
- */
-
-/**
- * Base class for displaying a list of items in an ajaxified HTML table.
- *
- * @since 3.1.0
- * @access private
+ * 
  */
 class SPACE_LIST_TABLE {
 
