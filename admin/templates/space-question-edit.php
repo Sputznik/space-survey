@@ -41,9 +41,9 @@
 	
 	add_action( $current_page.'-form-init', function( $form ){
 		
-		require_once( plugin_dir_path(__FILE__).'../../db/class-space-db-question.php' );
 		$question_db = SPACE_DB_QUESTION::getInstance();
 		
+		$choice_db = SPACE_DB_CHOICE::getInstance();
 		
 		/*
 		* DELETE ACTION HAS BEEN CHOSEN - DELETE BY ROW ID
@@ -62,7 +62,9 @@
 		*/
 		if( isset( $_POST['publish'] ) ) {
 			
-			$form_data = array(
+			$question_id = 0;
+			
+			$question_data = array(
 				'title' 		=> sanitize_text_field($_POST['title']),
 				'description'	=> sanitize_text_field($_POST['desc']),
 				'rank' 			=> absint( $_POST['order'] ),
@@ -73,11 +75,48 @@
 			
 			// CHECK IF DATA EXISTS THEN IT NEEDS TO BE UPDATED
 			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
-				$question_db->update( $_GET['ID'], $form_data );	
+				$question_id = $_GET['ID'];
+				$question_db->update( $question_id, $question_data );	
 			}
 			else{
-				$question_db->insert( $form_data );	
+				$question_db->insert( $question_data );	
 			}
+			
+			if( $question_id && isset( $_POST[ 'choices' ] ) ){
+				
+				foreach( $_POST[ 'choices' ] as $choice ){
+					
+					// CHECK IF DATA IN THE POST MEETS THE MINIMUM REQUIREMENT
+					if( isset( $choice['id'] ) && isset( $choice['text'] ) && $choice['text'] ){
+						
+						// PREPARE THE CHOICE DATA FOR UPDATION OR INSERTION
+						$choice_data = array(
+							'title'			=> $choice['text'],
+							'question_id' 	=> $question_id
+						);
+						
+						// CHECK IF THE DATA NEEDS TO B EUPDATED OR INSERTED
+						if( $choice['id'] ){
+							$choice_db->update( $choice['id'], $choice_data );
+						}
+						else{
+							$choice_db->insert( $choice_data );
+						}
+						
+					}
+				}
+			}
+			
+			// $_POST['choices_delete'] HAS A COMMA SEPERATED STRING OF CHOICE IDs THAT ARE NO LONGER NEEDED
+			if( $question_id && isset( $_POST['choices_delete'] ) && $_POST['choices_delete'] ){
+				$choice_db->delete_rows( explode(',', $_POST['choices_delete'] ) );
+			}
+			
+			/*
+			echo "<pre>";
+			print_r( $_POST['choices'] );
+			echo "</pre>";
+			*/
 		}
 		
 		/*
@@ -107,7 +146,11 @@
 		
 		require_once( plugin_dir_path(__FILE__).'../../forms/class-space-choice-form.php' );
 		
-		$choice_form = new SPACE_CHOICE_FORM;
+		$question_db = SPACE_DB_QUESTION::getInstance();
+		
+		$choices = $question_db->choices( $_GET['ID'] );
+		
+		$choice_form = new SPACE_CHOICE_FORM( $choices );
 		
 		$choice_form->display();
 		

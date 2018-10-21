@@ -99,7 +99,7 @@
 				'space-checkbox', 
 				plugins_url( $plugin_assets_folder.'js/choice-form.js' ), 
 				array( 'jquery', 'space-autosize'), 
-				'1.0.2', 
+				'1.0.3', 
 				true 
 			);
 			

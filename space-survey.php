@@ -12,7 +12,9 @@
 	if( ! defined( 'ABSPATH' ) ){
 		exit;
 	}
+	
 	$inc_files = array(
+		'db/db.php',
 		'admin/class-space-admin.php',
 	);
 

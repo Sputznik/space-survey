@@ -44,7 +44,7 @@ textarea[data-behaviour~=space-autoresize]{
 	background: none;
 }
 	
-/* MODAL BOXES */
+/* MODAL BOXES *
 .space-modal{
 	position: fixed;
 	top: 0;
@@ -73,8 +73,7 @@ textarea[data-behaviour~=space-autoresize]{
 	overflow-y: scroll;
 }
 
-
-
 .space-modal-form{
 	padding-top: 20px;
 }
+*/

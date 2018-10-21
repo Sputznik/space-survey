@@ -16,10 +16,19 @@ class SPACE_DB_BASE{
 		
 	// SINGLETON DESIGN PATTERN - NEEDS TO BE IMPLEMENTED IN EACH CHILD
 	public static function getInstance(){
+		
 		if( self::$instance == null ){
-			self::$instance = new static();
+			self::$instance = array();
 		}
-		return self::$instance;
+		
+		$class = get_called_class();
+		
+		if( !isset( self::$instance[ $class ] ) ){
+            // new $class() will work too
+            self::$instance[ $class ] = new static();
+        }
+		
+        return self::$instance[ $class ];
 	}
 		
 	/* GETTER AND SETTER FUNCTIONS */
@@ -78,6 +87,12 @@ class SPACE_DB_BASE{
 			
 		return $wpdb->get_row( $query );
 	}
+	
+	// WRAPPER AROUND WPDB->PREPARE
+	function prepare( $query, $args ){
+		global $wpdb;
+		return $wpdb->prepare( $query, $args );
+	}
 		
 	function results( $page, $per_page ){
 		$data = array();
@@ -92,11 +107,43 @@ class SPACE_DB_BASE{
 			
 		return $data;
 	}
+	
+	function filter( $col_formats, $col_values ){
 		
+		$table = $this->getTable();
+		
+		// FORM THE QUERY
+		$query = "SELECT * from $table";
+		if( is_array( $col_formats ) && count( $col_formats ) ){
+			$query .= " WHERE";
+			$i = 0;
+			foreach( $col_formats as $col => $col_format ){
+				if( $i ){ $query .= " AND"; }
+				$query .= " $col = $col_format";
+				$i++;
+			}
+		}
+		$query .= ";";
+		
+		return $this->get_results( $this->prepare( $query, $col_values ) );
+		
+	}
+	
+	// DELETE SPECIFIC ROW
 	function delete_row( $ID ){
 		$table = $this->getTable();
-		$sql = "DELETE FROM $table WHERE ID = $ID";
-		$this->query( $sql );
+		$sql = "DELETE FROM $table WHERE ID = %d;";
+		$this->query( $this->prepare( $sql, $ID ) );
+	}
+	
+	// DELETE MULTIPLE ROWS WITH MATCHING ID
+	function delete_rows( $ids_arr ){
+		if( is_array( $ids_arr ) && count( $ids_arr ) ){
+			$ids_str = implode( ',', $ids_arr );
+			$table = $this->getTable();
+			$query = "DELETE FROM $table WHERE ID IN ($ids_str);";
+			$this->query( $query );
+		}
 	}
 		
 	// TO BE IMPLEMENTED BY CHILD CLASSES - HANDLES TABLE CREATION

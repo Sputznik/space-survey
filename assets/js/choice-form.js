@@ -15,11 +15,16 @@ jQuery.fn.space_choices = function(){
 
 	return this.each(function() {
 		   
-		var $el 	= jQuery(this),
-			count 	= 0,				// INCREMENTING VARIABLE WHEN CHOICE IS ADDED
-			$list 	= jQuery( document.createElement( 'ul' ) ),
-			$btn	= jQuery( document.createElement( 'button' ) );
-			
+		var $el 			= jQuery(this),
+			count 			= 0,												// INCREMENTING VARIABLE WHEN CHOICE IS ADDED
+			choices 		= $el.attr( 'data-choices' ),						// CHOICES FROM THE DB
+			$list 			= jQuery( document.createElement( 'ul' ) ),			// PARENT LIST THAT HOLDS THE CHOICES
+			$btn			= jQuery( document.createElement( 'button' ) ),		// BUTTON THAT ADDS MORE BLANK CHOICES TO THE LIST
+			$hidden_delete	= jQuery( document.createElement( 'input' ) ),
+			deleted_list 	= [];												// LIST OF ID THAT HAVE BEEN REMOVED WHEN THE CLOSE BUTTON IS CLICKED 
+		
+		// JSON PARSE FROM STRING
+		choices = typeof choices != 'object' ? JSON.parse( choices ) : [];
 		
 		// ADD LIST ITEM TO THE UNLISTED LIST WITH A TEXTAREA
 		var addChoice = function( choice_text, choice_id = 0 ){
@@ -53,6 +58,11 @@ jQuery.fn.space_choices = function(){
 			
 			$button.click( function( ev ){
 				ev.preventDefault();
+				
+				if( choice_id ){
+					deleted_list.push( choice_id );
+					$hidden_delete.val( deleted_list.join() );
+				}
 				$list_item.remove();
 			});
 			
@@ -71,7 +81,17 @@ jQuery.fn.space_choices = function(){
 			$btn.click( function( ev ){
 				ev.preventDefault();
 				addChoice();
-				
+			});
+			
+			$hidden_delete.attr( 'type', 'hidden' );
+			$hidden_delete.attr( 'name', 'choices_delete' );
+			$hidden_delete.appendTo( $el );
+			
+			// ITERATE THROUGH EACH CHOICES IN THE DB
+			jQuery.each( choices, function( i, choice ){
+				if( choice['title'] != undefined && choice['ID'] != undefined ){
+					addChoice( choice['title'], choice['ID'] );
+				}
 			});
 			
 		};
