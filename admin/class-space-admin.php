@@ -49,7 +49,7 @@
 					'menu'	=> 'space-survey'
 				),
 				'space-question-edit' => array(
-					'title'	=> 'Edit Question',
+					'title'	=> 'Add Question',
 					'menu'	=> 'space-survey'
 				),
 			);
@@ -98,8 +98,8 @@
 			wp_enqueue_script(	
 				'space-checkbox', 
 				plugins_url( $plugin_assets_folder.'js/choice-form.js' ), 
-				array( 'jquery', 'space-autosize'), 
-				'1.0.3', 
+				array( 'jquery', 'jquery-ui-sortable', 'space-autosize'), 
+				'1.0.5', 
 				true 
 			);
 			

@@ -51,7 +51,8 @@ class SPACE_DB_BASE{
 	// WRAPPER AROUND WPDB->INSERT
 	function insert( $data ){
 		global $wpdb;
-		return $wpdb->insert( $this->getTable(), $data );
+		$wpdb->insert( $this->getTable(), $data );
+		return $wpdb->insert_id;
 	}
 		
 	function update( $id, $data ){
@@ -108,7 +109,7 @@ class SPACE_DB_BASE{
 		return $data;
 	}
 	
-	function filter( $col_formats, $col_values ){
+	function filter( $col_formats, $col_values, $order_by = 'ID', $order = 'ASC' ){
 		
 		$table = $this->getTable();
 		
@@ -123,10 +124,10 @@ class SPACE_DB_BASE{
 				$i++;
 			}
 		}
+		$query .= " ORDER BY $order_by $order";
 		$query .= ";";
 		
 		return $this->get_results( $this->prepare( $query, $col_values ) );
-		
 	}
 	
 	// DELETE SPECIFIC ROW
@@ -148,6 +149,9 @@ class SPACE_DB_BASE{
 		
 	// TO BE IMPLEMENTED BY CHILD CLASSES - HANDLES TABLE CREATION
 	function create(){}
+	
+	// TO BE IMPLEMENTED BY CHILD CLASSES - RETURNS DB DATA
+	function sanitize( $data ){ return $data; }
 }
 	
 	

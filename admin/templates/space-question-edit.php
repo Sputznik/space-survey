@@ -30,7 +30,7 @@
 		),
 		'order' => array(
 			'label'	=> 'Order',
-			'slug'	=> 'order',
+			'slug'	=> 'rank',
 			'type'	=> 'text',
 			'default'	=> '0'
 		) 
@@ -42,8 +42,6 @@
 	add_action( $current_page.'-form-init', function( $form ){
 		
 		$question_db = SPACE_DB_QUESTION::getInstance();
-		
-		$choice_db = SPACE_DB_CHOICE::getInstance();
 		
 		/*
 		* DELETE ACTION HAS BEEN CHOSEN - DELETE BY ROW ID
@@ -62,55 +60,39 @@
 		*/
 		if( isset( $_POST['publish'] ) ) {
 			
+			/*
+			* UPDATE QUESTION MODEL
+			* CHECK USING $_GET['ID'] - IF DATA EXISTS THEN IT NEEDS TO BE UPDATED OR IT NEEDS TO BE INSERTED
+			*/ 
 			$question_id = 0;
-			
-			$question_data = array(
-				'title' 		=> sanitize_text_field($_POST['title']),
-				'description'	=> sanitize_text_field($_POST['desc']),
-				'rank' 			=> absint( $_POST['order'] ),
-				'type' 			=> $_POST['type'],
-				'author_id'		=> get_current_user_id(),
-				'parent' 		=> 0, //absint( $_POST['parent'] ),
-			);
-			
-			// CHECK IF DATA EXISTS THEN IT NEEDS TO BE UPDATED
+			$question_data = $question_db->sanitize( $_POST );
 			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
 				$question_id = $_GET['ID'];
 				$question_db->update( $question_id, $question_data );	
 			}
 			else{
-				$question_db->insert( $question_data );	
+				$question_id = $question_db->insert( $question_data );	
 			}
+			// END OF UPDATING QUESTION MODEL
 			
+			/*
+			* UPDATE CHOICE MODEL
+			*/
 			if( $question_id && isset( $_POST[ 'choices' ] ) ){
-				
-				foreach( $_POST[ 'choices' ] as $choice ){
-					
-					// CHECK IF DATA IN THE POST MEETS THE MINIMUM REQUIREMENT
-					if( isset( $choice['id'] ) && isset( $choice['text'] ) && $choice['text'] ){
-						
-						// PREPARE THE CHOICE DATA FOR UPDATION OR INSERTION
-						$choice_data = array(
-							'title'			=> $choice['text'],
-							'question_id' 	=> $question_id
-						);
-						
-						// CHECK IF THE DATA NEEDS TO B EUPDATED OR INSERTED
-						if( $choice['id'] ){
-							$choice_db->update( $choice['id'], $choice_data );
-						}
-						else{
-							$choice_db->insert( $choice_data );
-						}
-						
-					}
-				}
+				// UPDATE OR ADD NEW CHOICES
+				$question_db->updateChoices( $question_id, $_POST[ 'choices' ] );
 			}
 			
-			// $_POST['choices_delete'] HAS A COMMA SEPERATED STRING OF CHOICE IDs THAT ARE NO LONGER NEEDED
 			if( $question_id && isset( $_POST['choices_delete'] ) && $_POST['choices_delete'] ){
-				$choice_db->delete_rows( explode(',', $_POST['choices_delete'] ) );
+				// $_POST['choices_delete'] HAS A COMMA SEPERATED STRING OF CHOICE IDs THAT ARE NO LONGER NEEDED
+				$question_db->deleteChoices( explode(',', $_POST['choices_delete'] ) );
 			}
+			
+			if( !isset( $_GET['ID'] ) && $question_id ){
+				// INSERTTION HAS BEEN DONE SO FAR - NEW QUESTION, SO HANDLE REDIRECTION TO EDIT THE NEW QUESTION
+				_e( "<script>location.href='?page=space-question-edit&ID=$question_id';</script>" );
+			}
+			// END OF UPDATING CHOICE MODEL
 			
 			/*
 			echo "<pre>";
@@ -148,7 +130,8 @@
 		
 		$question_db = SPACE_DB_QUESTION::getInstance();
 		
-		$choices = $question_db->choices( $_GET['ID'] );
+		// GET LIST OF CHOICES FROM THE QUESTION
+		$choices = $question_db->listChoices( $_GET['ID'] );
 		
 		$choice_form = new SPACE_CHOICE_FORM( $choices );
 		

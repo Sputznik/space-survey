@@ -10,3 +10,5 @@
 	foreach( $inc_files as $inc_file ){
 		require_once( $inc_file );
 	}
+	
+	SPACE_DB_QUESTION::getInstance();
