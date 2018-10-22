@@ -13,6 +13,7 @@
 				plugin_dir_path(__FILE__).'../forms/class-space-admin-form.php',
 				'class-space-list-table.php',
 				'class-space-question-list-table.php',
+				'class-space-survey-list-table.php',
 			);
 			
 			foreach( $this->includes as $inc_file ){
@@ -43,6 +44,10 @@
 				'space-survey'	=> array(
 					'title'	=> 'Space Survey',
 					'icon'	=> 'dashicons-editor-kitchensink'
+				),
+				'space-survey-edit' => array(
+					'title'	=> 'Add Survey',
+					'menu'	=> 'space-survey'
 				),
 				'space-questions' => array(
 					'title'	=> 'Questions',
