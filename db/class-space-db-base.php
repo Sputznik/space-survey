@@ -81,12 +81,15 @@ class SPACE_DB_BASE{
 	// GET SINGLE ROW USING UNIQUE ID
 	function get_row( $ID ){
 		global $wpdb;
-		
 		$table = $this->getTable();
-			
-		$query = "SELECT * FROM $table WHERE ID=$ID;"; 
-			
+		$query = "SELECT * FROM $table WHERE ID = $ID;"; 
 		return $wpdb->get_row( $query );
+	}
+	
+	// WRAPPER AROUND USING WPDB->ESC_LIKE
+	function esc_like( $term ){
+		global $wpdb;
+		return $wpdb->esc_like( $term );
 	}
 	
 	// WRAPPER AROUND WPDB->PREPARE
@@ -95,22 +98,56 @@ class SPACE_DB_BASE{
 		return $wpdb->prepare( $query, $args );
 	}
 		
-	function results( $page, $per_page ){
+	function results( $page, $per_page, $search = array( 'col_formats' => array(), 'col_values'	=> array(), 'operator' => 'LIKE' ) ){
 		$data = array();
-		$table = $this->getTable();
-			
+		
+		$where_query = $this->_where_query( $search['col_formats'], $search['operator'] );
+		
 		// QUERY TO GET TOTAL NUMBER OF ROWS
-		$data['num_rows'] = $this->get_var( "SELECT COUNT(*) FROM $table;" );
+		$count_query = "SELECT COUNT(*)".$this->_from_query();
+		if( $where_query ){
+			$count_query .= $where_query;
+		}
+		$count_query .= ";";
+		$count_query = $this->prepare( $count_query, $search['col_values'] );
+		$data['num_rows'] = $this->get_var( $count_query );
 			
 		// QUERY TO GET PAGINATED RESPONSE
 		$offset = ( $page-1 ) * $per_page;
-		$data['results'] = $this->get_results( "SELECT * FROM $table LIMIT $offset,$per_page;" );
-			
+		$results_query = "SELECT *".$this->_from_query();
+		if( $where_query ){
+			$results_query .= $where_query;
+		}
+		$results_query .= " LIMIT $offset,$per_page;";
+		$results_query = $this->prepare( $results_query, $search['col_values'] );
+		$data['results'] = $this->get_results( $results_query );
+		
+		//echo $count_query."<br>";
+		//echo $results_query."<br>";
+		
 		return $data;
 	}
 	
+	function _from_query(){
+		$table = $this->getTable();
+		return " FROM $table";
+	}
+	
+	function _where_query( $col_formats, $operator = "=" ){
+		$query = "";
+		if( is_array( $col_formats ) && count( $col_formats ) ){
+			$query .= " WHERE";
+			$i = 0;
+			foreach( $col_formats as $col => $col_format ){
+				if( $i ){ $query .= " AND"; }
+				$query .= " $col $operator $col_format";
+				$i++;
+			}
+		}
+		return $query;
+	}
+	
 	function filter( $col_formats, $col_values, $order_by = 'ID', $order = 'ASC' ){
-		
 		$table = $this->getTable();
 		
 		// FORM THE QUERY
