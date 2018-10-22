@@ -103,8 +103,8 @@
 			wp_enqueue_script(	
 				'space-checkbox', 
 				plugins_url( $plugin_assets_folder.'js/choice-form.js' ), 
-				array( 'jquery', 'jquery-ui-sortable', 'space-autosize'), 
-				'1.0.5', 
+				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'space-autosize'), 
+				'1.0.9', 
 				true 
 			);
 			

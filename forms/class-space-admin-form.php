@@ -23,7 +23,7 @@ class SPACE_ADMIN_FORM extends SPACE_FORM{
 		$this->setPageTitle( $pageTitle );
 			
 		// FORM INIT ACTION HOOK - WHERE ALL THE DATABASE RELATED QUERIES ARE DONE
-		do_action( $this->getPage(). '-form-init', $this );
+		$this->do_action( 'form-init', $this );
 			
 	}
 		

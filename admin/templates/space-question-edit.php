@@ -1,5 +1,7 @@
 <?php
 	
+	$question_db = SPACE_DB_QUESTION::getInstance();
+	
 	$form_fields = array(
 		'title'	=> array(
 			'placeholder'	=> 'Enter question here',
@@ -12,26 +14,22 @@
 			'type'			=> 'textarea',
 		),
 		'type'	=> array(
-			'label'	=> 'Question Type',
-			'slug'	=> 'type',
-			'type'	=> 'dropdown',
-			'options'	=> array(
-				'single'	=> 'Single',
-				'multiple'	=> 'Multiple'
-			)
+			'label'		=> 'Question Type',
+			'slug'		=> 'type',
+			'type'		=> 'dropdown',
+			'options'	=> $question_db->getTypes()
 		),
 		'parent' => array(
-			'label'	=> 'Parent',
-			'slug'	=> 'parent',
-			'type'	=> 'dropdown',
-			'options'	=> array(
-				'0'	=> '(no parent)',
-			)
+			'label'			=> 'Parent',
+			'slug'			=> 'parent',
+			'type'			=> 'autocomplete',
+			'placeholder'	=> 'Type title of the question here',
+			'url'			=> admin_url( 'admin-ajax.php' )."?action=space_questions"
 		),
 		'order' => array(
 			'label'	=> 'Order',
 			'slug'	=> 'rank',
-			'type'	=> 'text',
+			'type'	=> 'number',
 			'default'	=> '0'
 		) 
 	);
@@ -113,6 +111,12 @@
 			$fields['type']['value'] = $row->type;
 			$fields['parent']['value'] = $row->parent;
 			$fields['order']['value'] = $row->rank;
+			
+			if( $row->parent ){
+				$parent_question = $question_db->get_row( $row->parent );
+				$fields['parent']['autocomplete_value'] = $parent_question->title;	
+			}
+			
 			$form->setFields( $fields );
 		}
 		
@@ -149,7 +153,7 @@
 		
 		$form->display_field( $form->fields['type'] );
 		
-		//$form->display_field( $form->fields['parent'] );
+		$form->display_field( $form->fields['parent'] );
 		
 		$form->display_field( $form->fields['order'] );
 		

@@ -41,6 +41,10 @@ class SPACE_FORM{
 		if( $field['type'] == 'text' ){
 			_e('<input name="'.$field['slug'].'" type="text" id="'.$field['slug'].'" value="'.$field['value'].'">');
 		}
+		
+		if( $field['type'] == 'number' ){
+			_e('<input name="'.$field['slug'].'" type="number" id="'.$field['slug'].'" value="'.$field['value'].'">');
+		}
 			
 		if( $field['type'] == 'big-text' ){
 			_e('<input type="text" class="big-text" placeholder="'.$field['placeholder'].'" name="'.$field['slug'].'" size="30" value="'.$field['value'].'" id="title" spellcheck="true" autocomplete="off">');
@@ -48,6 +52,10 @@ class SPACE_FORM{
 			
 		if( $field['type'] == 'textarea' ){
 			_e('<textarea placeholder="'.$field['placeholder'].'" name="'.$field['slug'].'"  style="width:100%;padding:10px;" rows="10">'.$field['value'].'</textarea>');
+		}
+		
+		if( $field['type'] == 'autocomplete' ){
+			_e("<div data-behaviour='space-autocomplete' data-field='".wp_json_encode( $field )."'></div>");
 		}
 	}
 	
