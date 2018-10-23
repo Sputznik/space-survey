@@ -18,12 +18,10 @@ class SPACE_PAGE_FORM extends SPACE_FORM{
 	* Template: called from display() of space-survey/admin/class-space-checkbox-form.php
 	* Idea: to create a repeatable field to add pages in a survey
 	*/
-	function display(){
-		var_dump($this->getPages());	
+	function display(){	
 		
 		_e( "<div class='space-box' data-pages='".wp_json_encode( $this->getPages() )."' data-behaviour='space-pages'></div>" );
 		
-			
 	}
 		
 		

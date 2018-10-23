@@ -40,6 +40,7 @@
 		* CHOOSE BETWEEN UPDATING OR INSERTING THE ROW IN THE DATABASE BASED ON THE PRESENCE OF THE ID
 		*/
 		if( isset( $_POST['publish'] ) ) {
+
 			
 			/*
 			* UPDATE SURVEY MODEL
@@ -55,6 +56,20 @@
 				$survey_id = $survey_db->insert( $survey_data );	
 			}
 			// END OF UPDATING SURVEY MODEL
+
+
+			/*
+			* UPDATE PAGE MODEL
+			*/
+			if( $survey_id && isset( $_POST[ 'pages' ] ) ){
+				// UPDATE OR ADD NEW PAGE
+				$survey_db->updatePages( $survey_id, $_POST[ 'pages' ] );
+			}
+			
+			if( $survey_id && isset( $_POST['pages_delete'] ) && $_POST['pages_delete'] ){
+				// $_POST['pages_delete'] HAS A COMMA SEPERATED STRING OF PAGE IDs THAT ARE NO LONGER NEEDED
+				$survey_db->deletePages( explode(',', $_POST['pages_delete'] ) );
+			}
 			
 			
 			if( !isset( $_GET['ID'] ) && $survey_id ){

@@ -45,9 +45,36 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		);
 	}
 
-
-	//IMPLEMENT FUNCTION FOR INSERT, DELETE, UPDATE PAGE INFO 
-
+	// DELETE MULTIPLE PAGES BY ARRAY OF PAGE IDs
+	function deletePages( $pages_id_arr ){
+		return $this->getPageDB()->delete_rows( $pages_id_arr );
+	}
+	
+	// UPDATE MULTIPLE PAGES ASSOCIATED WITH THE QUESTION
+	function updatePages( $survey_id, $pages ){
+		foreach( $pages as $page ){
+			// CHECK IF DATA MEETS THE MINIMUM REQUIREMENT
+			if( isset( $page['id'] ) && isset( $page['title'] ) && $page['title'] ){ 
+				$this->updatePage( $survey_id, $page );
+			}
+		}
+	}
+	
+	// $page SHOULD HAVE id AND title AS ATTRIBUTES
+	function updatePage( $survey_id, $page ){
+		
+		// PREPARE THE PAGE DATA FOR UPDATION OR INSERTION
+		$page['survey_id'] = $survey_id;
+		$page_data = $this->getPageDB()->sanitize( $page );
+		
+		// CHECK IF THE DATA NEEDS TO BE UPDATED OR INSERTED
+		if( $page['id'] ){
+			$this->getPageDB()->update( $page['id'], $page_data );
+		}
+		else{
+			$this->getPageDB()->insert( $page_data );
+		}
+	}
 
 	function sanitize( $data ){
 		$surveyData = array(

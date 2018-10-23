@@ -279,6 +279,123 @@ jQuery.fn.space_choices = function(){
 	});
 };
 
+
+jQuery.fn.space_pages = function(){
+	return this.each(function(){
+
+		/*
+		* VARIABLES ASSIGNMENT
+		*/
+		var $el 		 = jQuery(this),
+			pages 		 = $el.attr( 'data-pages' ), // PAGES FROM THE DB
+			deleted_list = [];						 // LIST OF ID THAT HAVE BEEN REMOVED WHEN THE CLOSE BUTTON IS CLICKED 
+		
+		// JSON PARSE FROM STRING
+		pages = typeof pages != 'object' ? JSON.parse( pages ) : [];
+		
+		var repeater = SPACE_REPEATER( {
+			$el		: $el,
+			btn_text: '+ Add Page',
+			init	: function( repeater ){
+				
+				/*
+				* INITIALIZE: CREATES THE UNLISTED LIST WHICH WILL TAKE CARE OF THE PAGE, HIDDEN FIELD AND THE ADD BUTTON
+				*/
+				
+				// HIDDEN FIELD THAT KEEPS A RECORD OF PAGE IDs WHICH NEEDS TO BE DELETED
+				var $hidden_delete	= repeater.createField({
+					element: 'input',
+					attr: {
+						type: 'hidden',
+						name: 'pages_delete'
+					},	
+					append: repeater.options.$el
+				});
+				
+				// ITERATE THROUGH EACH PAGES IN THE DB
+				jQuery.each( pages, function( i, page ){
+					
+					if( page['title'] != undefined && page['ID'] != undefined ){
+						repeater.addItem( page );
+					}
+				});
+			},
+			addItem	: function( repeater, $list_item, $closeButton, page ){
+				
+				/*
+				* ADD LIST ITEM TO THE UNLISTED LIST 
+				* TEXTAREA: PAGE TITLE
+				* HIDDEN: PAGE ID
+				* HIDDEN: PAGE COUNT
+				*/ 
+				if( page == undefined || page['ID'] == undefined ){
+					page = { ID : 0 };
+				}
+				
+				// CREATE TEXTAREA THAT WILL HOLD THE PAGE TEXT
+				var $textarea = repeater.createField({
+					element	: 'textarea',
+					attr	: {
+						'data-behaviour': 'space-autoresize',
+						'placeholder'	: 'Type here',
+						'name'			: 'pages[' + repeater.count + '][title]',
+					},
+					append	: $list_item
+				});
+				$textarea.space_autoresize();
+				if( page['title'] ){ $textarea.val( page['title'] ); }
+				
+				// CREATE HIDDEN FIELD THAT WILL HOLD THE PAGE ID
+				var $hiddenID = repeater.createField({
+					element	: 'input', 
+					attr	: {
+						'type'	: 'hidden',
+						'value'	: page['ID'] ? page['ID'] : 0,
+						'name'	: 'pages[' + repeater.count + '][id]'
+					},
+					append	: $list_item
+				});
+				
+				// CREATE HIDDEN FIELD THAT WILL HOLD THE PAGE RANK
+				var $hiddenRank = repeater.createField({
+					element	: 'input', 
+					attr	: {
+						'type'				: 'hidden',
+						'value'				: page['rank'] ? page['rank'] : 0,
+						'data-behaviour' 	: 'space-rank',
+						'name'				: 'pages[' + repeater.count + '][rank]'
+					},
+					append	: $list_item
+				});
+				
+				$closeButton.click( function( ev ){
+					ev.preventDefault();
+					
+					// IF PAGE ID IS NOT EMPTY THAT MEANS IT IS ALREADY IN THE DB, SO THE ID HAS TO BE PUSHED INTO THE HIDDEN DELETED FIELD
+					if( page['ID'] ){
+						deleted_list.push( page['ID'] );
+						$hidden_delete.val( deleted_list.join() );
+					}
+					$list_item.remove();
+				});
+			},
+			reorder: function( repeater ){
+				/*
+				* REORDER LIST 
+				*/
+				var rank = 0;
+				repeater.$list.find( '[data-behaviour~=space-rank]' ).each( function(){
+					var $hiddenRank = jQuery( this );
+					$hiddenRank.val( rank );
+					rank++;
+				});
+			},
+		} );
+
+	});	
+};
+
+
 jQuery( document ).on( 'ready', function(){
 	
 	jQuery('[data-behaviour~=space-autoresize]').space_autoresize();
@@ -286,5 +403,7 @@ jQuery( document ).on( 'ready', function(){
 	jQuery('[data-behaviour~=space-choices]').space_choices();
 	
 	jQuery('[data-behaviour~=space-autocomplete]').space_autocomplete();
+
+	jQuery('[data-behaviour~=space-pages]').space_pages();
 	
 } );
