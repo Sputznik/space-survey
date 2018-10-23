@@ -11,7 +11,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		$this->setTableSlug( 'survey' );
 		parent::__construct();
 
-		//$this->setPageDB( SPACE_DB_PAGE::getInstance() );
+		$this->setPageDB( SPACE_DB_PAGE::getInstance() );
 	}
 	
 	//GETTER AND SETTER FUNCTIONS
@@ -34,14 +34,16 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	}
 	
 	//RETURN THE LIST OF ASSOCIATED PAGES
-	/*function listPages( $survey_id ){
+	function listPages( $survey_id ){
+		$survey_id = (int) $survey_id;
+
 		return $this->getPageDB()->filter( 
 			array(
 				'survey_id'	=> '%d'
 			),
 			array( $survey_id )
 		);
-	}*/
+	}
 
 
 	//IMPLEMENT FUNCTION FOR INSERT, DELETE, UPDATE PAGE INFO 

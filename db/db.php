@@ -4,7 +4,7 @@
 	$inc_files = array(
 		'class-space-db-base.php',
 		'class-space-db-survey.php',
-		/*'class-space-db-page.php',*/
+		'class-space-db-page.php',
 		'class-space-db-question.php',
 		'class-space-db-choice.php',
 	);

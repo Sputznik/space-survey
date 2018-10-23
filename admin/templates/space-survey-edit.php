@@ -93,13 +93,13 @@
 		$form->display_field( $form->fields['desc'] );
 
 
-		/*require_once( plugin_dir_path(__FILE__).'../../forms/class-space-page-form.php' );
+		require_once( plugin_dir_path(__FILE__).'../../forms/class-space-page-form.php' );
 		
 		$survey_db = SPACE_DB_SURVEY::getInstance();
 		
 		// GET LIST OF CHOICES FROM THE SURVEY
 		if( isset( $_GET['ID'] ) ){
-			//$pages = $survey_db->listPages( $_GET['ID'] );	
+			$pages = $survey_db->listPages( $_GET['ID'] );	
 		}
 		else {
 			$pages = array();
@@ -107,7 +107,7 @@
 		
 		$page_form = new SPACE_PAGE_FORM( $pages );
 		
-		$page_form->display();*/
+		$page_form->display();
 
 		
 	});

@@ -23,7 +23,6 @@ class SPACE_PAGE_FORM extends SPACE_FORM{
 		
 		_e( "<div class='space-box' data-pages='".wp_json_encode( $this->getPages() )."' data-behaviour='space-pages'></div>" );
 		
-		//include( 'templates/choice-form.php' );
 			
 	}
 		
