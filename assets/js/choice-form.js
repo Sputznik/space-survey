@@ -67,6 +67,102 @@ jQuery.fn.space_autocomplete = function(){
 	});
 };
 
+var SPACE_REPEATER = function( options ){
+	
+	var self = {
+		count	: 0,
+		$list	: jQuery( document.createElement( 'ul' ) ),			// PARENT LIST THAT HOLDS THE CHOICES
+		$btn 	: jQuery( document.createElement( 'button' ) ),		// BUTTON THAT ADDS MORE BLANK CHOICES TO THE LIST
+		options : jQuery.extend( {
+			$el		: undefined,
+			btn_text: '+ Add Item',
+			addItem	: function( item_data ){} 
+		}, options )
+	};
+	
+	self.init = function(){
+		
+		// MAIN LIST THAT HOLDS THE LIST OF CHOICES
+		self.$list.attr('id', 'space-choices-list');
+		self.$list.appendTo( self.options.$el );
+		self.$list.sortable({
+			stop: function( event, ui ){
+				self.reorder();
+			}
+		});
+		
+		self.$btn.addClass('button');
+		self.$btn.html( self.options.btn_text );
+		self.$btn.appendTo( self.options.$el );
+		self.$btn.click( function( ev ){
+			ev.preventDefault();
+			self.addItem();
+		});
+		
+		self.options.init( self );
+		
+	};
+	
+	self.createField = function( field ){
+		
+		var $form_field = jQuery( document.createElement( field['element'] ) );
+		
+		for( attr in field['attr'] ){
+			$form_field.attr( attr, field['attr'][attr] );
+		}
+		
+		if( field['append'] ){
+			$form_field.appendTo( field['append'] );
+		}
+		
+		if( field['html'] ){
+			$form_field.html( field['html'] );
+		}
+		
+		return $form_field;
+		
+	};
+	
+	/*
+	* ADD LIST ITEM TO THE UNLISTED LIST 
+	*/
+	self.addItem = function( $data ){
+		
+		// CREATE PARENT LIST ITEM: LI
+		var $list_item = self.createField({
+			element	: 'li',
+			attr	:{
+				'class'	: 'space-choice-item'
+			},
+			append	: self.$list
+		});
+		
+		// CLOSE BUTTON - TO REMOVE THE LIST ITEM
+		var $button = self.createField({
+			element	: 'button',
+			attr	:{
+				'class'	: 'space-close-btn'
+			},
+			html	: '&times;',
+			append	: $list_item
+		});
+		
+		self.options.addItem( self, $list_item, $button, $data );
+		
+		// INCREMENT COUNT AFTER AN ITEM HAS BEEN ADDED TO MAINTAIN THE ARRAY OF INPUT NAMES
+		self.count++;
+		
+	};
+	
+	self.reorder = function(){
+		self.options.reorder( self );
+	};
+	
+	self.init();
+	
+	return self;
+};
+
 jQuery.fn.space_choices = function(){
 
 	return this.each(function() {
@@ -75,121 +171,110 @@ jQuery.fn.space_choices = function(){
 		* VARIABLES ASSIGNMENT
 		*/
 		var $el 			= jQuery(this),
-			count 			= 0,												// INCREMENTING VARIABLE WHEN CHOICE IS ADDED
 			choices 		= $el.attr( 'data-choices' ),						// CHOICES FROM THE DB
-			$list 			= jQuery( document.createElement( 'ul' ) ),			// PARENT LIST THAT HOLDS THE CHOICES
-			$btn			= jQuery( document.createElement( 'button' ) ),		// BUTTON THAT ADDS MORE BLANK CHOICES TO THE LIST
-			$hidden_delete	= jQuery( document.createElement( 'input' ) ),		// HIDDEN FIELD THAT WILL KEEP A LIST OF ALL THE DELETED IDs
 			deleted_list 	= [];												// LIST OF ID THAT HAVE BEEN REMOVED WHEN THE CLOSE BUTTON IS CLICKED 
 		
 		// JSON PARSE FROM STRING
 		choices = typeof choices != 'object' ? JSON.parse( choices ) : [];
 		
-		
-		/*
-		* ADD LIST ITEM TO THE UNLISTED LIST 
-		* TEXTAREA: CHOICE TITLE
-		* HIDDEN: CHOICE ID
-		* HIDDEN: CHOICE COUNT
-		*/ 
-		var addChoice = function( choice_text, choice_id = 0 ){
-			
-			// CREATE PARENT LIST ITEM: LI
-			var $list_item = jQuery( document.createElement( 'li' ) );
-			$list_item.addClass( 'space-choice-item' );
-			$list_item.appendTo( $list );
-			
-			// CREATE TEXTAREA THAT WILL HOLD THE CHOICE TEXT
-			var $textarea = jQuery( document.createElement('textarea') );
-			$textarea.attr( 'data-behaviour', 'space-autoresize' );
-			$textarea.attr( 'placeholder', 'Type your choice here'  );
-			$textarea.attr( 'name', 'choices[' + count + '][title]' );
-			$textarea.appendTo( $list_item );
-			$textarea.space_autoresize();
-			if( choice_text ){ $textarea.val( choice_text ); }
-			
-			// CREATE HIDDEN FIELD THAT WILL HOLD THE CHOICE ID
-			var $hiddenID = jQuery( document.createElement('input') );
-			$hiddenID.attr( 'type', 'hidden' );
-			$hiddenID.val( choice_id );
-			$hiddenID.attr( 'name', 'choices[' + count + '][id]' );
-			$hiddenID.appendTo( $list_item );
-			
-			// CREATE HIDDEN FIELD THAT WILL HOLD THE CHOICE RANK
-			var $hiddenRank = jQuery( document.createElement('input') );
-			$hiddenRank.attr( 'type', 'hidden' );
-			$hiddenRank.attr( 'data-behaviour', 'space-rank' );
-			$hiddenRank.val( '0' );
-			$hiddenRank.attr( 'name', 'choices[' + count + '][rank]' );
-			$hiddenRank.appendTo( $list_item );
-			
-			// CLOSE BUTTON - TO REMOVE THE LIST ITEM
-			var $button = jQuery( document.createElement('button') );
-			$button.addClass( 'space-close-btn' );
-			$button.html( '&times;' );
-			$button.appendTo( $list_item );
-			
-			$button.click( function( ev ){
-				ev.preventDefault();
-				// IF CHOICE ID IS NOT EMPTY THAT MEANS IT IS ALREADY IN THE DB, SO THE ID HAS TO BE PUSHED INTO THE HIDDEN DELETED FIELD
-				if( choice_id ){
-					deleted_list.push( choice_id );
-					$hidden_delete.val( deleted_list.join() );
+		var repeater = SPACE_REPEATER( {
+			$el		: $el,
+			btn_text: '+ Add Choice',
+			init	: function( repeater ){
+				
+				/*
+				* INITIALIZE: CREATES THE UNLISTED LIST WHICH WILL TAKE CARE OF THE CHOICE, HIDDEN FIELD AND THE ADD BUTTON
+				*/
+				
+				// HIDDEN FIELD THAT KEEPS A RECORD OF CHOICE IDs WHICH NEEDS TO BE DELETED
+				var $hidden_delete	= repeater.createField({
+					element: 'input',
+					attr: {
+						type: 'hidden',
+						name: 'choices_delete'
+					},	
+					append: repeater.options.$el
+				});
+				
+				// ITERATE THROUGH EACH CHOICES IN THE DB
+				jQuery.each( choices, function( i, choice ){
+					
+					if( choice['title'] != undefined && choice['ID'] != undefined ){
+						repeater.addItem( choice );
+					}
+				});
+			},
+			addItem	: function( repeater, $list_item, $closeButton, choice ){
+				
+				/*
+				* ADD LIST ITEM TO THE UNLISTED LIST 
+				* TEXTAREA: CHOICE TITLE
+				* HIDDEN: CHOICE ID
+				* HIDDEN: CHOICE COUNT
+				*/ 
+				if( choice == undefined || choice['ID'] == undefined ){
+					choice = { ID : 0 };
 				}
-				$list_item.remove();
-			});
-			
-			// INCREMENT THE COUNT TO MAINTAIN THE ARRAY OF INPUT NAMES
-			count++;
-		};
-		
-		var reorder = function(){
-			$rank = 0;
-			$list.find( '[data-behaviour~=space-rank]' ).each( function(){
-				var $hiddenRank = jQuery( this );
-				$hiddenRank.val( $rank );
-				$rank++;
-			});
-		};
-		
-		/*
-		* INITIALIZE: CREATES THE UNLISTED LIST WHICH WILL TAKE CARE OF THE CHOICE, HIDDEN FIELD AND THE ADD BUTTON
-		*/ 
-		var init = function(){
-			
-			// MAIN LIST THAT HOLDS THE LIST OF CHOICES
-			$list.attr('id', 'space-choices-list');
-			$list.appendTo( $el );
-			$list.sortable({
-				stop: function( event, ui ){
-					reorder();
-				}
-			});
-		
-			// ADD CHOICE BUTTON
-			$btn.addClass('button');
-			$btn.html( '+ Add Choice' );
-			$btn.appendTo( $el );
-			$btn.click( function( ev ){
-				ev.preventDefault();
-				addChoice();
-			});
-			
-			// HIDDEN FIELD THAT KEEPS A RECORD OF CHOICE IDs WHICH NEEDS TO BE DELETED
-			$hidden_delete.attr( 'type', 'hidden' );
-			$hidden_delete.attr( 'name', 'choices_delete' );
-			$hidden_delete.appendTo( $el );
-			
-			// ITERATE THROUGH EACH CHOICES IN THE DB
-			jQuery.each( choices, function( i, choice ){
-				if( choice['title'] != undefined && choice['ID'] != undefined ){
-					addChoice( choice['title'], choice['ID'] );
-				}
-			});
-			
-		};
-		
-		init();
+				
+				// CREATE TEXTAREA THAT WILL HOLD THE CHOICE TEXT
+				var $textarea = repeater.createField({
+					element	: 'textarea',
+					attr	: {
+						'data-behaviour': 'space-autoresize',
+						'placeholder'	: 'Type your choice here',
+						'name'			: 'choices[' + repeater.count + '][title]',
+					},
+					append	: $list_item
+				});
+				$textarea.space_autoresize();
+				if( choice['title'] ){ $textarea.val( choice['title'] ); }
+				
+				// CREATE HIDDEN FIELD THAT WILL HOLD THE CHOICE ID
+				var $hiddenID = repeater.createField({
+					element	: 'input', 
+					attr	: {
+						'type'	: 'hidden',
+						'value'	: choice['ID'] ? choice['ID'] : 0,
+						'name'	: 'choices[' + repeater.count + '][id]'
+					},
+					append	: $list_item
+				});
+				
+				// CREATE HIDDEN FIELD THAT WILL HOLD THE CHOICE RANK
+				var $hiddenRank = repeater.createField({
+					element	: 'input', 
+					attr	: {
+						'type'				: 'hidden',
+						'value'				: choice['rank'] ? choice['rank'] : 0,
+						'data-behaviour' 	: 'space-rank',
+						'name'				: 'choices[' + repeater.count + '][rank]'
+					},
+					append	: $list_item
+				});
+				
+				$closeButton.click( function( ev ){
+					ev.preventDefault();
+					
+					// IF CHOICE ID IS NOT EMPTY THAT MEANS IT IS ALREADY IN THE DB, SO THE ID HAS TO BE PUSHED INTO THE HIDDEN DELETED FIELD
+					if( choice['ID'] ){
+						deleted_list.push( choice['ID'] );
+						$hidden_delete.val( deleted_list.join() );
+					}
+					$list_item.remove();
+				});
+			},
+			reorder: function( repeater ){
+				/*
+				* REORDER LIST 
+				*/
+				var rank = 0;
+				repeater.$list.find( '[data-behaviour~=space-rank]' ).each( function(){
+					var $hiddenRank = jQuery( this );
+					$hiddenRank.val( rank );
+					rank++;
+				});
+			},
+		} );
 		
 	});
 };

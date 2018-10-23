@@ -135,11 +135,9 @@
 		$question_db = SPACE_DB_QUESTION::getInstance();
 		
 		// GET LIST OF CHOICES FROM THE QUESTION
+		$choices = array();
 		if( isset( $_GET['ID'] ) ){
 			$choices = $question_db->listChoices( $_GET['ID'] );	
-		}
-		else {
-			$choices = array();
 		}
 		
 		$choice_form = new SPACE_CHOICE_FORM( $choices );
