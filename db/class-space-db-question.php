@@ -49,11 +49,12 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 	
 	// RETURNS THE LIST OF ASSOCIATED CHOICES
 	function listChoices( $question_id ){
+
 		return $this->getChoiceDB()->filter( 
 			array(
 				'question_id'	=> '%d'
 			),
-			array( $question_id ),
+			array( (int)$question_id ),
 			'rank',
 			'ASC'
 		);
