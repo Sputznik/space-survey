@@ -109,7 +109,11 @@ class SPACE_DB_BASE{
 			$count_query .= $where_query;
 		}
 		$count_query .= ";";
-		$count_query = $this->prepare( $count_query, $search['col_values'] );
+		
+		if( is_array( $search['col_values'] ) && count( $search['col_values'] ) ){
+			$count_query = $this->prepare( $count_query, $search['col_values'] );
+		}
+		
 		$data['num_rows'] = $this->get_var( $count_query );
 			
 		// QUERY TO GET PAGINATED RESPONSE
@@ -119,7 +123,11 @@ class SPACE_DB_BASE{
 			$results_query .= $where_query;
 		}
 		$results_query .= " LIMIT $offset,$per_page;";
-		$results_query = $this->prepare( $results_query, $search['col_values'] );
+		
+		if( is_array( $search['col_values'] ) && count( $search['col_values'] ) ){
+			$results_query = $this->prepare( $results_query, $search['col_values'] );	
+		}
+
 		$data['results'] = $this->get_results( $results_query );
 		
 		//echo $count_query."<br>";
@@ -144,6 +152,7 @@ class SPACE_DB_BASE{
 				$i++;
 			}
 		}
+
 		return $query;
 	}
 	
