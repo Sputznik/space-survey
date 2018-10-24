@@ -119,7 +119,6 @@ jQuery.fn.space_choices = function(){
 				* HIDDEN: CHOICE COUNT
 				*/
 				
-				
 				if( choice == undefined || choice['ID'] == undefined ){
 					choice = { ID : 0 };
 				}
