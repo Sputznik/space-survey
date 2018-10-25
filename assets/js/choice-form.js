@@ -188,7 +188,7 @@ jQuery.fn.space_choices = function(){
 
 jQuery.fn.space_questions = function( parent_name ){
 	return this.each(function() {
-		console.log(parent_name);
+		
 
 		/*
 		* VARIABLES ASSIGNMENT
@@ -203,8 +203,10 @@ jQuery.fn.space_questions = function( parent_name ){
 		var $hidden_delete; // INITIALIZED LATER WITHIN THE INIT FUNCTION
 		
 		var repeater = SPACE_REPEATER( {
-			$el		: $el,
-			btn_text: '+ Add Question',
+			$el				: $el,
+			btn_text		: '+ Add Question',
+			list_id			: 'space-questions-list',
+			list_item_id	: 'space-question-item',
 			init	: function( repeater ){
 				
 				/*
@@ -247,7 +249,14 @@ jQuery.fn.space_questions = function( parent_name ){
 					element	: 'div',
 					attr	: {
 						'data-behaviour': 'space-autocomplete',	
-						'data-field'	: '{ "label":"Parent", "slug":"'+ parent_name + '[question]['+ repeater.count +']", "type":"autocomplete","placeholder":"Type title of the question here", "url":"http:\/\/localhost\/yka\/wp-admin\/admin-ajax.php?action=space_questions", "value":"","autocomplete_value":""}',
+						'data-field'	: JSON.stringify( {
+							slug				: parent_name + '[question]['+ repeater.count +']',
+							type				: 'autocomplete',
+							placeholder			: "Type title of the question here",
+							url					: "",
+							value				: "",
+							autocomplete_value	: ""
+						} ),
 					},
 					append	: $list_item
 				});
@@ -360,29 +369,48 @@ jQuery.fn.space_pages = function(){
 					page = { ID : 0 };
 				}
 				
-				// CREATE TEXTAREA THAT WILL HOLD THE PAGE TEXT
+				// CREATE NEAT HEADER AREA FOR THE PAGE ITEM
+				var $header = repeater.createField({
+					element	: 'div',
+					attr	: {
+						'class'	: 'list-header'
+					},
+					append	: $list_item
+				});
+				
+				// CREATE TEXTAREA THAT WILL HOLD THE PAGE TEXT AND APPEND TO THE HEADER
 				var $textarea = repeater.createField({
 					element	: 'textarea',
 					attr	: {
 						'data-behaviour': 'space-autoresize',
 						'placeholder'	: 'Type Page Title Here',
 						'name'			: 'pages[' + repeater.count + '][title]',
+						'value'			: 'Page ' + ( repeater.count + 1 )
 					},
-					append	: $list_item
+					append	: $header
 				});
 				$textarea.space_autoresize();
 				if( page['title'] ){ $textarea.val( page['title'] ); }
 				
-				//CREATE TEXTAREA FOR HOLDIN PAGE DESCRIPTION
+				// CREATE NEAT CONTENT AREA FOR THE PAGE ITEM
+				var $content = repeater.createField({
+					element	: 'div',
+					attr	: {
+						'class'	: 'list-content'
+					},
+					append	: $list_item
+				});
+				
+				// CREATE TEXTAREA FOR HOLDING PAGE DESCRIPTION
 				var $textarea_desc = repeater.createField({
 					element	: 'textarea',
 					attr	: {
 						'placeholder'	: 'Type Page Description Here',
 						'name'			: 'pages[' + repeater.count + '][description]',
 						'rows'			: '3',
-						'class' 		: 'form_page_desc',		
+						'class' 		: 'form_page_desc',
 					},
-					append	: $list_item
+					append	: $content
 				});
 				if( page['description'] ){ $textarea_desc.val( page['description'] ); }
 	
@@ -394,9 +422,8 @@ jQuery.fn.space_pages = function(){
 						'data-behaviour' : 'space-questions',
 						'class' : 'space-box'
 					},
-					append 	: $list_item	
+					append 	: $content
 				});
-
 				$question_repeater.space_questions( 'pages[' + repeater.count + ']' );
 
 				// CREATE HIDDEN FIELD THAT WILL HOLD THE PAGE ID

@@ -12,11 +12,13 @@ var SPACE_REPEATER = function( options ){
 		$list	: null,		// PARENT LIST THAT HOLDS THE CHOICES
 		$btn 	: null,		// BUTTON THAT ADDS MORE BLANK CHOICES TO THE LIST
 		options : jQuery.extend( {
-			$el		: null,
-			btn_text: '+ Add Item',
-			init	: function(){},
-			addItem	: function(){},
-			reorder : function(){}
+			$el				: null,
+			btn_text		: '+ Add Item',
+			list_id			: 'space-choices-list',
+			list_item_id	: 'space-choice-item',
+			init			: function(){},
+			addItem			: function(){},
+			reorder 		: function(){}
 		}, options )
 	};
 	
@@ -26,7 +28,7 @@ var SPACE_REPEATER = function( options ){
 		self.$list = self.createField({
 			element: 'ul',
 			attr:{
-				id	: 'space-choices-list'
+				id	: self.options.list_id
 			},
 			append	: self.options.$el
 		});
@@ -85,7 +87,7 @@ var SPACE_REPEATER = function( options ){
 		var $list_item = self.createField({
 			element	: 'li',
 			attr	:{
-				'class'	: 'space-choice-item'
+				'class'	: self.options.list_item_id
 			},
 			append	: self.$list
 		});

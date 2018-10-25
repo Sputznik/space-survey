@@ -15,12 +15,19 @@
 
 
 
-.space-choice-item{
+.space-choice-item, .space-question-item{
 	border: #ccc solid 1px;
 	background: #fff;
 	padding: 10px;
 	margin-bottom: 10px;
 	position: relative;
+}
+
+.space-question-item input[type=text].ui-autocomplete-input{
+	width: 90%;
+	border: none;
+	outline: none;
+	box-shadow: none;
 }
 
 textarea[data-behaviour~=space-autoresize]{
@@ -48,6 +55,18 @@ textarea[data-behaviour~=space-autoresize]{
 	margin: 10px 0px;
     width: 100%;
     padding: 10px 6px;
+}
+
+
+.list-header{
+	border-bottom: #ddd solid 1px;
+	margin: -10px -10px 10px -10px;
+	padding: 10px;
+	padding-right: 40px;
+}
+
+.list-content{
+	padding-left: 10px;
 }
 	
 /* MODAL BOXES *

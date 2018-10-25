@@ -89,7 +89,7 @@
 				'space-admin', 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.0.2" 														// VERSION
+				"1.0.4" 														// VERSION
 			);
 			
 			wp_enqueue_script(	
@@ -104,7 +104,7 @@
 				'space-repeater', 
 				plugins_url( $plugin_assets_folder.'js/repeater.js' ), 
 				array( 'jquery'), 
-				'1.0.0', 
+				'1.0.1', 
 				true 
 			);
 			
@@ -112,7 +112,7 @@
 				'space-checkbox', 
 				plugins_url( $plugin_assets_folder.'js/choice-form.js' ), 
 				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'space-autosize', 'space-repeater'), 
-				'1.1.2', 
+				'1.1.3', 
 				true 
 			);
 			
