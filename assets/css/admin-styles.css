@@ -43,6 +43,12 @@ textarea[data-behaviour~=space-autoresize]{
 	border: none;
 	background: none;
 }
+
+.form_page_desc{
+	margin: 10px 0px;
+    width: 100%;
+    padding: 10px 6px;
+}
 	
 /* MODAL BOXES *
 .space-modal{

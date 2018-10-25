@@ -40,7 +40,7 @@
 		* CHOOSE BETWEEN UPDATING OR INSERTING THE ROW IN THE DATABASE BASED ON THE PRESENCE OF THE ID
 		*/
 		if( isset( $_POST['publish'] ) ) {
-			
+
 			/*
 			* UPDATE SURVEY MODEL
 			* CHECK USING $_GET['ID'] - IF DATA EXISTS THEN IT NEEDS TO BE UPDATED OR IT NEEDS TO BE INSERTED
@@ -55,6 +55,20 @@
 				$survey_id = $survey_db->insert( $survey_data );	
 			}
 			// END OF UPDATING SURVEY MODEL
+
+
+			/*
+			* UPDATE PAGE MODEL
+			*/
+			if( $survey_id && isset( $_POST[ 'pages' ] ) ){
+				// UPDATE OR ADD NEW PAGE
+				$survey_db->updatePages( $survey_id, $_POST[ 'pages' ] );
+			}
+			
+			if( $survey_id && isset( $_POST['pages_delete'] ) && $_POST['pages_delete'] ){
+				// $_POST['pages_delete'] HAS A COMMA SEPERATED STRING OF PAGE IDs THAT ARE NO LONGER NEEDED
+				$survey_db->deletePages( explode(',', $_POST['pages_delete'] ) );
+			}
 			
 			
 			if( !isset( $_GET['ID'] ) && $survey_id ){
@@ -91,6 +105,24 @@
 		$form->display_field( $form->fields['title'] );
 		
 		$form->display_field( $form->fields['desc'] );
+
+
+		require_once( plugin_dir_path(__FILE__).'../../forms/class-space-page-form.php' );
+		
+		$survey_db = SPACE_DB_SURVEY::getInstance();
+		
+		// GET LIST OF CHOICES FROM THE SURVEY
+		if( isset( $_GET['ID'] ) ){
+			$pages = $survey_db->listPages( $_GET['ID'] );	
+		}
+		else {
+			$pages = array();
+		}
+		
+		$page_form = new SPACE_PAGE_FORM( $pages );
+		
+		$page_form->display();
+
 		
 	});
 	

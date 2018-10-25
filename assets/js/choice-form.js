@@ -186,6 +186,275 @@ jQuery.fn.space_choices = function(){
 	});
 };
 
+jQuery.fn.space_questions = function( parent_name ){
+	return this.each(function() {
+		console.log(parent_name);
+
+		/*
+		* VARIABLES ASSIGNMENT
+		*/
+		var $el 			= jQuery(this),
+			questions 		= $el.attr( 'data-questions' ),	// QUESTIONS FROM THE DB
+			deleted_list 	= []; // LIST OF ID THAT HAVE BEEN REMOVED WHEN THE CLOSE BUTTON IS CLICKED 
+		
+		// JSON PARSE FROM STRING
+		questions = typeof questions != 'object' ? JSON.parse( questions ) : [];
+		
+		var $hidden_delete; // INITIALIZED LATER WITHIN THE INIT FUNCTION
+		
+		var repeater = SPACE_REPEATER( {
+			$el		: $el,
+			btn_text: '+ Add Question',
+			init	: function( repeater ){
+				
+				/*
+				* INITIALIZE: CREATES THE UNLISTED LIST WHICH WILL TAKE CARE OF THE QUESTION, HIDDEN FIELD AND THE ADD BUTTON
+				*/
+				
+				// HIDDEN FIELD THAT KEEPS A RECORD OF QUESTION IDs WHICH NEEDS TO BE DELETED
+				$hidden_delete	= repeater.createField({
+					element: 'input',
+					attr: {
+						type: 'hidden',
+						name: 'questions_delete'
+					},	
+					append: repeater.options.$el
+				});
+				
+				// ITERATE THROUGH EACH QUESTIONS IN THE DB
+				jQuery.each( questions, function( i, question ){
+					
+					if( question['title'] != undefined && question['ID'] != undefined ){
+						repeater.addItem( question );
+					}
+				});
+			},
+			addItem	: function( repeater, $list_item, $closeButton, question ){
+				
+				/*
+				* ADD LIST ITEM TO THE UNLISTED LIST 
+				* TEXTAREA: QUESTION TITLE
+				* HIDDEN: QUESTION ID
+				* HIDDEN: QUESTION COUNT
+				*/
+				
+				if( question == undefined || question['ID'] == undefined ){
+					question = { ID : 0 };
+				}
+				
+				// CREATE TEXTAREA THAT WILL HOLD THE QUESTION TEXT
+				var $question_div = repeater.createField({
+					element	: 'div',
+					attr	: {
+						'data-behaviour': 'space-autocomplete',	
+						'data-field'	: '{ "label":"Parent", "slug":"'+ parent_name + '[question]['+ repeater.count +']", "type":"autocomplete","placeholder":"Type title of the question here", "url":"http:\/\/localhost\/yka\/wp-admin\/admin-ajax.php?action=space_questions", "value":"","autocomplete_value":""}',
+					},
+					append	: $list_item
+				});
+				$question_div.space_autocomplete();
+				
+				// CREATE HIDDEN FIELD THAT WILL HOLD THE QUESTION ID
+				var $hiddenID = repeater.createField({
+					element	: 'input', 
+					attr	: {
+						'type'	: 'hidden',
+						'value'	: question['ID'] ? question['ID'] : 0,
+						'name'	: parent_name+'[questions][' + repeater.count + '][id]'
+					},
+					append	: $list_item
+				});
+				
+				// CREATE HIDDEN FIELD THAT WILL HOLD THE QUESTION RANK
+				var $hiddenRank = repeater.createField({
+					element	: 'input', 
+					attr	: {
+						'type'				: 'hidden',
+						'value'				: question['rank'] ? question['rank'] : 0,
+						'data-behaviour' 	: 'space-rank',
+						'name'				: parent_name+'[questions][' + repeater.count + '][rank]'
+					},
+					append	: $list_item
+				});
+				
+				$closeButton.click( function( ev ){
+					ev.preventDefault();
+					
+					// IF QUESTION ID IS NOT EMPTY THAT MEANS IT IS ALREADY IN THE DB, SO THE ID HAS TO BE PUSHED INTO THE HIDDEN DELETED FIELD
+					if( question['ID'] ){
+						deleted_list.push( question['ID'] );
+						$hidden_delete.val( deleted_list.join() );
+					}
+					$list_item.remove();
+				});
+			},
+			reorder: function( repeater ){
+				/*
+				* REORDER LIST 
+				*/
+				var rank = 0;
+				repeater.$list.find( '[data-behaviour~=space-rank]' ).each( function(){
+					var $hiddenRank = jQuery( this );
+					$hiddenRank.val( rank );
+					rank++;
+				});
+			},
+		} );
+
+
+	});
+};
+
+jQuery.fn.space_pages = function(){
+
+	return this.each(function() {
+		
+		/*
+		* VARIABLES ASSIGNMENT
+		*/
+		var $el 			= jQuery(this),
+			pages 			= $el.attr( 'data-pages' ),	// PAGES FROM THE DB
+			deleted_list 	= []; // LIST OF ID THAT HAVE BEEN REMOVED WHEN THE CLOSE BUTTON IS CLICKED 
+		
+		// JSON PARSE FROM STRING
+		pages = typeof pages != 'object' ? JSON.parse( pages ) : [];
+		
+		var $hidden_delete; // INITIALIZED LATER WITHIN THE INIT FUNCTION
+		
+		var repeater = SPACE_REPEATER( {
+			$el		: $el,
+			btn_text: '+ Add page',
+			init	: function( repeater ){
+				
+				/*
+				* INITIALIZE: CREATES THE UNLISTED LIST WHICH WILL TAKE CARE OF THE PAGE, HIDDEN FIELD AND THE ADD BUTTON
+				*/
+				
+				// HIDDEN FIELD THAT KEEPS A RECORD OF PAGE IDs WHICH NEEDS TO BE DELETED
+				$hidden_delete	= repeater.createField({
+					element: 'input',
+					attr: {
+						type: 'hidden',
+						name: 'pages_delete'
+					},	
+					append: repeater.options.$el
+				});
+				
+				// ITERATE THROUGH EACH PAGES IN THE DB
+				jQuery.each( pages, function( i, page ){
+					
+					if( page['title'] != undefined && page['ID'] != undefined ){
+						repeater.addItem( page );
+					}
+				});
+			},
+			addItem	: function( repeater, $list_item, $closeButton, page ){
+				
+				/*
+				* ADD LIST ITEM TO THE UNLISTED LIST 
+				* TEXTAREA: page TITLE
+				* HIDDEN: page ID
+				* HIDDEN: page COUNT
+				*/
+				
+				if( page == undefined || page['ID'] == undefined ){
+					page = { ID : 0 };
+				}
+				
+				// CREATE TEXTAREA THAT WILL HOLD THE PAGE TEXT
+				var $textarea = repeater.createField({
+					element	: 'textarea',
+					attr	: {
+						'data-behaviour': 'space-autoresize',
+						'placeholder'	: 'Type Page Title Here',
+						'name'			: 'pages[' + repeater.count + '][title]',
+					},
+					append	: $list_item
+				});
+				$textarea.space_autoresize();
+				if( page['title'] ){ $textarea.val( page['title'] ); }
+				
+				//CREATE TEXTAREA FOR HOLDIN PAGE DESCRIPTION
+				var $textarea_desc = repeater.createField({
+					element	: 'textarea',
+					attr	: {
+						'placeholder'	: 'Type Page Description Here',
+						'name'			: 'pages[' + repeater.count + '][description]',
+						'rows'			: '3',
+						'class' 		: 'form_page_desc',		
+					},
+					append	: $list_item
+				});
+				if( page['description'] ){ $textarea_desc.val( page['description'] ); }
+	
+				//ADD BUTTON FOR QUESTION REPEATER
+				var $question_repeater = repeater.createField({
+					element : 'div',
+					attr 	: {
+						'data-questions' : '[]',
+						'data-behaviour' : 'space-questions',
+						'class' : 'space-box'
+					},
+					append 	: $list_item	
+				});
+
+				$question_repeater.space_questions( 'pages[' + repeater.count + ']' );
+
+				// CREATE HIDDEN FIELD THAT WILL HOLD THE PAGE ID
+				var $hiddenID = repeater.createField({
+					element	: 'input', 
+					attr	: {
+						'type'	: 'hidden',
+						'value'	: page['ID'] ? page['ID'] : 0,
+						'name'	: 'pages[' + repeater.count + '][id]'
+					},
+					append	: $list_item
+				});
+				
+				// CREATE HIDDEN FIELD THAT WILL HOLD THE PAGE RANK
+				var $hiddenRank = repeater.createField({
+					element	: 'input', 
+					attr	: {
+						'type'				: 'hidden',
+						'value'				: page['rank'] ? page['rank'] : 0,
+						'data-behaviour' 	: 'space-rank',
+						'name'				: 'pages[' + repeater.count + '][rank]'
+					},
+					append	: $list_item
+				});
+				
+				$closeButton.click( function( ev ){
+					ev.preventDefault();
+					
+					// IF PAGE ID IS NOT EMPTY THAT MEANS IT IS ALREADY IN THE DB, SO THE ID HAS TO BE PUSHED INTO THE HIDDEN DELETED FIELD
+					if( page['ID'] ){
+						deleted_list.push( page['ID'] );
+						$hidden_delete.val( deleted_list.join() );
+					}
+					$list_item.remove();
+				});
+			},
+			reorder: function( repeater ){
+				/*
+				* REORDER LIST 
+				*/
+				var rank = 0;
+				repeater.$list.find( '[data-behaviour~=space-rank]' ).each( function(){
+					var $hiddenRank = jQuery( this );
+					$hiddenRank.val( rank );
+					rank++;
+				});
+			},
+		} );
+		
+	});
+};
+
+
+
+
+
+
+
 jQuery( document ).on( 'ready', function(){
 	
 	jQuery('[data-behaviour~=space-autoresize]').space_autoresize();
@@ -193,5 +462,7 @@ jQuery( document ).on( 'ready', function(){
 	jQuery('[data-behaviour~=space-choices]').space_choices();
 	
 	jQuery('[data-behaviour~=space-autocomplete]').space_autocomplete();
+
+	jQuery('[data-behaviour~=space-pages]').space_pages();
 	
 } );

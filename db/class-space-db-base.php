@@ -172,7 +172,6 @@ class SPACE_DB_BASE{
 		}
 		$query .= " ORDER BY $order_by $order";
 		$query .= ";";
-		
 		return $this->get_results( $this->prepare( $query, $col_values ) );
 	}
 	
