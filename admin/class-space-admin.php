@@ -101,9 +101,17 @@
 			);
 			
 			wp_enqueue_script(	
+				'space-repeater', 
+				plugins_url( $plugin_assets_folder.'js/repeater.js' ), 
+				array( 'jquery'), 
+				'1.0.0', 
+				true 
+			);
+			
+			wp_enqueue_script(	
 				'space-checkbox', 
 				plugins_url( $plugin_assets_folder.'js/choice-form.js' ), 
-				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'space-autosize'), 
+				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'space-autosize', 'space-repeater'), 
 				'1.1.2', 
 				true 
 			);

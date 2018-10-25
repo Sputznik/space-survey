@@ -67,102 +67,6 @@ jQuery.fn.space_autocomplete = function(){
 	});
 };
 
-var SPACE_REPEATER = function( options ){
-	
-	var self = {
-		count	: 0,
-		$list	: jQuery( document.createElement( 'ul' ) ),			// PARENT LIST THAT HOLDS THE CHOICES
-		$btn 	: jQuery( document.createElement( 'button' ) ),		// BUTTON THAT ADDS MORE BLANK CHOICES TO THE LIST
-		options : jQuery.extend( {
-			$el		: undefined,
-			btn_text: '+ Add Item',
-			addItem	: function( item_data ){} 
-		}, options )
-	};
-	
-	self.init = function(){
-		
-		// MAIN LIST THAT HOLDS THE LIST OF CHOICES
-		self.$list.attr('id', 'space-choices-list');
-		self.$list.appendTo( self.options.$el );
-		self.$list.sortable({
-			stop: function( event, ui ){
-				self.reorder();
-			}
-		});
-		
-		self.$btn.addClass('button');
-		self.$btn.html( self.options.btn_text );
-		self.$btn.appendTo( self.options.$el );
-		self.$btn.click( function( ev ){
-			ev.preventDefault();
-			self.addItem();
-		});
-		
-		self.options.init( self );
-		
-	};
-	
-	self.createField = function( field ){
-		
-		var $form_field = jQuery( document.createElement( field['element'] ) );
-		
-		for( attr in field['attr'] ){
-			$form_field.attr( attr, field['attr'][attr] );
-		}
-		
-		if( field['append'] ){
-			$form_field.appendTo( field['append'] );
-		}
-		
-		if( field['html'] ){
-			$form_field.html( field['html'] );
-		}
-		
-		return $form_field;
-		
-	};
-	
-	/*
-	* ADD LIST ITEM TO THE UNLISTED LIST 
-	*/
-	self.addItem = function( $data ){
-		
-		// CREATE PARENT LIST ITEM: LI
-		var $list_item = self.createField({
-			element	: 'li',
-			attr	:{
-				'class'	: 'space-choice-item'
-			},
-			append	: self.$list
-		});
-		
-		// CLOSE BUTTON - TO REMOVE THE LIST ITEM
-		var $button = self.createField({
-			element	: 'button',
-			attr	:{
-				'class'	: 'space-close-btn'
-			},
-			html	: '&times;',
-			append	: $list_item
-		});
-		
-		self.options.addItem( self, $list_item, $button, $data );
-		
-		// INCREMENT COUNT AFTER AN ITEM HAS BEEN ADDED TO MAINTAIN THE ARRAY OF INPUT NAMES
-		self.count++;
-		
-	};
-	
-	self.reorder = function(){
-		self.options.reorder( self );
-	};
-	
-	self.init();
-	
-	return self;
-};
-
 jQuery.fn.space_choices = function(){
 
 	return this.each(function() {
@@ -177,6 +81,8 @@ jQuery.fn.space_choices = function(){
 		// JSON PARSE FROM STRING
 		choices = typeof choices != 'object' ? JSON.parse( choices ) : [];
 		
+		var $hidden_delete; // INITIALIZED LATER WITHIN THE INIT FUNCTION
+		
 		var repeater = SPACE_REPEATER( {
 			$el		: $el,
 			btn_text: '+ Add Choice',
@@ -187,7 +93,7 @@ jQuery.fn.space_choices = function(){
 				*/
 				
 				// HIDDEN FIELD THAT KEEPS A RECORD OF CHOICE IDs WHICH NEEDS TO BE DELETED
-				var $hidden_delete	= repeater.createField({
+				$hidden_delete	= repeater.createField({
 					element: 'input',
 					attr: {
 						type: 'hidden',
@@ -211,7 +117,8 @@ jQuery.fn.space_choices = function(){
 				* TEXTAREA: CHOICE TITLE
 				* HIDDEN: CHOICE ID
 				* HIDDEN: CHOICE COUNT
-				*/ 
+				*/
+				
 				if( choice == undefined || choice['ID'] == undefined ){
 					choice = { ID : 0 };
 				}
