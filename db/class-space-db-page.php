@@ -32,7 +32,7 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 			
 		$pageData = array(
 			'title' 		=> sanitize_text_field( $data['title'] ),
-			'description' 	=> isset( $data['desc'] ) ? sanitize_text_field( $data['desc'] ):'',
+			'description' 	=> isset( $data['description'] ) ? sanitize_text_field( $data['description'] ):'',
 			'rank' 			=> isset( $data['rank'] ) ? absint( $data['rank'] ) : 0,
 			'survey_id'		=> absint( $data['survey_id'] ),
 		);

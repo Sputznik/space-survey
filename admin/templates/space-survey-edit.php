@@ -41,7 +41,6 @@
 		*/
 		if( isset( $_POST['publish'] ) ) {
 
-			
 			/*
 			* UPDATE SURVEY MODEL
 			* CHECK USING $_GET['ID'] - IF DATA EXISTS THEN IT NEEDS TO BE UPDATED OR IT NEEDS TO BE INSERTED
