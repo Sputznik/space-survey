@@ -4,11 +4,19 @@
 */
 
 class SPACE_DB_PAGE extends SPACE_DB_BASE{
-		
+	
+	var $relation_db;
+	
 	function __construct(){ 
 		$this->setTableSlug( 'page' );
 		parent::__construct();
+		
+		require_once('class-space-db-page-question-relation.php');
+		$this->setRelationDB( SPACE_DB_PAGE_QUESTION_RELATION::getInstance() );
 	}
+	
+	function setRelationDB( $relation_db ){ $this->relation_db = $relation_db; }
+	function getRelationDB(){ return $this->relation_db; }
 		
 	function create(){
 		
@@ -38,4 +46,22 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 		);
 		return $pageData;
 	}
+	
+	function listQuestions( $page_id ){
+		
+		// SELECT * FROM `wp_space_page_question_relation` r INNER JOIN `wp_space_question` q ON r.question_id = q.ID WHERE r.page_id = 1
+		
+		return $this->getRelationDB()->filter( 
+			array(
+				'page_id' => '%d'
+			),
+			array( (int)$page_id ),
+			'rank',
+			'ASC'
+		);
+		
+	}
+	
 }
+
+SPACE_DB_PAGE::getInstance();

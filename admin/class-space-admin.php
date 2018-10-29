@@ -109,13 +109,16 @@
 			);
 			
 			wp_enqueue_script(	
-				'space-checkbox', 
+				'space-script', 
 				plugins_url( $plugin_assets_folder.'js/choice-form.js' ), 
 				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'space-autosize', 'space-repeater'), 
-				'1.1.3', 
+				'1.1.4', 
 				true 
 			);
 			
+			wp_localize_script( 'space-script', 'space_settings', array(
+				'ajax_url'	=> admin_url('admin-ajax.php')
+			) );
 		}
 		
 		/* REGISTER CUSTOM POST TYPE */

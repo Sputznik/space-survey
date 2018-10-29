@@ -76,11 +76,11 @@
 				_e( "<script>location.href='?page=space-survey-edit&ID=$survey_id';</script>" );
 			}
 			
-			/*
+			
 			echo "<pre>";
-			print_r( $_POST['choices'] );
+			print_r( $_POST );
 			echo "</pre>";
-			*/
+			wp_die();
 		}
 		
 		/*

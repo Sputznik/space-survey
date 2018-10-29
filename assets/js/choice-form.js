@@ -187,20 +187,16 @@ jQuery.fn.space_choices = function(){
 };
 
 jQuery.fn.space_questions = function( parent_name ){
+	
 	return this.each(function() {
-		
-
 		/*
 		* VARIABLES ASSIGNMENT
 		*/
 		var $el 			= jQuery(this),
-			questions 		= $el.attr( 'data-questions' ),	// QUESTIONS FROM THE DB
-			deleted_list 	= []; // LIST OF ID THAT HAVE BEEN REMOVED WHEN THE CLOSE BUTTON IS CLICKED 
-		
+			questions 		= $el.attr( 'data-questions' );	// QUESTIONS FROM THE DB
+			
 		// JSON PARSE FROM STRING
 		questions = typeof questions != 'object' ? JSON.parse( questions ) : [];
-		
-		var $hidden_delete; // INITIALIZED LATER WITHIN THE INIT FUNCTION
 		
 		var repeater = SPACE_REPEATER( {
 			$el				: $el,
@@ -212,16 +208,6 @@ jQuery.fn.space_questions = function( parent_name ){
 				/*
 				* INITIALIZE: CREATES THE UNLISTED LIST WHICH WILL TAKE CARE OF THE QUESTION, HIDDEN FIELD AND THE ADD BUTTON
 				*/
-				
-				// HIDDEN FIELD THAT KEEPS A RECORD OF QUESTION IDs WHICH NEEDS TO BE DELETED
-				$hidden_delete	= repeater.createField({
-					element: 'input',
-					attr: {
-						type: 'hidden',
-						name: 'questions_delete'
-					},	
-					append: repeater.options.$el
-				});
 				
 				// ITERATE THROUGH EACH QUESTIONS IN THE DB
 				jQuery.each( questions, function( i, question ){
@@ -235,7 +221,7 @@ jQuery.fn.space_questions = function( parent_name ){
 				
 				/*
 				* ADD LIST ITEM TO THE UNLISTED LIST 
-				* TEXTAREA: QUESTION TITLE
+				* AUTOCOMPLETE: QUESTION TITLE
 				* HIDDEN: QUESTION ID
 				* HIDDEN: QUESTION COUNT
 				*/
@@ -244,34 +230,24 @@ jQuery.fn.space_questions = function( parent_name ){
 					question = { ID : 0 };
 				}
 				
-				// CREATE TEXTAREA THAT WILL HOLD THE QUESTION TEXT
+				// CREATE AUTOCOMPLETE THAT WILL HOLD THE QUESTION TEXT
 				var $question_div = repeater.createField({
 					element	: 'div',
 					attr	: {
 						'data-behaviour': 'space-autocomplete',	
 						'data-field'	: JSON.stringify( {
-							slug				: parent_name + '[question]['+ repeater.count +']',
+							slug				: parent_name + '[questions]['+ repeater.count +'][id]',
 							type				: 'autocomplete',
 							placeholder			: "Type title of the question here",
-							url					: "",
-							value				: "",
-							autocomplete_value	: ""
+							url					: space_settings['ajax_url'] + '?action=space_questions',
+							value				: question['ID'] ? question['ID'] : "",
+							autocomplete_value	: question['title'] ? question['title'] : "",
 						} ),
 					},
 					append	: $list_item
 				});
 				$question_div.space_autocomplete();
 				
-				// CREATE HIDDEN FIELD THAT WILL HOLD THE QUESTION ID
-				var $hiddenID = repeater.createField({
-					element	: 'input', 
-					attr	: {
-						'type'	: 'hidden',
-						'value'	: question['ID'] ? question['ID'] : 0,
-						'name'	: parent_name+'[questions][' + repeater.count + '][id]'
-					},
-					append	: $list_item
-				});
 				
 				// CREATE HIDDEN FIELD THAT WILL HOLD THE QUESTION RANK
 				var $hiddenRank = repeater.createField({
@@ -287,13 +263,9 @@ jQuery.fn.space_questions = function( parent_name ){
 				
 				$closeButton.click( function( ev ){
 					ev.preventDefault();
-					
-					// IF QUESTION ID IS NOT EMPTY THAT MEANS IT IS ALREADY IN THE DB, SO THE ID HAS TO BE PUSHED INTO THE HIDDEN DELETED FIELD
-					if( question['ID'] ){
-						deleted_list.push( question['ID'] );
-						$hidden_delete.val( deleted_list.join() );
+					if( confirm( 'Are you sure you want to remove this?' ) ){
+						$list_item.remove();
 					}
-					$list_item.remove();
 				});
 			},
 			reorder: function( repeater ){
@@ -308,8 +280,6 @@ jQuery.fn.space_questions = function( parent_name ){
 				});
 			},
 		} );
-
-
 	});
 };
 
@@ -483,6 +453,7 @@ jQuery.fn.space_pages = function(){
 
 
 jQuery( document ).on( 'ready', function(){
+	
 	
 	jQuery('[data-behaviour~=space-autoresize]').space_autoresize();
 	

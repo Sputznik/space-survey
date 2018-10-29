@@ -11,6 +11,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		$this->setTableSlug( 'survey' );
 		parent::__construct();
 
+		require_once('class-space-db-page.php');
 		$this->setPageDB( SPACE_DB_PAGE::getInstance() );
 	}
 	
@@ -85,3 +86,4 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	}
 }
 
+SPACE_DB_SURVEY::getInstance();

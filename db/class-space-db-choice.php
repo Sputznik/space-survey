@@ -37,3 +37,5 @@ class SPACE_DB_CHOICE extends SPACE_DB_BASE{
 		return $choiceData;
 	}
 }
+
+SPACE_DB_CHOICE::getInstance();

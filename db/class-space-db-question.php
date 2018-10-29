@@ -18,6 +18,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		
 		add_action( 'wp_ajax_space_questions', array( $this, 'ajaxQuestions' ) );
 		
+		require_once( 'class-space-db-choice.php' );
 		$this->setChoiceDB( SPACE_DB_CHOICE::getInstance() );
 	}
 	
@@ -132,3 +133,4 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 	}
 }
 
+SPACE_DB_QUESTION::getInstance();
