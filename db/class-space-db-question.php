@@ -104,18 +104,30 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		return $questionData;
 	}
 	
-	function ajaxQuestions(){
-		$term = '%'.$this->esc_like( $_GET[ 'term' ] ).'%';
+	/*
+	* USED IN class-space-question-list-table.php AND WITHIN THE SAME CLASS
+	* INPUT: CURRENT PAGE, PER PAGE ITEMS, SEARCH TERM
+	* OUTPUT: GETS A LIST OF QUESTION
+	*/
+	function listQuestions( $page, $per_page, $search_term = '' ){
 		
-		$data = $this->results( 
-			1, 		// CURRENT PAGE NUMBER
-			10, 	// POSTS PER PAGE
-			array(	// SEARCH ARRAY
+		$search_term = '%'.$this->esc_like( $search_term ).'%';
+		
+		return $this->results( 
+			$page, 		// CURRENT PAGE NUMBER
+			$per_page, 	// POSTS PER PAGE
+			array(		// SEARCH ARRAY
 				'col_formats' 	=> array( 'title' => '%s' ), 
-				'col_values'	=> array( $term ),
+				'col_values'	=> array( $search_term ),
 				'operator'		=> 'LIKE'
 			) 
 		);
+		
+	}
+	
+	function ajaxQuestions(){
+		
+		$data = $this->listQuestions( 1, 10, $_GET[ 'term' ] );
 		
 		$final_data = array();
 		foreach( $data['results'] as $result ){

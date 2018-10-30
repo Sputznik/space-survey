@@ -78,8 +78,19 @@
 			$per_page = 10;
 			$page = isset( $_GET['paged'] ) ? $_GET['paged'] : 1;
 			
+			//echo "<pre>";
+			//print_r( $_POST );
+			//echo "</pre>";
+			
 			$question_db = SPACE_DB_QUESTION::getInstance();
-			$data = $question_db->results( $page, $per_page );
+			
+			if( isset( $_POST['s'] ) ){
+				$data = $question_db->listQuestions( $page, $per_page, $_POST['s'] );
+			}
+			else{
+				$data = $question_db->listQuestions( $page, $per_page );
+			}
+			
 			$this->items = $data['results'];
 			
 			$this->set_pagination_args( array(
