@@ -47,9 +47,30 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 		return $pageData;
 	}
 	
+	function listForSurvey( $survey_id ){
+		
+
+		$pages = $this->filter( 
+			array(
+				'survey_id'	=> '%d'
+			),
+			array( (int) $survey_id ),
+			'rank'
+		);
+		
+		foreach( $pages as $page ){
+			
+			$page->questions = $this->getRelationDB()->listForPage( $page->ID );
+			
+		}
+		
+		return $pages;
+	}
+	
+	/*
 	function listQuestions( $page_id ){
 		
-		// SELECT * FROM `wp_space_page_question_relation` r INNER JOIN `wp_space_question` q ON r.question_id = q.ID WHERE r.page_id = 1
+		
 		
 		return $this->getRelationDB()->filter( 
 			array(
@@ -59,6 +80,54 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 			'rank',
 			'ASC'
 		);
+		
+	}
+	*/
+	
+	function updateForSurvey( $page ){
+		
+		// PREPARE THE PAGE DATA FOR UPDATION OR INSERTION
+		$data = $this->sanitize( $page );
+		
+		// CHECK IF THE DATA NEEDS TO BE UPDATED OR INSERTED
+		if( $page['id'] ){
+			$this->update( $page['id'], $data );
+		}
+		else{
+			$page['id'] = $this->insert( $data );
+		}
+		
+		/*
+		*	UPDATE THE RELATIONS TABLE FOR CORRESPONDING QUESTIONS ONLY IF THE page_id IS VALID
+		*/
+		if( $page['id'] ){
+			
+			// DELETE ALL ITEMS
+			$this->getRelationDB()->deleteForPage( $page['id'] );
+			
+			// INSERT ITEMS
+			if( isset( $page['questions'] ) && is_array( $page['questions'] ) ){
+				foreach( $page['questions'] as $question ){
+					
+					if( isset( $question['id'] ) && $question['id'] && isset( $question['rank'] ) ){
+						
+						$relationData = array(
+							'page_id'		=> $page['id'],
+							'question_id'	=> $question['id'],
+							'rank'			=> $question['rank']
+						);
+						
+						$relationData = $this->getRelationDB()->sanitize( $relationData );
+						
+						$this->getRelationDB()->insert( $relationData );
+					}
+				}	
+			}
+			
+			
+		}
+		
+		
 		
 	}
 	

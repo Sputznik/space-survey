@@ -77,10 +77,10 @@
 			}
 			
 			
-			echo "<pre>";
-			print_r( $_POST );
-			echo "</pre>";
-			wp_die();
+			//echo "<pre>";
+			//print_r( $_POST );
+			//echo "</pre>";
+			//wp_die();
 		}
 		
 		/*
@@ -111,12 +111,10 @@
 		
 		$survey_db = SPACE_DB_SURVEY::getInstance();
 		
-		// GET LIST OF CHOICES FROM THE SURVEY
+		// GET LIST OF PAGES FOR THE SURVEY
+		$pages = array();
 		if( isset( $_GET['ID'] ) ){
 			$pages = $survey_db->listPages( $_GET['ID'] );	
-		}
-		else {
-			$pages = array();
 		}
 		
 		$page_form = new SPACE_PAGE_FORM( $pages );
@@ -129,7 +127,7 @@
 	/* CONTENT IN THE SETTINGS SECTION */
 	add_action( $current_page.'-settings-div', function( $form ){
 		
-		
+		_e("<p class='help'>Additional settings can be added here</p>");
 		
 	});
 	

@@ -14,6 +14,7 @@ var SPACE_REPEATER = function( options ){
 		options : jQuery.extend( {
 			$el				: null,
 			btn_text		: '+ Add Item',
+			close_btn_text	: '&times;',
 			list_id			: 'space-choices-list',
 			list_item_id	: 'space-choice-item',
 			init			: function(){},
@@ -98,7 +99,7 @@ var SPACE_REPEATER = function( options ){
 			attr	:{
 				'class'	: 'space-close-btn'
 			},
-			html	: '&times;',
+			html	: self.options.close_btn_text,
 			append	: $list_item
 		});
 		

@@ -15,12 +15,16 @@
 
 
 
-.space-choice-item, .space-question-item{
+.space-choice-item, .space-question-item, .space-page-item{
 	border: #ccc solid 1px;
 	background: #fff;
 	padding: 10px;
 	margin-bottom: 10px;
 	position: relative;
+}
+
+.space-page-item{
+	padding-bottom: 0;
 }
 
 .space-question-item input[type=text].ui-autocomplete-input{
@@ -39,17 +43,41 @@ textarea[data-behaviour~=space-autoresize]{
 	box-shadow: none;
 }
 
-.space-close-btn{
-	top			: 5px;
+.space-close-btn, .space-collapse{
 	right		: 10px;
 	position	: absolute;
 	cursor		: pointer;
-	font-size	: 30px;
 	padding		: 0;
 	line-height	: 1;
 	border		: none;
 	background	: none;
 	outline		: none;
+}
+
+.space-page-item .space-close-btn{
+	top: auto;
+	bottom: 10px;
+	color: red;
+	font-size: inherit;
+	text-decoration: underline;
+}
+
+.space-question-item .space-close-btn, .space-choice-item .space-close-btn{
+	top: 5px;
+	bottom: auto;
+	font-size	: 30px;
+	color: inherit;
+	text-decoration: none;
+}
+
+.space-collapse::before{
+	content: "\f140";
+	font: 400 20px/1 dashicons;
+	speak: none;
+	display: block;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	
 }
 
 .form_page_desc{
@@ -59,14 +87,17 @@ textarea[data-behaviour~=space-autoresize]{
 }
 
 
+
 .list-header{
 	border-bottom: #ddd solid 1px;
-	margin: -10px -10px 10px -10px;
+	margin: -10px -10px 0px -10px;
 	padding: 10px;
 	padding-right: 40px;
 }
 
 .list-content{
+	margin-top: 10px;
+	margin-bottom: 15px;
 	padding-left: 10px;
 }
 	

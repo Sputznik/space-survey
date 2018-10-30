@@ -4,11 +4,19 @@
 */
 
 class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
-		
+	
+	var $question_db;
+	
 	function __construct(){ 
 		$this->setTableSlug( 'page_question_relation' );
 		parent::__construct();
+		
+		require_once('class-space-db-question.php');
+		$this->setQuestionDB( SPACE_DB_QUESTION::getInstance() );
 	}
+	
+	function getQuestionDB(){ return $this->question_db; }
+	function setQuestionDB( $question_db ){ $this->question_db = $question_db; }
 		
 	function create(){
 		
@@ -34,6 +42,25 @@ class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
 			'question_id'		=> absint( $data['question_id'] ),
 		);
 		return $relationData;
+	}
+	
+	function listForPage( $page_id ){
+		
+		$relationTable = $this->getTable();
+		$questionTable = $this->getQuestionDB()->getTable();
+		
+		$query = "SELECT * FROM $relationTable r INNER JOIN $questionTable q ON r.question_id = q.ID WHERE r.page_id = %d ORDER BY r.rank ASC";
+		
+		$query = $this->prepare( $query, array( $page_id ) );
+		
+		return $this->get_results( $query );
+		
+	}
+	
+	function deleteForPage( $page_id ){
+		$table = $this->getTable();
+		$query = $this->prepare( "DELETE FROM $table WHERE page_id = %d;", array( $page_id ) );
+		$this->query( $query );
 	}
 	
 }

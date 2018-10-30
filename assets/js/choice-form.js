@@ -297,11 +297,15 @@ jQuery.fn.space_pages = function(){
 		// JSON PARSE FROM STRING
 		pages = typeof pages != 'object' ? JSON.parse( pages ) : [];
 		
+		
 		var $hidden_delete; // INITIALIZED LATER WITHIN THE INIT FUNCTION
 		
 		var repeater = SPACE_REPEATER( {
-			$el		: $el,
-			btn_text: '+ Add page',
+			$el				: $el,
+			btn_text		: '+ Add page',
+			list_id			: 'space-pages-list',
+			list_item_id	: 'space-page-item',
+			close_btn_text	: 'Delete Page',
 			init	: function( repeater ){
 				
 				/*
@@ -362,6 +366,8 @@ jQuery.fn.space_pages = function(){
 				$textarea.space_autoresize();
 				if( page['title'] ){ $textarea.val( page['title'] ); }
 				
+				
+				
 				// CREATE NEAT CONTENT AREA FOR THE PAGE ITEM
 				var $content = repeater.createField({
 					element	: 'div',
@@ -370,6 +376,23 @@ jQuery.fn.space_pages = function(){
 					},
 					append	: $list_item
 				});
+				
+				// APPEND THE CLOSE BUTTON TO THE LOST CONTENT
+				$closeButton.appendTo( $content );
+				
+				// BUTTON THAT COLLAPSES THE ENTIRE LIST
+				var $collapseBtn = repeater.createField({
+					element	: 'button',
+					attr	: {
+						class : 'space-collapse'
+					},
+					append 	: $header
+				});
+				$collapseBtn.click( function( ev ){
+					ev.preventDefault();
+					$content.slideToggle();
+				});
+				$collapseBtn.click();
 				
 				// CREATE TEXTAREA FOR HOLDING PAGE DESCRIPTION
 				var $textarea_desc = repeater.createField({
@@ -383,12 +406,12 @@ jQuery.fn.space_pages = function(){
 					append	: $content
 				});
 				if( page['description'] ){ $textarea_desc.val( page['description'] ); }
-	
+				
 				//ADD BUTTON FOR QUESTION REPEATER
 				var $question_repeater = repeater.createField({
 					element : 'div',
 					attr 	: {
-						'data-questions' : '[]',
+						'data-questions' : page['questions'] ? JSON.stringify( page['questions'] ) : "[]",
 						'data-behaviour' : 'space-questions',
 						'class' : 'space-box'
 					},
@@ -421,13 +444,14 @@ jQuery.fn.space_pages = function(){
 				
 				$closeButton.click( function( ev ){
 					ev.preventDefault();
-					
-					// IF PAGE ID IS NOT EMPTY THAT MEANS IT IS ALREADY IN THE DB, SO THE ID HAS TO BE PUSHED INTO THE HIDDEN DELETED FIELD
-					if( page['ID'] ){
-						deleted_list.push( page['ID'] );
-						$hidden_delete.val( deleted_list.join() );
+					if( confirm( 'Are you sure you want to remove this?' ) ){
+						// IF PAGE ID IS NOT EMPTY THAT MEANS IT IS ALREADY IN THE DB, SO THE ID HAS TO BE PUSHED INTO THE HIDDEN DELETED FIELD
+						if( page['ID'] ){
+							deleted_list.push( page['ID'] );
+							$hidden_delete.val( deleted_list.join() );
+						}
+						$list_item.remove();
 					}
-					$list_item.remove();
 				});
 			},
 			reorder: function( repeater ){

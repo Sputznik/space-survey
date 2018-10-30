@@ -36,14 +36,9 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	
 	//RETURN THE LIST OF ASSOCIATED PAGES
 	function listPages( $survey_id ){
-		$survey_id = (int) $survey_id;
-
-		return $this->getPageDB()->filter( 
-			array(
-				'survey_id'	=> '%d'
-			),
-			array( $survey_id )
-		);
+		
+		return $this->getPageDB()->listForSurvey( $survey_id );
+		
 	}
 
 	// DELETE MULTIPLE PAGES BY ARRAY OF PAGE IDs
@@ -56,11 +51,14 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		foreach( $pages as $page ){
 			// CHECK IF DATA MEETS THE MINIMUM REQUIREMENT
 			if( isset( $page['id'] ) && isset( $page['title'] ) && $page['title'] ){ 
-				$this->updatePage( $survey_id, $page );
+			
+				$page['survey_id'] = $survey_id;	
+				$this->getPageDB()->updateForSurvey( $page );
+				
 			}
 		}
 	}
-	
+	/*
 	// $page SHOULD HAVE id AND title AS ATTRIBUTES
 	function updatePage( $survey_id, $page ){
 		
@@ -76,7 +74,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			$this->getPageDB()->insert( $page_data );
 		}
 	}
-
+	*/
 	function sanitize( $data ){
 		$surveyData = array(
 			'title' 		=> sanitize_text_field( $data['title'] ),
