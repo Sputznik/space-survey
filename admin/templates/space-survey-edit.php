@@ -49,9 +49,11 @@
 			$survey_data = $survey_db->sanitize( $_POST );
 			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
 				$survey_id = $_GET['ID'];
+				$survey_data['modified_on'] = date("Y-m-d H:i:s"); 
 				$survey_db->update( $survey_id, $survey_data );	
 			}
 			else{
+				$survey_data['created_on'] = date("Y-m-d H:i:s");
 				$survey_id = $survey_db->insert( $survey_data );	
 			}
 			// END OF UPDATING SURVEY MODEL
