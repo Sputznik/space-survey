@@ -46,7 +46,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			author_id BIGINT(20),
 			parent BIGINT(20),
 			created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
-			modified_on DATETIME,
+			modified_on DATETIME ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY(ID)
 		) $charset_collate;";
 		
