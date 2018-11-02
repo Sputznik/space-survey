@@ -8,6 +8,9 @@ class SPACE_DB_CHOICE extends SPACE_DB_BASE{
 	function __construct(){ 
 		$this->setTableSlug( 'choice' );
 		parent::__construct();
+
+		/*REMOVE FROM PRODUCTION*/
+		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
 		
 	function create(){
@@ -35,6 +38,16 @@ class SPACE_DB_CHOICE extends SPACE_DB_BASE{
 			'question_id'	=> absint( $data['question_id'] ),
 		);
 		return $choiceData;
+	}
+
+	/*AJAX CALLBACK TO DROP TABLE*/
+	function drop_table(){
+		$table = $this->getTable();
+		$query = "DROP TABLE IF EXISTS $table";
+		
+		$this->query( $query );
+		
+		echo 'Survey Choice Table dropped.<br/>';	
 	}
 }
 

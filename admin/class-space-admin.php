@@ -76,7 +76,10 @@
 			
 			
 			/* ENQUEUE SCRIPTS AND STYLES ON ADMIN DASHBOARD */
-			add_action( 'admin_enqueue_scripts', array( $this, 'assets') );	
+			add_action( 'admin_enqueue_scripts', array( $this, 'assets') );
+
+			/*AJAX ACTION TO DROP TABLES. REMOVE FROM PRODUCTION */
+			add_action('wp_ajax_space_survey_drop', array($this, 'drop_db_tables'));	
 			
 		}
 		
@@ -163,7 +166,13 @@
 			include( 'templates/'.$page.'.php' );
 			_e( '</div>' );
 		}
-		
+
+		/*AJAX CALLBACK TO DROP DB TABLES*/
+		function drop_db_tables(){
+			do_action('space_survey_drop');
+			wp_die();
+		}
+
 		
 	}
 	

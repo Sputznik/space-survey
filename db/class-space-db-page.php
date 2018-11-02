@@ -13,6 +13,10 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 		
 		require_once('class-space-db-page-question-relation.php');
 		$this->setRelationDB( SPACE_DB_PAGE_QUESTION_RELATION::getInstance() );
+
+
+		/*REMOVE FROM PRODUCTION*/
+		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
 	
 	function setRelationDB( $relation_db ){ $this->relation_db = $relation_db; }
@@ -122,13 +126,19 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 						$this->getRelationDB()->insert( $relationData );
 					}
 				}	
-			}
-			
-			
-		}
+			}	
+		}	
+	}
+
+
+	/*AJAX CALLBACK TO DROP TABLE*/
+	function drop_table(){
+		$table = $this->getTable();
+		$query = "DROP TABLE IF EXISTS $table";
 		
+		$this->query( $query );
 		
-		
+		echo 'Survey Page Table dropped.<br/>';	
 	}
 	
 }

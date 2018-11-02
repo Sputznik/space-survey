@@ -13,6 +13,9 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 		require_once('class-space-db-page.php');
 		$this->setPageDB( SPACE_DB_PAGE::getInstance() );
+
+		/*REMOVE FROM PRODUCTION*/
+		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
 	
 	//GETTER AND SETTER FUNCTIONS
@@ -85,6 +88,16 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			'author_id'		=> get_current_user_id(),
 		);
 		return $surveyData;
+	}
+
+	/*AJAX CALLBACK TO DROP TABLE*/
+	function drop_table(){
+		$table = $this->getTable();
+		$query = "DROP TABLE IF EXISTS $table";
+		
+		$this->query( $query );
+		
+		echo 'Survey Table dropped.<br/>';	
 	}
 }
 
