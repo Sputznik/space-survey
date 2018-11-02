@@ -67,11 +67,10 @@
 			$question_data = $question_db->sanitize( $_POST );
 			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
 				$question_id = $_GET['ID'];
-				$question_data['modified_on'] = date("Y-m-d H:i:s"); 
+				$question_data['modified_on'] = current_time('mysql', false); 
 				$question_db->update( $question_id, $question_data );	
 			}
 			else{
-				$question_data['created_on'] = date("Y-m-d H:i:s");
 				$question_id = $question_db->insert( $question_data );	
 			}
 			// END OF UPDATING QUESTION MODEL

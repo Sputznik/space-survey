@@ -29,7 +29,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			title VARCHAR(255),
 			description VARCHAR(255),
 			author_id BIGINT(20),
-			created_on DATETIME,
+			created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
 			modified_on DATETIME,
 			PRIMARY KEY(ID)
 		) $charset_collate;";
