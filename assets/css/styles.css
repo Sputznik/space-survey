@@ -15,6 +15,11 @@
 	list-style: none;
 }
 
+.space-title.page-desc{
+	margin-bottom: 30px;
+	
+}
+
 .space-list-inline li{
 	display: inline;
 	margin-right: 10px;
