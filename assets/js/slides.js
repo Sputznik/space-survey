@@ -32,7 +32,7 @@ jQuery.fn.space_slides = function(){
 		function init(){
 			$el.find('.space-slide').each( function( i, slide ){
 				
-				var $slide = $( slide );
+				var $slide = jQuery( slide );
 				$slide.attr( 'data-slide', i );
 				
 			});
