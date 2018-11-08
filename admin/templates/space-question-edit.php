@@ -66,8 +66,7 @@
 			$question_id = 0;
 			$question_data = $question_db->sanitize( $_POST );
 			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
-				$question_id = $_GET['ID'];
-				//$question_data['modified_on'] = current_time('mysql', false); 
+				$question_id = $_GET['ID']; 
 				$question_db->update( $question_id, $question_data );	
 			}
 			else{
