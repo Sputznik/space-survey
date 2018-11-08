@@ -1,0 +1,1 @@
+<input type='text' name='<?php _e( $question->ID );?>' value='' />	
