@@ -1,0 +1,20 @@
+.space-slide{
+	display: none;
+}
+.space-slide.active{
+	display: block;
+}
+
+.space-question{
+	margin-bottom: 30px;
+}
+
+.space-choices{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.space-choice input{
+	margin-right: 10px !important;
+}

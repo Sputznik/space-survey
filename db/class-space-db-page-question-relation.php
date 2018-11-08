@@ -54,7 +54,14 @@ class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
 		
 		$query = $this->prepare( $query, array( $page_id ) );
 		
-		return $this->get_results( $query );
+		$questions = $this->get_results( $query );
+		
+		// ADD CHOICES TO THE QUESTION DATA
+		foreach( $questions as $question ){
+			$question->choices = $this->getQuestionDB()->listChoices( $question->ID );
+		}
+		
+		return $questions;
 		
 	}
 	

@@ -10,8 +10,9 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 	
 	function __construct(){ 
 		$this->setTypes( array(
-			'single'	=> 'Radio Button',
-			'multiple'	=> 'Checkboxes'
+			'radio'		=> 'Radio Button',
+			'checkbox'	=> 'Checkboxes',
+			'dropdown'	=> 'Dropdown'
 		) );
 		$this->setTableSlug( 'question' );
 		parent::__construct();
