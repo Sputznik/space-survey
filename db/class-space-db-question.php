@@ -21,8 +21,6 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		require_once( 'class-space-db-choice.php' );
 		$this->setChoiceDB( SPACE_DB_CHOICE::getInstance() );
 
-		/*REMOVE FROM PRODUCTION*/
-		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
 	
 	/* GETTER AND SETTER FUNCTIONS */
@@ -46,7 +44,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			author_id BIGINT(20),
 			parent BIGINT(20),
 			created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
-			modified_on DATETIME,
+			modified_on DATETIME NOT NULL,
 			PRIMARY KEY(ID)
 		) $charset_collate;";
 		
@@ -105,6 +103,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			'type' 			=> $data['type'],
 			'author_id'		=> get_current_user_id(),
 			'parent' 		=> absint( $data['parent'] ),
+			'modified_on'	=> current_time('mysql', false)
 		);
 		return $questionData;
 	}

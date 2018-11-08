@@ -10,8 +10,15 @@ class SPACE_DB_BASE{
 	private static $instance = null;
 		
 	function __construct(){
+		
+		// SET TABLE SLUG
 		$this->setTable( $this->getTablePrefix() . $this->getTableSlug() );
+		
+		// CREATE TABLE
 		$this->create();
+		
+		// REMOVE TABLE FROM PRODUCTION
+		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
 		
 	// SINGLETON DESIGN PATTERN - NEEDS TO BE IMPLEMENTED IN EACH CHILD
@@ -197,6 +204,9 @@ class SPACE_DB_BASE{
 	
 	// TO BE IMPLEMENTED BY CHILD CLASSES - RETURNS DB DATA
 	function sanitize( $data ){ return $data; }
+	
+	// TO BE IMPLEMENTED BY CHILD CLASSES - AJAX CALLBACK TO DROP TABLE
+	function drop_table(){}
 }
 	
 	

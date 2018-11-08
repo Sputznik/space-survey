@@ -14,14 +14,13 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		require_once('class-space-db-page.php');
 		$this->setPageDB( SPACE_DB_PAGE::getInstance() );
 
-		/*REMOVE FROM PRODUCTION*/
-		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
 	
 	//GETTER AND SETTER FUNCTIONS
 	function getPageDB(){ return $this->page_db; }
 	function setPageDB( $page_db ){ $this->page_db = $page_db; }
 	
+	/* not needed as custom post type is being used
 	function create(){
 			
 		$table = $this->getTable();
@@ -33,12 +32,30 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			description VARCHAR(255),
 			author_id BIGINT(20),
 			created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
-			modified_on DATETIME,
+			modified_on DATETIME NOT NULL,
 			PRIMARY KEY(ID)
 		) $charset_collate;";
 		
 		return $this->query( $sql );
 	}
+	function sanitize( $data ){
+		$surveyData = array(
+			'title' 		=> sanitize_text_field( $data['title'] ),
+			'description'	=> sanitize_text_field( $data['desc'] ),
+			'author_id'		=> get_current_user_id(),
+			'modified_on'	=> current_time( 'mysql', false )
+		);
+		return $surveyData;
+	}
+	function drop_table(){
+		$table = $this->getTable();
+		$query = "DROP TABLE IF EXISTS $table";
+		
+		$this->query( $query );
+		
+		echo 'Survey Table dropped.<br/>';	
+	}
+	*/
 	
 	//RETURN THE LIST OF ASSOCIATED PAGES
 	function listPages( $survey_id ){
@@ -64,41 +81,8 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			}
 		}
 	}
-	/*
-	// $page SHOULD HAVE id AND title AS ATTRIBUTES
-	function updatePage( $survey_id, $page ){
-		
-		// PREPARE THE PAGE DATA FOR UPDATION OR INSERTION
-		$page['survey_id'] = $survey_id;
-		$page_data = $this->getPageDB()->sanitize( $page );
-		
-		// CHECK IF THE DATA NEEDS TO BE UPDATED OR INSERTED
-		if( $page['id'] ){
-			$this->getPageDB()->update( $page['id'], $page_data );
-		}
-		else{
-			$this->getPageDB()->insert( $page_data );
-		}
-	}
-	*/
-	function sanitize( $data ){
-		$surveyData = array(
-			'title' 		=> sanitize_text_field( $data['title'] ),
-			'description'	=> sanitize_text_field( $data['desc'] ),
-			'author_id'		=> get_current_user_id(),
-		);
-		return $surveyData;
-	}
-
-	/*AJAX CALLBACK TO DROP TABLE*/
-	function drop_table(){
-		$table = $this->getTable();
-		$query = "DROP TABLE IF EXISTS $table";
-		
-		$this->query( $query );
-		
-		echo 'Survey Table dropped.<br/>';	
-	}
+	
+	
 }
 
 SPACE_DB_SURVEY::getInstance();

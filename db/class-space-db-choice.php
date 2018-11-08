@@ -9,8 +9,6 @@ class SPACE_DB_CHOICE extends SPACE_DB_BASE{
 		$this->setTableSlug( 'choice' );
 		parent::__construct();
 
-		/*REMOVE FROM PRODUCTION*/
-		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
 		
 	function create(){

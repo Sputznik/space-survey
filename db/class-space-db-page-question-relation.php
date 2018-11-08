@@ -14,9 +14,6 @@ class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
 		require_once('class-space-db-question.php');
 		$this->setQuestionDB( SPACE_DB_QUESTION::getInstance() );
 
-
-		/*REMOVE FROM PRODUCTION*/
-		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
 	
 	function getQuestionDB(){ return $this->question_db; }

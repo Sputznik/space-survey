@@ -67,14 +67,21 @@
 		}
 		
 		function prepare_items() {
+			
+			/*
+			* SETTING COLUMNS
+			* SORTABLE COLUMNS
+			* HIDDEN COLUMNS
+			* COLUMN HEADERS
+			*/
 			$columns = $this->get_columns();
-			
 			$hidden = $this->get_hidden_columns();
-			
 			$sortable = $this->get_sortable_columns();
-			
 			$this->_column_headers = array($columns, $hidden, $sortable);
 			
+			/*
+			* SETTING PAGINATION ATTRIBUTES
+			*/
 			$per_page = 10;
 			$page = isset( $_GET['paged'] ) ? $_GET['paged'] : 1;
 			
@@ -82,8 +89,10 @@
 			//print_r( $_POST );
 			//echo "</pre>";
 			
+			/*
+			* GET DATA FROM THE DATABASE. CHECK IF SEARCH TERM HAS BEEN ENTERRED. 
+			*/
 			$question_db = SPACE_DB_QUESTION::getInstance();
-			
 			if( isset( $_POST['s'] ) ){
 				$data = $question_db->listQuestions( $page, $per_page, $_POST['s'] );
 			}
@@ -91,8 +100,10 @@
 				$data = $question_db->listQuestions( $page, $per_page );
 			}
 			
+			/*
+			* FEEDING THE DATA FROM THE DATABASE INTO THE LIST TABLE UI
+			*/
 			$this->items = $data['results'];
-			
 			$this->set_pagination_args( array(
 				'total_items'	=> $data['num_rows'],
 				'per_page'		=> $per_page
