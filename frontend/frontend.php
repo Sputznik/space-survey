@@ -10,22 +10,27 @@
 			
 		}
 		
+		function choices_html( $question ){
+			
+			$choices_tmp = apply_filters( "space-choices-$question->type-template",  "partials/choices-$question->type.php" );
+			
+			include( $choices_tmp );
+		}
+		
 		function question_html( $question ){
-			_e("<div data-type='$question->type' class='space-question'>");
 			
-			_e("<h5>$question->title</h5>");
+			$question_tmp = apply_filters( 'space-question-template',  'partials/question.php' );
 			
-			_e("<p class='space-desc'>$question->description</p>");
+			include( $question_tmp );
 			
-			include("partials/choices-$question->type.php");
-			
-			_e("</div>");
 		}
 		
 		function page_html( $page ){
-			foreach( $page->questions as $question ){
-				$this->question_html( $question );
-			}
+			
+			$page_tmp = apply_filters( 'space-page-template',  'partials/page.php' );
+			
+			include( $page_tmp );
+			
 		}
 		
 		function assets(){
@@ -36,14 +41,14 @@
 				'space',	 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/styles.css' ), 			// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.0.2" 														// VERSION
+				"1.0.3" 														// VERSION
 			);
 					
 			wp_enqueue_script(	
 				'space-slides', 
 				plugins_url( $plugin_assets_folder.'js/slides.js' ), 
 				array( 'jquery'), 
-				'1.0.1', 
+				'1.0.2', 
 				true 
 			);
 			
@@ -67,37 +72,7 @@
 		
 		$pages = $survey_db->listPages( $survey_id );
 		
-		echo "<div data-behaviour='space-slides'>";
-		
-		$i = 0;
-		
-		foreach( $pages as $page ){
-			
-			$slide_class = 'space-slide';
-			if( !$i ){
-				$slide_class .= ' active';
-			}
-			
-			echo "<div id='slide-$i' class='$slide_class'>";
-			
-			
-			$space_frontend->page_html( $page );
-			
-			
-			
-			//echo "<pre>";
-			//print_r( $page );
-			//echo "</pre>";
-			
-			echo "<button data-behaviour='space-slide-next'>Continue</button>";
-			
-			echo "</div>";
-			
-			$i++;
-			
-		}
-		
-		echo "</div>";
+		include( "partials/slides.php" );
 		
 	});
 	

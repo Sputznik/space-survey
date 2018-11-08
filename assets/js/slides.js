@@ -26,6 +26,9 @@ jQuery.fn.space_slides = function(){
 			var $currentSlide 		= $el.find('.space-slide.active'),
 				currentSlideNumber 	= parseInt( $currentSlide.data('slide') ),
 				prevSlideNumber 	= currentSlideNumber - 1;
+				
+			if( prevSlideNumber < 0 ){ prevSlideNumber = totalSlides() - 1; }	
+			
 			return $el.find( '[data-slide~=' + prevSlideNumber + ']' );
 		}
 		
@@ -47,6 +50,18 @@ jQuery.fn.space_slides = function(){
 			
 			$slide.removeClass('active');
 			$nextSlide.addClass('active');
+			
+		});
+		
+		$el.find('[data-behaviour~=space-slide-prev]').click( function( ev ){
+			
+			ev.preventDefault();
+			
+			var $slide 		= getCurrentSlide(),
+				$prevSlide	= getPreviousSlide();
+			
+			$slide.removeClass('active');
+			$prevSlide.addClass('active');
 			
 		});
 		
