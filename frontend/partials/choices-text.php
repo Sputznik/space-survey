@@ -1,1 +1,1 @@
-<input type='text' name='<?php _e( $question->ID );?>' value='' />	
+<input type='text' name='<?php _e( $this->get_input_name( $question->ID ) );?>' value='' />	

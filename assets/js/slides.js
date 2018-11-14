@@ -2,7 +2,99 @@ jQuery.fn.space_slides = function(){
 	
 	return this.each(function() {
 		
-		var $el = jQuery( this );
+		var $el 		= jQuery( this );
+			
+		function guestData(){
+			
+			jQuery.ajax({
+				type:'GET',
+				url	: space_settings.ajax_url,
+				dataType: 'json',
+				data:{
+					action		: 'space_survey_guest',
+					survey_id 	: getSurveyID()
+				},
+				success: function( response ){
+					
+					setGuestID( response.guest_id );
+					
+					jQuery.each( response.responses, function( i, row ){
+						setAnswerForQuestion( row );
+					});
+					
+				},
+				error: function(response) {
+					console.log( 'Cookie could not be created' );
+				}
+			});
+			
+		}
+		
+		function setAnswerForQuestion( response ){
+			
+			var $questionDiv = $el.find( '#q' + response.question_id );
+			
+			var questionType = $questionDiv.data('type');
+			
+			switch( questionType ){
+				
+				case 'radio':
+				
+				case 'checkbox':
+					var $questionInput = $questionDiv.find('input[value=' + response.choice_id + ']');
+					$questionInput.click();
+					break;
+				
+				case 'dropdown':
+					var $questionInput = $questionDiv.find('select');
+					$questionInput.val( response.choice_id );
+					break;
+				
+				case 'text':
+					var $questionInput = $questionDiv.find('input[type=text]');
+					$questionInput.val( response.choice_text );
+					break;
+				
+			}
+			
+		}
+		
+		function getSurveyID(){
+			return parseInt( $el.find('input[name=survey_id]').val() );
+		}
+		
+		function getGuestID(){
+			return parseInt( $el.find('input[name=guest_id]').val() );
+		}
+		
+		function setGuestID( guest_id ){
+			$el.find('input[name=guest_id]').val( guest_id );
+		}
+		
+		
+		function saveGuestData(){
+			
+			var form = $el.find('form');
+			
+			jQuery.ajax({
+				type	: 'POST',
+				url		: space_settings.ajax_url + '?action=' + 'space_survey_save',
+				dataType: 'json',
+				data	: form.serialize(),
+				success	: function( response ){
+					
+					console.log( response );
+					
+				},
+				error: function(response) {
+					console.log( response );
+				}
+			});
+			
+			console.log( form.serialize() );
+			
+		}
+		
 		
 		function totalSlides(){
 			return parseInt( $el.find('.space-slide').length );
@@ -11,6 +103,8 @@ jQuery.fn.space_slides = function(){
 		function getCurrentSlide(){
 			return $el.find('.space-slide.active');
 		}
+		
+		
 		
 		function getNextSlide(){
 			var $currentSlide 		= $el.find('.space-slide.active'),
@@ -33,6 +127,9 @@ jQuery.fn.space_slides = function(){
 		}
 		
 		function init(){
+			
+			guestData();
+			
 			$el.find('.space-slide').each( function( i, slide ){
 				
 				var $slide = jQuery( slide );
@@ -45,6 +142,8 @@ jQuery.fn.space_slides = function(){
 			
 			ev.preventDefault();
 			
+			saveGuestData();
+			
 			var $slide 		= getCurrentSlide(),
 				$nextSlide	= getNextSlide();
 			
@@ -56,6 +155,8 @@ jQuery.fn.space_slides = function(){
 		$el.find('[data-behaviour~=space-slide-prev]').click( function( ev ){
 			
 			ev.preventDefault();
+			
+			saveGuestData();
 			
 			var $slide 		= getCurrentSlide(),
 				$prevSlide	= getPreviousSlide();
@@ -75,5 +176,8 @@ jQuery.fn.space_slides = function(){
 jQuery( document ).on( 'ready', function(){
 	
 	jQuery('[data-behaviour~=space-slides]').space_slides();
+	
+	
+	
 	
 } );

@@ -7,7 +7,9 @@
 		'class-space-db-page.php',
 		'class-space-db-question.php',
 		'class-space-db-choice.php',
-		'class-space-db-page-question-relation.php'
+		'class-space-db-page-question-relation.php',
+		'class-space-db-guest.php',
+		'class-space-db-response.php',
 	);
 
 	foreach( $inc_files as $inc_file ){

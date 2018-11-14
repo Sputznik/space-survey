@@ -128,15 +128,7 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 	}
 
 
-	/*AJAX CALLBACK TO DROP TABLE*/
-	function drop_table(){
-		$table = $this->getTable();
-		$query = "DROP TABLE IF EXISTS $table";
-		
-		$this->query( $query );
-		
-		echo 'Survey Page Table dropped.<br/>';	
-	}
+	
 	
 }
 

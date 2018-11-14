@@ -61,6 +61,61 @@ class SPACE_DB_BASE{
 		$wpdb->insert( $this->getTable(), $data );
 		return $wpdb->insert_id;
 	}
+	
+	function insert_rows( $row_arrays = array() ) {
+		global $wpdb;
+		
+		// Setup arrays for Actual Values, and Placeholders
+		$values = array();
+		$place_holders = array();
+		$query = "";
+		$query_columns = "";
+		
+		
+		$query .= "INSERT INTO {$this->getTable()} (";
+		
+		foreach( $row_arrays as $count => $row_array ){
+
+			foreach( $row_array as $key => $value ) {
+				
+				// ADDING THE SCHEMA COLUMNS OF THE TABLE
+				if( $count == 0 ) {
+					if( $query_columns ){
+						$query_columns .= ",".$key."";
+					} else {
+						$query_columns .= "".$key."";
+					}
+				}
+
+				$values[] =  $value;
+
+				if( is_numeric( $value ) ) {
+					if( isset( $place_holders[$count] ) ) {
+						$place_holders[$count] .= ", '%d'";
+					} else {
+						$place_holders[$count] .= "( '%d'";
+					}
+				} else {
+					if(isset($place_holders[$count])) {
+						$place_holders[$count] .= ", '%s'";
+					} 
+					else {
+						$place_holders[$count] .= "( '%s'";
+					}
+				}
+			}
+			
+			// mind closing the GAP
+			$place_holders[$count] .= ")";
+		}
+
+		$query .= " $query_columns ) VALUES ";
+
+		$query .= implode( ', ', $place_holders );
+		
+		$wpdb->query( $this->prepare( $query, $values ) );
+
+	}
 		
 	function update( $id, $data ){
 		global $wpdb;
@@ -164,19 +219,9 @@ class SPACE_DB_BASE{
 	}
 	
 	function filter( $col_formats, $col_values, $order_by = 'ID', $order = 'ASC' ){
-		$table = $this->getTable();
 		
 		// FORM THE QUERY
-		$query = "SELECT * from $table";
-		if( is_array( $col_formats ) && count( $col_formats ) ){
-			$query .= " WHERE";
-			$i = 0;
-			foreach( $col_formats as $col => $col_format ){
-				if( $i ){ $query .= " AND"; }
-				$query .= " $col = $col_format";
-				$i++;
-			}
-		}
+		$query = "SELECT * ".$this->_from_query().$this->_where_query( $col_formats ); 
 		$query .= " ORDER BY $order_by $order";
 		$query .= ";";
 		return $this->get_results( $this->prepare( $query, $col_values ) );
@@ -198,6 +243,17 @@ class SPACE_DB_BASE{
 			$this->query( $query );
 		}
 	}
+	
+	// DELETE MULTIPLE ROWS FILTERED BY WHERE QUERY
+	function delete_selected_rows( $col_formats, $col_values ){
+		
+		global $wpdb;
+		
+		$query = 'Delete'.$this->_from_query().$this->_where_query( $col_formats );
+		
+		$wpdb->query( $this->prepare( $query, $col_values ) );
+		
+	}
 		
 	// TO BE IMPLEMENTED BY CHILD CLASSES - HANDLES TABLE CREATION
 	function create(){}
@@ -205,8 +261,15 @@ class SPACE_DB_BASE{
 	// TO BE IMPLEMENTED BY CHILD CLASSES - RETURNS DB DATA
 	function sanitize( $data ){ return $data; }
 	
-	// TO BE IMPLEMENTED BY CHILD CLASSES - AJAX CALLBACK TO DROP TABLE
-	function drop_table(){}
+	// TO BE IMPLEMENTED BY CHILD CLASSES IF NOT NEEDED
+	function drop_table(){
+		$table = $this->getTable();
+		$query = "DROP TABLE IF EXISTS $table";
+		
+		$this->query( $query );
+		
+		echo '$table Table dropped.<br/>';	
+	}
 }
 	
 	

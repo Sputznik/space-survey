@@ -38,15 +38,7 @@ class SPACE_DB_CHOICE extends SPACE_DB_BASE{
 		return $choiceData;
 	}
 
-	/*AJAX CALLBACK TO DROP TABLE*/
-	function drop_table(){
-		$table = $this->getTable();
-		$query = "DROP TABLE IF EXISTS $table";
-		
-		$this->query( $query );
-		
-		echo 'Survey Choice Table dropped.<br/>';	
-	}
+	
 }
 
 SPACE_DB_CHOICE::getInstance();
