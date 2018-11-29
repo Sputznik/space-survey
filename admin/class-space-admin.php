@@ -127,7 +127,7 @@
 					$meta_box['id'], 													// Unique ID
 					$meta_box['title'], 												// Box title
 					array( $this, $meta_box['box_html'] ), 										// Content callback
-					$post_type,
+					'space_survey',
 					isset( $meta_box['context'] ) ? $meta_box['context'] : 'normal', 	// Context
 					'default',															// Priority
 					$meta_box
