@@ -48,11 +48,13 @@ jQuery.fn.space_slides = function(){
 				case 'dropdown':
 					var $questionInput = $questionDiv.find('select');
 					$questionInput.val( response.choice_id );
+					$questionInput.change();
 					break;
 
 				case 'text':
 					var $questionInput = $questionDiv.find('input[type=text]');
 					$questionInput.val( response.choice_text );
+					$questionInput.change();
 					break;
 
 			}
