@@ -30,7 +30,7 @@
 						'singular_name' => 'Space Survey',
 						'add_new_item'	=> 'Add New Survey'
 					),
-					'supports'	=> array( 'title', 'author' ),
+					'supports'	=> array( 'title','author' ),
 					'menu_icon'	=> 'dashicons-editor-kitchensink'
 				)
 			) );
@@ -54,7 +54,8 @@
 				array(
 					'id'		=> 'survey-pages',
 					'title'		=> 'Pages For Survey',
-					'box_html'	=> 'survey_metabox_html'
+					'box_html'	=> 'survey_metabox_html',
+					'supports'	=>	array('editor')
 				)
 			) );
 
@@ -126,7 +127,7 @@
 				add_meta_box(
 					$meta_box['id'], 													// Unique ID
 					$meta_box['title'], 												// Box title
-					array( $this, $meta_box['box_html'] ), 										// Content callback
+					array( $this, $meta_box['box_html'], ), 										// Content callback
 					'space_survey',
 					isset( $meta_box['context'] ) ? $meta_box['context'] : 'normal', 	// Context
 					'default',															// Priority
