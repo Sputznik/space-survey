@@ -41,7 +41,7 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 			
 		$pageData = array(
 			'title' 		=> sanitize_text_field( $data['title'] ),
-			'description' 	=> isset( $data['description'] ) ? stripslashes( $data['description'] ):'',
+			'description' 	=> isset( $data['description'] ) ? stripslashes( $data['description'] ):'', // Storing HTML
 			'rank' 			=> isset( $data['rank'] ) ? absint( $data['rank'] ) : 0,
 			'survey_id'		=> absint( $data['survey_id'] ),
 		);
