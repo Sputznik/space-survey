@@ -201,7 +201,7 @@
 				'space-admin', 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.0.7" 														// VERSION
+				"1.0.9" 														// VERSION
 			);
 
 			wp_enqueue_script(
@@ -223,10 +223,14 @@
 			wp_enqueue_script(
 				'space-script',
 				plugins_url( $plugin_assets_folder.'js/choice-form.js' ),
-				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'space-autosize', 'space-repeater'),
-				'1.1.7',
+				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'space-autosize', 'space-repeater', 'wp-backbone', 'wp-api'),
+				'1.1.8',
 				true
 			);
+			
+			wp_enqueue_editor();
+			
+			wp_enqueue_media(); 
 
 			wp_localize_script( 'space-script', 'space_settings', array(
 				'ajax_url'	=> admin_url('admin-ajax.php')

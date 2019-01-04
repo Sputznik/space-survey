@@ -117,9 +117,9 @@ class SPACE_DB_BASE{
 
 	}
 		
-	function update( $id, $data ){
+	function update( $id, $data, $format = array() ){
 		global $wpdb;
-		return $wpdb->update( $this->getTable(), $data, array( 'ID' => $id ) );
+		return $wpdb->update( $this->getTable(), $data, array( 'ID' => $id ), $format );
 	}
 		
 	// WRAPPER AROUND WPDB->GET_RESULTS

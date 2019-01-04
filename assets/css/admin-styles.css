@@ -100,6 +100,10 @@ textarea[data-behaviour~=space-autoresize]{
 	margin-bottom: 15px;
 	padding-left: 10px;
 }
+
+.space-page-item .wp-editor-wrap{
+	margin-bottom: 30px;
+}
 	
 /* MODAL BOXES *
 .space-modal{

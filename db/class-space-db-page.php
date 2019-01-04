@@ -41,7 +41,7 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 			
 		$pageData = array(
 			'title' 		=> sanitize_text_field( $data['title'] ),
-			'description' 	=> isset( $data['description'] ) ? sanitize_text_field( $data['description'] ):'',
+			'description' 	=> isset( $data['description'] ) ? stripslashes( $data['description'] ):'',
 			'rank' 			=> isset( $data['rank'] ) ? absint( $data['rank'] ) : 0,
 			'survey_id'		=> absint( $data['survey_id'] ),
 		);
@@ -92,7 +92,7 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 		
 		// CHECK IF THE DATA NEEDS TO BE UPDATED OR INSERTED
 		if( $page['id'] ){
-			$this->update( $page['id'], $data );
+			$this->update( $page['id'], $data, array( '%s', '%s', '%d', '%d' ) );
 		}
 		else{
 			$page['id'] = $this->insert( $data );
