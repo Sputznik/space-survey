@@ -13,3 +13,16 @@ height+=boxOffset;if(original!==height){ta.style.height=height+'px';if(callback)
 if('onpropertychange'in ta){if('oninput'in ta){$ta.on('input.autosize keyup.autosize',adjust);}else{$ta.on('propertychange.autosize',function(){if(event.propertyName==='value'){adjust();}});}}else{$ta.on('input.autosize',adjust);}
 if(options.resizeDelay!==false){var timeout;var width=$(ta).width();$(window).on('resize.autosize',function(){clearTimeout(timeout);timeout=setTimeout(function(){if($(ta).width()!==width){adjust();}},parseInt(options.resizeDelay,10));});}
 $ta.on('autosize.resize',adjust);$ta.on('autosize.resizeIncludeStyle',function(){mirrored=null;adjust();});$ta.on('autosize.destroy',function(){mirrored=null;$ta.off('autosize').off('.autosize').css(originalStyles).removeData('autosize');});adjust();});};}(window.jQuery||window.Zepto));
+
+
+/*
+* WRAPPER FOR THE ABOVE PLUGIN
+* AUTOMATIC RESIZE OF TEXTAREA BASED ON THE CONTENT OR NEW LINE CHARACTER
+*/
+jQuery.fn.space_autoresize = function(){
+	return this.each(function() {
+		var $el = jQuery(this);
+		$el.attr('rows', 1);
+		$el.autosize();
+	});
+};

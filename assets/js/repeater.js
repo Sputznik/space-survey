@@ -71,6 +71,10 @@ var SPACE_REPEATER = function( options ){
 			$form_field.appendTo( field['append'] );
 		}
 		
+		if( field['prepend'] ){
+			$form_field.prependTo( field['prepend'] );
+		}
+		
 		if( field['html'] ){
 			$form_field.html( field['html'] );
 		}
@@ -107,6 +111,97 @@ var SPACE_REPEATER = function( options ){
 		
 		// INCREMENT COUNT AFTER AN ITEM HAS BEEN ADDED TO MAINTAIN THE ARRAY OF INPUT NAMES
 		self.count++;
+		
+	};
+	
+	/*
+	* CREATE BASIC MARKUP FOR COLLAPSIBLE ITEM
+	* HEADER & CONTENT AREA
+	*/
+	self.addCollapsibleItem = function( $list_item, $closeButton ){
+		
+		// CREATE NEAT HEADER AREA FOR THE ITEM
+		var $header = self.createField({
+			element	: 'div',
+			attr	: {
+				'class'	: 'list-header'
+			},
+			append	: $list_item
+		});
+		
+		// CREATE NEAT CONTENT AREA FOR THE ITEM
+		var $content = self.createField({
+			element	: 'div',
+			attr	: {
+				'class'	: 'list-content'
+			},
+			append	: $list_item
+		});
+		
+		// APPEND THE CLOSE BUTTON TO THE LIST CONTENT
+		$closeButton.appendTo( $content );
+		
+		// BUTTON THAT COLLAPSES THE ENTIRE LIST
+		var $collapseBtn = self.createField({
+			element	: 'button',
+			attr	: {
+				class : 'space-collapse'
+			},
+			append 	: $header
+		});
+		
+		// ON CLICK OF COLLAPSE BUTTON, TOGGLE THE CONTENT AREA
+		$collapseBtn.click( function( ev ){
+			ev.preventDefault();
+			$content.slideToggle();
+		});
+		$collapseBtn.click();
+		
+	};
+	
+	/*
+	* TINYMCE EDITOR
+	*/
+	self.createRichText = function( field ){
+		
+		field['element'] = 'textarea';
+		field['attr'] = field['attr'] ? field['attr'] : {};
+		field['attr']['id'] = field['attr']['id'] ? field['attr']['id'] : 'sample-id';
+		
+		var $textarea = self.createField( field );
+		
+		// INITIALIZE WP EDITOR FOR THE TEXTAREA
+		wp.editor.initialize( field['attr']['id'], { tinymce: {height: 300}, quicktags: true } );	
+		
+		return $textarea;
+		
+	};
+	
+	/*
+	* BOOLEAN FIELD
+	*/
+	self.createBooleanField = function( field ){
+		
+		var $label = self.createField({
+			element	: 'label',
+			append	: field['append'],
+			html	: field['label']
+		});
+		
+		var $booleanField = self.createField({
+			element	: 'input',
+			attr	: {
+				type	: 'checkbox',
+				name	: field['attr']['name'],
+				checked	: field['attr']['checked'],
+				value	: 1
+			},
+			prepend	: $label
+		});
+		
+		
+		
+		return $label;
 		
 	};
 	

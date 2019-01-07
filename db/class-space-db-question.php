@@ -41,7 +41,6 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			title VARCHAR(255),
 			description VARCHAR(255),
-			rank INT DEFAULT 0,
 			type VARCHAR(20),
 			author_id BIGINT(20),
 			parent BIGINT(20),
@@ -101,7 +100,6 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		$questionData = array(
 			'title' 		=> sanitize_text_field( $data['title'] ),
 			'description'	=> sanitize_text_field( $data['desc'] ),
-			'rank' 			=> absint( $data['rank'] ),
 			'type' 			=> $data['type'],
 			'author_id'		=> get_current_user_id(),
 			'parent' 		=> absint( $data['parent'] ),

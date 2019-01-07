@@ -268,7 +268,7 @@ class SPACE_DB_BASE{
 		
 		$this->query( $query );
 		
-		echo '$table Table dropped.<br/>';	
+		echo "$table Table dropped.<br/>";	
 	}
 }
 	

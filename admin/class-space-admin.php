@@ -201,13 +201,21 @@
 				'space-admin', 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.0.9" 														// VERSION
+				"1.1.1" 														// VERSION
 			);
 
 			wp_enqueue_script(
 				'space-autosize',
 				plugins_url( $plugin_assets_folder.'js/autosize.js' ),
 				array( 'jquery'),
+				'1.0.1',
+				true
+			);
+			
+			wp_enqueue_script(
+				'space-autocomplete',
+				plugins_url( $plugin_assets_folder.'js/autocomplete.js' ),
+				array( 'jquery', 'jquery-ui-autocomplete' ),
 				'1.0.0',
 				true
 			);
@@ -216,24 +224,51 @@
 				'space-repeater',
 				plugins_url( $plugin_assets_folder.'js/repeater.js' ),
 				array( 'jquery'),
-				'1.0.3',
+				'1.0.6',
 				true
 			);
-
+			
+			wp_enqueue_script(
+				'space-repeater-choices',
+				plugins_url( $plugin_assets_folder.'js/repeater-choices.js' ),
+				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
+				'1.0.0',
+				true
+			);
+			
+			wp_enqueue_script(
+				'space-repeater-questions',
+				plugins_url( $plugin_assets_folder.'js/repeater-questions.js' ),
+				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
+				'1.0.2',
+				true
+			);
+			
+			wp_enqueue_script(
+				'space-repeater-pages',
+				plugins_url( $plugin_assets_folder.'js/repeater-pages.js' ),
+				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
+				'1.0.1',
+				true
+			);
+			
 			wp_enqueue_script(
 				'space-script',
-				plugins_url( $plugin_assets_folder.'js/choice-form.js' ),
-				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'space-autosize', 'space-repeater', 'wp-backbone', 'wp-api'),
-				'1.1.8',
+				plugins_url( $plugin_assets_folder.'js/main.js' ),
+				array( 'space-repeater-choices', 'space-repeater-questions', 'space-repeater-pages', 'wp-backbone', 'wp-api'),
+				'1.0.0',
 				true
 			);
 			
 			wp_enqueue_editor();
 			
 			wp_enqueue_media(); 
-
+			
+			$survey_db = SPACE_DB_SURVEY::getInstance();
+			
 			wp_localize_script( 'space-script', 'space_settings', array(
-				'ajax_url'	=> admin_url('admin-ajax.php')
+				'ajax_url'				=> admin_url('admin-ajax.php'),
+				'required_questions'	=> $survey_db->listRequiredQuestions()
 			) );
 		}
 
@@ -252,16 +287,17 @@
 		}
 
 		function handle_survey_metabox( $survey_id ){
-
+			
 			/*
 			print_r( $survey_id );
 			echo "<pre>";
 			print_r( $_POST );
 			echo "</pre>";
+			wp_die();
 			*/
 
 			$survey_db = SPACE_DB_SURVEY::getInstance();
-
+		
 			if( $survey_id && isset( $_POST[ 'pages' ] ) ){
 				// UPDATE OR ADD NEW PAGE
 				$survey_db->updatePages( $survey_id, $_POST[ 'pages' ] );
@@ -271,7 +307,23 @@
 				// $_POST['pages_delete'] HAS A COMMA SEPERATED STRING OF PAGE IDs THAT ARE NO LONGER NEEDED
 				$survey_db->deletePages( explode(',', $_POST['pages_delete'] ) );
 			}
-
+			
+			// FIND THE REQUIRED QUESTIONS
+			$required_questions = array();
+			if( isset( $_POST['pages'] ) && is_array( $_POST['pages'] ) ){
+				foreach( $_POST['pages'] as $page ){
+					if( isset( $page['questions'] ) && is_array( $page['questions'] ) ){
+						foreach( $page['questions'] as $question ){
+							if( isset( $question['required'] ) && isset( $question['id'] ) ){
+								array_push( $required_questions, $question['id'] );
+							}
+						}
+					}
+				}
+			}
+			$survey_db->updateRequiredQuestions( $survey_id, $required_questions );
+			
+			
 			//wp_die();
 
 		}
