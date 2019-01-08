@@ -2,7 +2,7 @@
 <div class='space-questions'>
 <?php 
 	foreach( $page->questions as $question ){
-		$this->question_html( $question );
+		echo $this->question_html( $question );
 	}
 ?>
 </div>

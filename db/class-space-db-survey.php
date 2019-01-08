@@ -20,6 +20,21 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	function getPageDB(){ return $this->page_db; }
 	function setPageDB( $page_db ){ $this->page_db = $page_db; }
 	
+	// GET SINGLE ROW USING UNIQUE ID
+	function get_row( $ID ){
+		
+		$survey = get_post( $ID );
+		
+		$survey->rules = $this->listRules( $survey->ID );
+		
+		$survey->required_questions = $this->listRequiredQuestions( $survey->ID );
+		
+		$survey->pages = $this->listPages( $survey->ID );
+		
+		return $survey;
+		
+	}
+	
 	function listMetaInfo( $survey_id, $meta_key ){
 		$data = array();
 		

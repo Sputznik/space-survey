@@ -79,37 +79,6 @@
 			wp_die();
 		}
 
-		function question_type_field( $question ){
-			echo "<input type='hidden' name='quest[$question->ID][type]' value='$question->type' />";
-		}
-
-		function get_input_name( $id ){
-			return "quest[$id][val]";
-		}
-
-		function choices_html( $question ){
-
-			$choices_tmp = apply_filters( "space-choices-$question->type-template",  "partials/choices-$question->type.php" );
-
-			include( $choices_tmp );
-		}
-
-		function question_html( $question ){
-
-			$question_tmp = apply_filters( 'space-question-template',  'partials/question.php' );
-
-			include( $question_tmp );
-
-		}
-
-		function page_html( $page ){
-
-			$page_tmp = apply_filters( 'space-page-template',  'partials/page.php' );
-
-			include( $page_tmp );
-
-		}
-
 		function assets(){
 
 			$plugin_assets_folder = 'space-survey/assets/';
@@ -140,20 +109,18 @@
 			
 			$survey_id = $atts['id'];
 
-			$survey_db = SPACE_DB_SURVEY::getInstance();
-			
-			$pages = $survey_db->listPages( $survey_id );
-			
-			ob_start();
-			include( "partials/slides.php" );
-			return ob_get_clean();
+			require_once('class-space-survey-frontend.php');
+			$survey_frontend = new SPACE_SURVEY_FRONTEND( $survey_id );
+			return $survey_frontend->html();
 		}
 		
 		function overrideContent( $content ){
 			
 			global $post;
 			
-			$content = $this->surveyHTML( array( 'id' => $post->ID ) );
+			if( $post->post_type == 'space_survey' ){
+				$content = $this->surveyHTML( array( 'id' => $post->ID ) );
+			}
 			
 			return $content;
 		}

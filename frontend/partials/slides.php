@@ -1,3 +1,9 @@
+<?php
+	
+	$survey_id = $this->survey->ID;
+	$pages = $this->survey->pages;
+	
+?>
 <div data-behaviour='space-slides' data-id='<?php _e( $survey_id );?>'>
 	<form>
 		<?php wp_nonce_field('save', 'space_survey');?>
@@ -9,7 +15,7 @@
 			if( !$i ){ $slide_class .= ' active'; }
 		?>
 		<div class='<?php _e( $slide_class );?>'>
-			<?php $this->page_html( $page );?>
+			<?php echo $this->page_html( $page );?>
 			<ul class='space-list space-list-inline'>
 				<?php if( $i > 0 ):?>	
 				<li><button data-behaviour='space-slide-prev'>Go Back</button></li>
