@@ -20,12 +20,8 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	function getPageDB(){ return $this->page_db; }
 	function setPageDB( $page_db ){ $this->page_db = $page_db; }
 	
-	function updateRequiredQuestions( $survey_id, $required_questions ){
-		update_post_meta( $survey_id, 'required_questions', $required_questions );
-	}
-	
-	function listRequiredQuestions( $survey_id = 0 ){
-		$required_questions = array();
+	function listMetaInfo( $survey_id, $meta_key ){
+		$data = array();
 		
 		if( !$survey_id ){
 			global $post;
@@ -35,10 +31,28 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		}
 		
 		if( $survey_id ){
-			$required_questions = get_post_meta( $survey_id, 'required_questions', true );
+			$data = get_post_meta( $survey_id, $meta_key, true );
 		}
 		
-		return $required_questions;
+		return $data;
+	}
+	
+	// REQUIRED QUESTIONS WITHIN THE SURVEY
+	function updateRequiredQuestions( $survey_id, $required_questions ){
+		update_post_meta( $survey_id, 'space_required_questions', $required_questions );
+		
+		
+	}
+	function listRequiredQuestions( $survey_id = 0 ){
+		return $this->listMetaInfo( $survey_id, 'space_required_questions' );
+	}
+	
+	// RULES WITHIN THE SURVEY: CONDITIONAL DISPLAY OF QUESTIONS
+	function updateRules( $survey_id, $rules ){
+		update_post_meta( $survey_id, 'space_rules', $rules );
+	}
+	function listRules( $survey_id = 0 ){
+		return $this->listMetaInfo( $survey_id, 'space_rules' );
 	}
 	
 	//RETURN THE LIST OF ASSOCIATED PAGES

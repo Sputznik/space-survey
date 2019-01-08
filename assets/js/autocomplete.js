@@ -7,6 +7,7 @@ jQuery.fn.space_autocomplete = function(){
 		
 		var $el 	= jQuery( this ),
 			$hidden = jQuery( document.createElement('input') ),
+			$label	= jQuery( document.createElement('label') ),
 			field 	= $el.attr( 'data-field' ),						
 			$input 	= jQuery( document.createElement('input') );
 			
@@ -14,6 +15,13 @@ jQuery.fn.space_autocomplete = function(){
 		field = typeof field != 'object' ? JSON.parse( field ) : [];
 		
 		var init = function(){
+			
+			if( field['label'] ){
+				$label.html( field['label'] );
+				$label.appendTo( $el );
+			}
+			
+			
 			$hidden.attr( 'type', 'hidden' );
 			if( field['slug'] != undefined ){
 				$hidden.attr( 'name', field['slug'] );
@@ -46,6 +54,7 @@ jQuery.fn.space_autocomplete = function(){
 				}, 
 				select: function( event, ui ){
 					$hidden.val( ui.item.id );
+					$el.trigger('space_autocomplete:select', ui.item);
 				},
 				change: function( event, ui ){
 					if( !ui.item ){

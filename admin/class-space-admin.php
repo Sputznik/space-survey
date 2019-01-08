@@ -201,7 +201,7 @@
 				'space-admin', 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.1.1" 														// VERSION
+				"1.1.3" 														// VERSION
 			);
 
 			wp_enqueue_script(
@@ -216,7 +216,7 @@
 				'space-autocomplete',
 				plugins_url( $plugin_assets_folder.'js/autocomplete.js' ),
 				array( 'jquery', 'jquery-ui-autocomplete' ),
-				'1.0.0',
+				'1.0.2',
 				true
 			);
 
@@ -224,7 +224,7 @@
 				'space-repeater',
 				plugins_url( $plugin_assets_folder.'js/repeater.js' ),
 				array( 'jquery'),
-				'1.0.6',
+				'1.0.8',
 				true
 			);
 			
@@ -237,10 +237,18 @@
 			);
 			
 			wp_enqueue_script(
+				'space-repeater-rules',
+				plugins_url( $plugin_assets_folder.'js/repeater-rules.js' ),
+				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
+				'1.0.1',
+				true
+			);
+			
+			wp_enqueue_script(
 				'space-repeater-questions',
 				plugins_url( $plugin_assets_folder.'js/repeater-questions.js' ),
-				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
-				'1.0.2',
+				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater', 'space-repeater-rules' ),
+				'1.0.5',
 				true
 			);
 			
@@ -268,7 +276,8 @@
 			
 			wp_localize_script( 'space-script', 'space_settings', array(
 				'ajax_url'				=> admin_url('admin-ajax.php'),
-				'required_questions'	=> $survey_db->listRequiredQuestions()
+				'required_questions'	=> $survey_db->listRequiredQuestions(),
+				'rules'					=> $survey_db->listRules()
 			) );
 		}
 
@@ -310,6 +319,7 @@
 			
 			// FIND THE REQUIRED QUESTIONS
 			$required_questions = array();
+			$rules = array();
 			if( isset( $_POST['pages'] ) && is_array( $_POST['pages'] ) ){
 				foreach( $_POST['pages'] as $page ){
 					if( isset( $page['questions'] ) && is_array( $page['questions'] ) ){
@@ -317,11 +327,16 @@
 							if( isset( $question['required'] ) && isset( $question['id'] ) ){
 								array_push( $required_questions, $question['id'] );
 							}
+							elseif( isset( $question['id'] ) && isset( $question['rules']) && is_array( $question['rules'] ) ){
+								// OBVIOUSLY ASSUMING THAT A QUESTION WILL BE ADDED ONLY ONCE IN A SURVEY
+								$rules[ $question['id'] ] = $question['rules'];
+							}
 						}
 					}
 				}
 			}
 			$survey_db->updateRequiredQuestions( $survey_id, $required_questions );
+			$survey_db->updateRules( $survey_id, $rules );
 			
 			
 			//wp_die();
@@ -337,10 +352,13 @@
 			if( isset( $_GET['post'] ) ){
 				$survey_db = SPACE_DB_SURVEY::getInstance();
 				$pages = $survey_db->listPages( $_GET['post'] );
+				
+				
 			}
 
 			$page_form = new SPACE_PAGE_FORM( $pages );
 			$page_form->display();
+			
 		}
 
 	}

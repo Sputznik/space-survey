@@ -14,13 +14,23 @@
 }
 
 
+.space-rules-box{
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
 
-.space-choice-item, .space-question-item, .space-page-item{
+
+.space-choice-item, .space-question-item, .space-page-item, .space-rule-item{
 	border: #ccc solid 1px;
 	background: #fff;
 	padding: 10px;
 	margin-bottom: 10px;
 	position: relative;
+}
+
+.space-rule-item{
+	background: #fcfcfc;
+	padding: 20px;
 }
 
 .space-page-item, .space-question-item{
@@ -32,6 +42,27 @@
 	border: none;
 	outline: none;
 	box-shadow: none;
+	
+}
+
+.space-rule-item [data-behaviour~=space-autocomplete]{
+	margin-bottom: 10px;
+}
+
+.space-rule-item .space-rule-grid{
+	display: grid;
+	grid-template-columns: 200px 1fr 200px;
+	grid-gap: 20px;
+}
+
+.space-rule-item .space-rule-grid select{
+	width: 100%;
+}
+
+.space-question-item .space-rule-item [data-behaviour~=space-autocomplete] input[type=text].ui-autocomplete-input{
+	border: #ccc solid 1px;
+	background: #fff;
+	width: 100%;
 }
 
 textarea[data-behaviour~=space-autoresize]{
@@ -62,7 +93,7 @@ textarea[data-behaviour~=space-autoresize]{
 	text-decoration: underline;
 }
 
-.space-choice-item .space-close-btn{
+.space-choice-item .space-close-btn, .space-rule-item .space-close-btn{
 	top: 5px;
 	bottom: auto;
 	font-size	: 30px;
@@ -140,6 +171,13 @@ textarea[data-behaviour~=space-autoresize]{
 	padding-top: 20px;
 }
 */
+
+.space-dropdown{
+	margin-bottom: 10px;
+}
+.space-dropdown label{
+	display: block;
+}
 
 /*
 * META BOX FOR SURVEY TO LIST PAGES

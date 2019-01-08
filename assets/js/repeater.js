@@ -199,10 +199,74 @@ var SPACE_REPEATER = function( options ){
 			prepend	: $label
 		});
 		
-		
-		
 		return $label;
 		
+	};
+	
+	/*
+	* DROPDOWN FIELD
+	*/
+	self.createDropdownField = function( field ){
+		
+		var $wrapper = self.createField({
+			element	: 'div',
+			attr	: {
+				class : 'space-dropdown'
+			},
+			append	: field['append']
+		});
+		
+		var $label = self.createField({
+			element	: 'label',
+			append	: $wrapper,
+			html	: field['label']
+		});
+		
+		var $select = self.createField({
+			element	: 'select',
+			attr	: {
+				name : field['attr']['name']
+			},
+			append	: $wrapper,
+		});
+		
+		// ADD ONE OPTION TO THE SELECT DROPDOWN
+		$wrapper.addOption = function( slug, value ){
+			
+			var $option = self.createField({
+				element	: 'option',
+				attr	: {
+					value : slug
+				},
+				html	: value,
+				append	: $select
+			});
+			
+		};
+		
+		// SET THE ENTIRE OPTIONS FOR THE SELECT DROPDOWN
+		$wrapper.setOptions = function( options ){
+			// FIRST REMOVE ALL THE CURRENT OPTIONS THAT ARE THERE
+			$select.find('option').remove();
+			for( slug in options ){
+				$wrapper.addOption( slug, options[slug] );
+			}
+		}
+		
+		$wrapper.selectOption = function( slug ){
+			$select.val( slug );
+		};
+		
+		if( field['options'] ){
+			$wrapper.setOptions( field['options'] );
+		}
+		
+		
+		if( field['value'] ){
+			$wrapper.selectOption( field['value'] );
+		}
+		
+		return $wrapper;
 	};
 	
 	self.reorder = function(){

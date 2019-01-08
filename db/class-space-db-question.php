@@ -20,6 +20,8 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		
 		add_action( 'wp_ajax_space_questions', array( $this, 'ajaxQuestions' ) );
 		
+		
+		
 		require_once( 'class-space-db-choice.php' );
 		$this->setChoiceDB( SPACE_DB_CHOICE::getInstance() );
 
@@ -136,10 +138,17 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		$final_data = array();
 		foreach( $data['results'] as $result ){
 			$temp = array(
-				'id'	=> $result->ID,
-				'label'	=> $result->title,
-				'value'	=> $result->title
+				'id'		=> $result->ID,
+				'label'		=> $result->title,
+				'value'		=> $result->title,
+				'choices'	=> array()
 			);
+			
+			$choices = $this->listChoices( $result->ID );
+			foreach( $choices as $choice ){
+				$temp['choices'][$choice->ID] = $choice->title; 
+			}
+			
 			array_push( $final_data, $temp );
 		}
 		
@@ -147,9 +156,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		
 		wp_die();
 	}
-
 	
-
 }
 
 SPACE_DB_QUESTION::getInstance();

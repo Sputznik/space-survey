@@ -69,12 +69,11 @@ jQuery.fn.space_questions = function( parent_name ){
 				
 				// CREATE BOOLEAN FIELD FOR REQUIRED
 				var checked_flag = false;
-				if( space_settings.required_questions.length && question['ID'] ){
+				if( space_settings.required_questions && space_settings.required_questions.length && question['ID'] ){
 					if( space_settings.required_questions.indexOf( question['ID'] ) > -1 ){
 						checked_flag = true;
 					}
 				}
-				
 				var $required = repeater.createBooleanField({
 					attr	:  {
 						name	: parent_name + '[questions]['+ repeater.count +'][required]',
@@ -84,7 +83,35 @@ jQuery.fn.space_questions = function( parent_name ){
 					label	: 'Required'
 				});
 				
+				// GET RULES FROM DB
+				var rules_for_question = [];
+				if( space_settings['rules'] && space_settings['rules'][ question['ID'] ] ){
+					rules_for_question = space_settings.rules[ question['ID'] ];
+				}
 				
+				//ADD BUTTON FOR RULES REPEATER
+				var $rules_repeater = repeater.createField({
+					element : 'div',
+					attr 	: {
+						'data-rules' 	 : JSON.stringify( rules_for_question ),
+						'data-behaviour' : 'space-rules',
+						'class' 		 : 'space-rules-box'
+					},
+					append 	: $content
+				});
+				$rules_repeater.space_rules( parent_name + '[questions]['+ repeater.count +']' );
+				
+				
+				// CHECK IF THE REQUIRED CHECKBOX IS CHECKED OR NOT TO HIDE/SHOW THE RULES REPEATER
+				var $required_checkbox = $required.find('input[type=checkbox]');
+				$required_checkbox.change( function(){
+					
+					// IF REQUIRED THEN HIDE THE RULES OTHERWHISE SHOW THEM
+					if( $required_checkbox.prop('checked') ){	$rules_repeater.hide(); }
+					else{ $rules_repeater.show(); }
+					
+				});
+				$required_checkbox.change(); // TO CHECK FOR THE FIRST TIME
 				
 				
 				// CREATE HIDDEN FIELD THAT WILL HOLD THE QUESTION RANK
