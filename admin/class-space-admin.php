@@ -353,7 +353,7 @@
 				$survey_db = SPACE_DB_SURVEY::getInstance();
 				$pages = $survey_db->listPages( $_GET['post'] );
 				
-				
+				//print_r( $survey_db->listRules( $_GET['post'] ) );
 			}
 
 			$page_form = new SPACE_PAGE_FORM( $pages );

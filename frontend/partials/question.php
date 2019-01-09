@@ -8,6 +8,8 @@
 		$question_class .= ' required';
 	}
 	
+	//print_r( $this->survey->rules );
+	
 	$question->rules = array();
 	if( is_array( $this->survey->rules ) && isset( $this->survey->rules[ $question->ID ] ) ){
 		foreach( $this->survey->rules[ $question->ID ] as $rule ){
