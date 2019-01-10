@@ -21,7 +21,7 @@
 ?>
 <div id='<?php _e( 'q'.$question->ID );?>' data-rules='<?php _e( wp_json_encode( $question->rules ) );?>' data-type='<?php _e( $question->type );?>' class='<?php _e( $question_class );?>'>
 	<h5><?php _e( $question->title );?></h5>
-	<p class='space-desc'><?php _e( $question->description );?></p>
+	<div class='space-desc'><?php _e( $question->description );?></div>
 	<?php echo $this->choices_html( $question );?>
 	<?php $this->question_type_field( $question );?>
 </div>
