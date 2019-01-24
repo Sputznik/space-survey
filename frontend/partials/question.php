@@ -6,6 +6,7 @@
 	$question_class = 'space-question';
 	if( in_array( $question->ID, $required_questions ) ){
 		$question_class .= ' required';
+		$question->title .= ' *';
 	}
 	
 	//print_r( $this->survey->rules );
