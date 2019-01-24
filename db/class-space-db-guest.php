@@ -154,7 +154,27 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 			$ipaddress = 'UNKNOWN';
 		return $ipaddress;
 	}
+	
+	function listForSurvey( $survey_id ){
+		
 
+		$guests = $this->filter( 
+			array(
+				'survey_id'	=> '%d'
+			),
+			array( (int) $survey_id )	
+		);
+		
+		/*
+		foreach( $pages as $page ){
+			
+			$page->questions = $this->getRelationDB()->listForPage( $page->ID );
+			
+		}
+		*/
+		
+		return $guests;
+	}
 	
 
 }

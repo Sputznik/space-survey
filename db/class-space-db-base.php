@@ -159,9 +159,8 @@ class SPACE_DB_BASE{
 		global $wpdb;
 		return $wpdb->prepare( $query, $args );
 	}
-		
-	function results( $page, $per_page, $search = array( 'col_formats' => array(), 'col_values'	=> array(), 'operator' => 'LIKE' ) ){
-		$data = array();
+	
+	function getCount( $search = array( 'col_formats' => array(), 'col_values'	=> array(), 'operator' => 'LIKE' ) ){
 		
 		$where_query = $this->_where_query( $search['col_formats'], $search['operator'] );
 		
@@ -176,8 +175,16 @@ class SPACE_DB_BASE{
 			$count_query = $this->prepare( $count_query, $search['col_values'] );
 		}
 		
-		$data['num_rows'] = $this->get_var( $count_query );
-			
+		return $this->get_var( $count_query );
+	}
+		
+	function results( $page, $per_page, $search = array( 'col_formats' => array(), 'col_values'	=> array(), 'operator' => 'LIKE' ) ){
+		$data = array();
+		
+		$where_query = $this->_where_query( $search['col_formats'], $search['operator'] );
+		
+		$data['num_rows'] = $this->getCount( $search );
+		
 		// QUERY TO GET PAGINATED RESPONSE
 		$offset = ( $page-1 ) * $per_page;
 		$results_query = "SELECT *".$this->_from_query();

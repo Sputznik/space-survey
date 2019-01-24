@@ -182,15 +182,16 @@ textarea[data-behaviour~=space-autoresize]{
 /*
 * META BOX FOR SURVEY TO LIST PAGES
 */
+
+#survey-pages.postbox, #survey-pages.postbox .inside{
+	padding: 0;
+	margin: 0;	
+}
 #survey-pages.postbox{
 	background: transparent;
 	border: none;
 	box-shadow: none;
-	
-}
-#survey-pages.postbox, #survey-pages.postbox .inside{
-	padding: 0;
-	margin: 0;
+	margin-bottom: 20px;
 }
 #survey-pages.postbox h2.hndle.ui-sortable-handle,
 #survey-pages.postbox button.handlediv{

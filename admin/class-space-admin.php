@@ -14,7 +14,6 @@
 				plugin_dir_path(__FILE__).'../forms/class-space-admin-form.php',
 				'class-space-list-table.php',
 				'class-space-question-list-table.php',
-				// 'class-space-survey-list-table.php',
 			);
 
 			foreach( $this->includes as $inc_file ){
@@ -55,6 +54,12 @@
 					'id'		=> 'survey-pages',
 					'title'		=> 'Pages For Survey',
 					'box_html'	=> 'survey_metabox_html',
+					'supports'	=>	array('editor')
+				),
+				array(
+					'id'		=> 'survey-results',
+					'title'		=> 'Results',
+					'box_html'	=> 'results_metabox_html',
 					'supports'	=>	array('editor')
 				)
 			) );
@@ -201,7 +206,7 @@
 				'space-admin', 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.1.3" 														// VERSION
+				"1.1.4" 														// VERSION
 			);
 
 			wp_enqueue_script(
@@ -352,13 +357,28 @@
 			if( isset( $_GET['post'] ) ){
 				$survey_db = SPACE_DB_SURVEY::getInstance();
 				$pages = $survey_db->listPages( $_GET['post'] );
-				
-				//print_r( $survey_db->listRules( $_GET['post'] ) );
 			}
-
+			// PAGE FORM
 			$page_form = new SPACE_PAGE_FORM( $pages );
 			$page_form->display();
 			
+			
+			
+			
+		}
+		
+		function results_metabox_html(){
+			require_once( plugin_dir_path(__FILE__).'../forms/class-space-results-form.php' );
+			
+			$survey_db = SPACE_DB_SURVEY::getInstance();
+			
+			$totalGuests = $survey_db->totalGuests( $_GET['post'] );
+			
+			_e( '<p>Total Forms that have been submitted: <b>'. $totalGuests .'</b></p>' );
+			
+			// RESULTS FORM
+			$results_form = new SPACE_RESULTS_FORM();
+			$results_form->display();
 		}
 
 	}

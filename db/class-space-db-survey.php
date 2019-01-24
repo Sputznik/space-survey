@@ -7,18 +7,26 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 	var $page_db;
 	
+	var $guest_db;
+	
 	function __construct(){ 
 		$this->setTableSlug( 'survey' );
 		parent::__construct();
 
 		require_once('class-space-db-page.php');
 		$this->setPageDB( SPACE_DB_PAGE::getInstance() );
+		
+		require_once('class-space-db-guest.php');
+		$this->setGuestDB( SPACE_DB_GUEST::getInstance() );
 
 	}
 	
 	//GETTER AND SETTER FUNCTIONS
 	function getPageDB(){ return $this->page_db; }
 	function setPageDB( $page_db ){ $this->page_db = $page_db; }
+	
+	function getGuestDB(){ return $this->guest_db; }
+	function setGuestDB( $guest_db ){ $this->guest_db = $guest_db; }
 	
 	// GET SINGLE ROW USING UNIQUE ID
 	function get_row( $ID ){
@@ -95,6 +103,16 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		}
 	}
 	
+	//RETURN THE LIST OF ASSOCIATED GUESTS
+	function totalGuests( $survey_id ){
+		
+		return $this->getGuestDB()->getCount( array(
+			'col_formats'	=> array( 'survey_id' => '%d' ),
+			'col_values'	=> array( $survey_id ),
+			'operator'		=> '='
+		) );
+		
+	}
 	
 }
 
