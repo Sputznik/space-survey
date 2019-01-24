@@ -94,7 +94,7 @@
 				'space-slides',
 				plugins_url( $plugin_assets_folder.'js/slides.js' ),
 				array( 'jquery'),
-				'1.0.9',
+				'2.0.0',
 				true
 			);
 

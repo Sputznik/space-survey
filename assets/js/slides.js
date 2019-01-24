@@ -296,11 +296,11 @@ jQuery.fn.space_slides = function(){
 						
 						if( flag ){
 							if( rule['action'] == 'show' ){
-								$questionDiv.show();
+								$questionDiv.removeClass('hide');
 							}
 							
 							if( rule['action'] == 'hide' ){
-								$questionDiv.hide();
+								$questionDiv.addClass('hide');
 							}
 						}
 						
