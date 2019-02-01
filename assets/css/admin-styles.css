@@ -197,3 +197,26 @@ textarea[data-behaviour~=space-autoresize]{
 #survey-pages.postbox button.handlediv{
 	display: none;
 }
+
+/* SPACE BATCH PROCESS */
+[data-behaviour~=space-batch]{
+	border: #eee solid 1px;
+	padding: 20px;
+	margin: 20px auto;
+}
+
+[data-behaviour~=space-batch] .space-progress-container{ border: #333 solid 1px; }
+
+[data-behaviour~=space-batch] .space-progress{
+	height: 30px;
+	background: #555;
+	width: 0%;
+}
+[data-behaviour~=space-batch] button, [data-behaviour~=space-batch] .result{
+	margin-top: 20px;
+}
+[data-behaviour~=space-batch] .result{ font-weight: bold; }
+[data-behaviour~=space-batch] .logs-container{
+	border-top: #eee solid 1px;
+	margin-top: 20px;
+}

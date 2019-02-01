@@ -14,9 +14,11 @@
 	}
 	
 	$inc_files = array(
+		'class-space-base.php',
 		'db/db.php',
 		'admin/class-space-admin.php',
 		'frontend/frontend.php',
+		'helper/helper.php'
 	);
 
 	foreach( $inc_files as $inc_file ){

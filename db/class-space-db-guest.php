@@ -6,6 +6,7 @@
 class SPACE_DB_GUEST extends SPACE_DB_BASE{
 	
 	var $response_db;
+	var $question_db;
 	
 	function __construct(){ 
 		
@@ -15,11 +16,17 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 		require_once( 'class-space-db-response.php' );
 		$this->setResponseDB( SPACE_DB_RESPONSE::getInstance() );
 		
+		require_once('class-space-db-question.php');
+		$this->setQuestionDB( SPACE_DB_QUESTION::getInstance() );
+		
 	}
 	
 	/* GETTER AND SETTER FUNCTIONS */
 	function getResponseDB(){ return $this->response_db; }
 	function setResponseDB( $response_db ){ $this->response_db = $response_db; }
+	
+	function getQuestionDB(){ return $this->question_db; }
+	function setQuestionDB( $question_db ){ $this->question_db = $question_db; }
 	/* GETTER AND SETTER FUNCTIONS */
 	
 	function create(){
@@ -58,7 +65,43 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 			array( (int) $guest_id )
 		);
 	}
-	
+	/*
+	function getFormattedResponses( $guest_id, $choices ){
+		
+		$data = array();
+		
+		$responseTable	= $this->getResponseDB()->getTable();
+		$questionTable 	= $this->getQuestionDB()->getTable();
+		
+		$query = "SELECT * FROM $responseTable r INNER JOIN $questionTable q ON r.question_id = q.ID WHERE r.guest_id = %d ORDER BY r.ID ASC";
+		
+		$query = $this->prepare( $query, array( $guest_id ) );
+		
+		$responses = $this->get_results( $query );
+		
+		foreach( $responses as $response ){
+			
+			if( ! isset( $data[ $response->question_id ] ) ){
+				$data[ $response->question_id ] = array(
+					'question_title'	=> $response->title,
+					'choices'			=> array()
+				);
+			}	
+			
+			
+			if( $response->choice_id && isset( $choices[ $response->choice_id ] ) && isset( $choices[ $response->choice_id ]->title ) ){
+				array_push( $data[ $response->question_id ][ 'choices' ], $choices[ $response->choice_id ]->title );
+			}
+			elseif( $response->choice_text ){
+				array_push( $data[ $response->question_id ][ 'choices' ], $response->choice_text );
+			}
+			
+		}
+		
+		return $data;
+		
+	}
+	*/
 	function deleteResponses( $guest_id ){
 		$this->getResponseDB()->deleteResponsesForGuest( $guest_id );
 	}

@@ -9,6 +9,8 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	
 	var $guest_db;
 	
+	var $question_db;
+	
 	function __construct(){ 
 		$this->setTableSlug( 'survey' );
 		parent::__construct();
@@ -18,12 +20,20 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		
 		require_once('class-space-db-guest.php');
 		$this->setGuestDB( SPACE_DB_GUEST::getInstance() );
+		
+		require_once('class-space-db-question.php');
+		$this->setQuestionDB( SPACE_DB_QUESTION::getInstance() );
+		
+		add_action( 'save_post', array( $this, 'saveSurvey' ) );
 
 	}
 	
 	//GETTER AND SETTER FUNCTIONS
 	function getPageDB(){ return $this->page_db; }
 	function setPageDB( $page_db ){ $this->page_db = $page_db; }
+	
+	function getQuestionDB(){ return $this->question_db; }
+	function setQuestionDB( $question_db ){ $this->question_db = $question_db; }
 	
 	function getGuestDB(){ return $this->guest_db; }
 	function setGuestDB( $guest_db ){ $this->guest_db = $guest_db; }
@@ -103,7 +113,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		}
 	}
 	
-	//RETURN THE LIST OF ASSOCIATED GUESTS
+	//RETURN THE TOTAL COUNT OF ASSOCIATED GUESTS
 	function totalGuests( $survey_id ){
 		
 		return $this->getGuestDB()->getCount( array(
@@ -111,6 +121,116 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			'col_values'	=> array( $survey_id ),
 			'operator'		=> '='
 		) );
+		
+	}
+	
+	// RETURNS THE LIST OF ASSOCIATED GUESTS
+	function getGuests( $survey_id ){
+
+		return $this->getGuestDB()->filter( 
+			array(
+				'survey_id'	=> '%d'
+			),
+			array( (int) $survey_id )
+		);
+	}
+	
+	function getChoicesList( $survey_id ){
+		
+		$data = array();
+		
+		$choiceTable 	= $this->getQuestionDB()->getChoiceDB()->getTable();
+		$pageTable		= $this->getPageDB()->getTable();
+		$relationTable 	= $this->getPageDB()->getRelationDB()->getTable();
+		
+		$query = "SELECT * FROM $choiceTable WHERE question_id IN ( SELECT question_id FROM $relationTable WHERE page_id IN ( SELECT ID from $pageTable WHERE survey_id = %d ) )";
+		
+		$query = $this->prepare( $query, array( $survey_id ) );
+		
+		$choices = $this->get_results( $query );
+		
+		foreach( $choices as $choice ){
+			$data[ $choice->ID ] = $choice;
+		}
+		
+		return $data;
+	}
+	
+	function getQuestionsList( $survey_id ){
+		
+		$data = array();
+		
+		$questionTable 	= $this->getQuestionDB()->getTable();
+		$pageTable		= $this->getPageDB()->getTable();
+		$relationTable 	= $this->getPageDB()->getRelationDB()->getTable();
+		
+		$query = "SELECT * FROM $questionTable WHERE ID IN ( SELECT question_id FROM $relationTable WHERE page_id IN ( SELECT ID from $pageTable WHERE survey_id = %d ) )";
+		
+		$query = $this->prepare( $query, array( $survey_id ) );
+		
+		$questions = $this->get_results( $query );
+		
+		foreach( $questions as $question ){
+			$data[ $question->ID ] = $question;
+		}
+		
+		return $data;
+	}
+	
+	function _from_query(){
+		global $wpdb;
+		$table = $wpdb->posts;
+		return " FROM $table";
+	}
+	
+	
+	
+	
+	function saveSurvey( $survey_id ){
+		
+		if( isset( $_POST['post_type'] ) && $_POST['post_type'] == 'space_survey' ){
+			
+			/*	
+			print_r( $survey_id );
+			echo "<pre>";
+			print_r( $_POST );
+			echo "</pre>";
+			wp_die();
+			*/
+			
+			if( $survey_id && isset( $_POST[ 'pages' ] ) ){
+				// UPDATE OR ADD NEW PAGE
+				$this->updatePages( $survey_id, $_POST[ 'pages' ] );
+			}
+
+			if( $survey_id && isset( $_POST['pages_delete'] ) && $_POST['pages_delete'] ){
+				// $_POST['pages_delete'] HAS A COMMA SEPERATED STRING OF PAGE IDs THAT ARE NO LONGER NEEDED
+				$this->deletePages( explode(',', $_POST['pages_delete'] ) );
+			}
+			
+			
+			// FIND THE REQUIRED QUESTIONS
+			$required_questions = array();
+			$rules = array();
+			if( isset( $_POST['pages'] ) && is_array( $_POST['pages'] ) ){
+				foreach( $_POST['pages'] as $page ){
+					if( isset( $page['questions'] ) && is_array( $page['questions'] ) ){
+						foreach( $page['questions'] as $question ){
+							if( isset( $question['required'] ) && isset( $question['id'] ) ){
+								array_push( $required_questions, $question['id'] );
+							}
+							elseif( isset( $question['id'] ) && isset( $question['rules']) && is_array( $question['rules'] ) ){
+								// OBVIOUSLY ASSUMING THAT A QUESTION WILL BE ADDED ONLY ONCE IN A SURVEY
+								$rules[ $question['id'] ] = $question['rules'];
+							}
+						}
+					}
+				}
+			}
+			$this->updateRequiredQuestions( $survey_id, $required_questions );
+			$this->updateRules( $survey_id, $rules );
+				
+		}
 		
 	}
 	

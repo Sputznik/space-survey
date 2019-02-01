@@ -3,12 +3,11 @@
 * ABSTRACT MODEL THAT HANDLES SQL QUERIES AND ACTS AS A WRAPPER FOR WPDB
 */
 
-class SPACE_DB_BASE{
+class SPACE_DB_BASE extends SPACE_BASE{
 		
 	private $table;
 	private $table_slug;
-	private static $instance = null;
-		
+	
 	function __construct(){
 		
 		// SET TABLE SLUG
@@ -20,23 +19,7 @@ class SPACE_DB_BASE{
 		// REMOVE TABLE FROM PRODUCTION
 		add_action('space_survey_drop', array($this, 'drop_table'));
 	}
-		
-	// SINGLETON DESIGN PATTERN - NEEDS TO BE IMPLEMENTED IN EACH CHILD
-	public static function getInstance(){
-		
-		if( self::$instance == null ){
-			self::$instance = array();
-		}
-		
-		$class = get_called_class();
-		
-		if( !isset( self::$instance[ $class ] ) ){
-            // new $class() will work too
-            self::$instance[ $class ] = new static();
-        }
-		
-        return self::$instance[ $class ];
-	}
+	
 		
 	/* GETTER AND SETTER FUNCTIONS */
 	function setTable( $table ){ $this->table = $table; }

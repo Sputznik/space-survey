@@ -45,21 +45,7 @@ class SPACE_DB_RESPONSE extends SPACE_DB_BASE{
 	}
 	
 	function deleteResponsesForGuest( $guest_id ){
-		/*
-		global $wpdb;
 		
-		$from_query = $this->_from_query();
-		
-		$where_query = $this->_where_query( array(
-			'guest_id'	=> '%d'
-		) );
-		
-		$query = 'Delete'.$from_query.$where_query;
-		
-		$wpdb->query( $this->prepare( $query, array( $guest_id ) ) );
-		
-		//echo $query;
-		*/
 		$this->delete_selected_rows( array( 'guest_id'	=> '%d' ), array( $guest_id ) );
 		
 	}

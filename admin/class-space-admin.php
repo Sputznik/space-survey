@@ -47,6 +47,10 @@
 					'title'	=> 'Add Question',
 					'menu'	=> 'space-survey'
 				),
+				'space-export'	=> array(
+					'title'	=> 'Export',
+					'menu'	=> 'space-survey'
+				)
 			) );
 
 			$this->setMetaBoxes( array(
@@ -74,7 +78,7 @@
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
 
-			add_action( 'save_post', array( $this, 'handle_survey_metabox' ) );
+			//add_action( 'save_post', array( $this, 'handle_survey_metabox' ) );
 
 			// AJAX ACTION TO DROP TABLES. REMOVE FROM PRODUCTION
 			add_action('wp_ajax_space_survey_drop', array($this, 'drop_db_tables'));
@@ -132,7 +136,7 @@
 				add_meta_box(
 					$meta_box['id'], 													// Unique ID
 					$meta_box['title'], 												// Box title
-					array( $this, $meta_box['box_html'], ), 										// Content callback
+					array( $this, 'metabox_html' ),//array( $this, $meta_box['box_html'], ), 							// Content callback
 					'space_survey',
 					isset( $meta_box['context'] ) ? $meta_box['context'] : 'normal', 	// Context
 					'default',															// Priority
@@ -159,6 +163,9 @@
 				}
 
 			}
+			
+			
+			
 		}
 
 		function admin_head(){
@@ -266,10 +273,18 @@
 			);
 			
 			wp_enqueue_script(
+				'space-batch-process',
+				plugins_url( $plugin_assets_folder.'js/batch-process.js' ),
+				array( 'jquery' ),
+				'1.0.1',
+				true
+			);
+			
+			wp_enqueue_script(
 				'space-script',
 				plugins_url( $plugin_assets_folder.'js/main.js' ),
-				array( 'space-repeater-choices', 'space-repeater-questions', 'space-repeater-pages', 'wp-backbone', 'wp-api'),
-				'1.0.0',
+				array( 'space-repeater-choices', 'space-repeater-questions', 'space-repeater-pages', 'space-batch-process', 'wp-backbone', 'wp-api'),
+				'1.0.1',
 				true
 			);
 			
@@ -300,85 +315,8 @@
 			wp_die();
 		}
 
-		function handle_survey_metabox( $survey_id ){
-			
-			/*
-			print_r( $survey_id );
-			echo "<pre>";
-			print_r( $_POST );
-			echo "</pre>";
-			wp_die();
-			*/
-
-			$survey_db = SPACE_DB_SURVEY::getInstance();
-		
-			if( $survey_id && isset( $_POST[ 'pages' ] ) ){
-				// UPDATE OR ADD NEW PAGE
-				$survey_db->updatePages( $survey_id, $_POST[ 'pages' ] );
-			}
-
-			if( $survey_id && isset( $_POST['pages_delete'] ) && $_POST['pages_delete'] ){
-				// $_POST['pages_delete'] HAS A COMMA SEPERATED STRING OF PAGE IDs THAT ARE NO LONGER NEEDED
-				$survey_db->deletePages( explode(',', $_POST['pages_delete'] ) );
-			}
-			
-			// FIND THE REQUIRED QUESTIONS
-			$required_questions = array();
-			$rules = array();
-			if( isset( $_POST['pages'] ) && is_array( $_POST['pages'] ) ){
-				foreach( $_POST['pages'] as $page ){
-					if( isset( $page['questions'] ) && is_array( $page['questions'] ) ){
-						foreach( $page['questions'] as $question ){
-							if( isset( $question['required'] ) && isset( $question['id'] ) ){
-								array_push( $required_questions, $question['id'] );
-							}
-							elseif( isset( $question['id'] ) && isset( $question['rules']) && is_array( $question['rules'] ) ){
-								// OBVIOUSLY ASSUMING THAT A QUESTION WILL BE ADDED ONLY ONCE IN A SURVEY
-								$rules[ $question['id'] ] = $question['rules'];
-							}
-						}
-					}
-				}
-			}
-			$survey_db->updateRequiredQuestions( $survey_id, $required_questions );
-			$survey_db->updateRules( $survey_id, $rules );
-			
-			
-			//wp_die();
-
-		}
-
-		function survey_metabox_html(){
-
-			require_once( plugin_dir_path(__FILE__).'../forms/class-space-page-form.php' );
-
-			// GET LIST OF PAGES FOR THE SURVEY
-			$pages = array();
-			if( isset( $_GET['post'] ) ){
-				$survey_db = SPACE_DB_SURVEY::getInstance();
-				$pages = $survey_db->listPages( $_GET['post'] );
-			}
-			// PAGE FORM
-			$page_form = new SPACE_PAGE_FORM( $pages );
-			$page_form->display();
-			
-			
-			
-			
-		}
-		
-		function results_metabox_html(){
-			require_once( plugin_dir_path(__FILE__).'../forms/class-space-results-form.php' );
-			
-			$survey_db = SPACE_DB_SURVEY::getInstance();
-			
-			$totalGuests = $survey_db->totalGuests( $_GET['post'] );
-			
-			_e( '<p>Total Forms that have been submitted: <b>'. $totalGuests .'</b></p>' );
-			
-			// RESULTS FORM
-			$results_form = new SPACE_RESULTS_FORM();
-			$results_form->display();
+		function metabox_html( $post, $metabox ){
+			include( 'templates/metabox-'.$metabox['id'].'.php' );
 		}
 
 	}

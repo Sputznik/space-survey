@@ -38,4 +38,6 @@ jQuery( document ).on( 'ready', function(){
 
 	jQuery('[data-behaviour~=space-pages]').space_pages();
 	
+	jQuery('[data-behaviour~=space-batch]').space_batch_process();
+	
 } );
