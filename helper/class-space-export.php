@@ -24,7 +24,7 @@ class SPACE_EXPORT extends SPACE_BASE{
 			$survey_db = SPACE_DB_SURVEY::getInstance();
 			$questions = $survey_db->getQuestionsList( $survey_id );			
 			$choices = $survey_db->getChoicesList( $survey_id );				
-			$guests = $survey_db->getGuests( $survey_id, $step, 1 );		
+			$guests = $survey_db->getGuests( $survey_id, $step, 100 );		
 
 			$file_slug = 'space_survey' . $survey_id;
 			
@@ -46,7 +46,7 @@ class SPACE_EXPORT extends SPACE_BASE{
 			}
 			$num_guests = count( $guests['results'] );
 			$total_guests = $guests['num_rows'];
-			echo "<p>$num_guests more guest responses have been added to the CSV file</p>";
+			echo "<p>$num_guests guest responses have been added to the CSV file</p>";
 			
 			if( $step == $batches ){
 				$fileURL = $this->getFilePath( $file_slug )['url'];

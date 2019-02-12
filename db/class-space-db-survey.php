@@ -43,12 +43,15 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		
 		$survey = get_post( $ID );
 		
-		$survey->rules = $this->listRules( $survey->ID );
+		if( $survey ){
 		
-		$survey->required_questions = $this->listRequiredQuestions( $survey->ID );
-		
-		$survey->pages = $this->listPages( $survey->ID );
-		
+			$survey->rules = $this->listRules( $survey->ID );
+			
+			$survey->required_questions = $this->listRequiredQuestions( $survey->ID );
+			
+			$survey->pages = $this->listPages( $survey->ID );
+			
+		}
 		return $survey;
 		
 	}
@@ -137,17 +140,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			)
 		);
 		
-		/*
 		
-		
-		/*
-		return $this->getGuestDB()->filter( 
-			array(
-				'survey_id'	=> '%d'
-			),
-			array( (int) $survey_id )
-		);
-		*/
 	}
 	
 	function getChoicesList( $survey_id ){

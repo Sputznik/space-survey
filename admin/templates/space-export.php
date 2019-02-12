@@ -2,6 +2,16 @@
 	
 	$survey_db = SPACE_DB_SURVEY::getInstance();
 	
+	$survey_id = isset( $_REQUEST['survey'] ) ? $_REQUEST['survey'] : 0;
+	
+?>
+<h1 class='wp-heading-inline'>Export</h1>
+<?php if( ! $survey_id ): ?>
+<p>Export responses for a particular survey in CSV format</p>
+<?php
+	/*
+	* GET THE LAST 10 SURVEYS
+	*/
 	$surveys_data = $survey_db->results( 1, 10, array(
 		'col_formats'	=> array(
 			'post_type'		=> '%s',
@@ -23,10 +33,7 @@
 		}
 	}
 	
-	
 ?>
-<h1 class='wp-heading-inline'>Export</h1>
-<p>Export responses for a particular survey in CSV format</p>
 <form method="POST">
 	<div class='form-field'>
 		<label>Select Survey</label><br>
@@ -38,52 +45,41 @@
 	</div>
 	<p><input type="submit" name="publish" class="button button-primary button-large" value="Generate CSV"></p>
 </form>
-
+<?php else:?>
 <?php
 	
-	/*
-	echo "<pre>";
-	print_r( $_POST );
-	echo "</pre>";
+	// SURVEY HAS ALREADY BEEN SELECTED AND THE ID HAS BEEN PASSED
 	
-	$survey_id = $_POST['survey'];
 	$survey_db = SPACE_DB_SURVEY::getInstance();
 	
-	$data = $survey_db->getGuests( $survey_id );
+	$survey = $survey_db->get_row( $survey_id );
 	
-	echo "<pre>";
-	print_r( $data );
-	echo "</pre>";
-	*/
+	$totGuests = $survey_db->totalGuests( $survey_id );
 	
-	//$file = fopen("contacts.csv","w");
+	if( $survey && $totGuests ){
 	
-	//$export = SPACE_EXPORT::getInstance();
-	
-	//$export->output( 41290 );
-	
-	
-	$batch_process = SPACE_BATCH_PROCESS::getInstance();
-	
-	echo $batch_process->process( array(
-		'title'			=> '',
-		'desc'			=> '',
-		'batches'		=> 3,
-		'btn_text' 		=> 'Generate CSV', 
-		'batch_action' 	=> 'export',
-		'survey'		=> 41290
-	) );
-	
-	
+		$batches = (int) ( $totGuests / 100 );
+		$batches = $batches + 1;
+		
+		_e( "<p>Export <b>".$totGuests."</b> responses for <b>".$survey->post_title."</b> in CSV format</p>" );
+		
+		$batch_process = SPACE_BATCH_PROCESS::getInstance();
+		
+		echo $batch_process->process( array(
+			'title'			=> '',
+			'desc'			=> '',
+			'batches'		=> $batches,
+			'btn_text' 		=> 'Generate CSV', 
+			'batch_action' 	=> 'export',
+			'survey'		=> $survey_id
+		) );
+		
+	}
+	else{
+		
+		_e( "<p>No information avalilable for the selected survey.</p>" );
+		
+	}
 	
 ?>
-<style>
-	[data-behaviour~=space-batch]{
-		padding: 0;
-	}
-	[data-behaviour~=space-batch] .logs-container{
-		border: #ccc solid 1px;
-		margin-top: 20px;
-		padding: 10px;
-	}
-</style>
+<?php endif; ?>

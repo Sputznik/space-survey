@@ -213,7 +213,7 @@
 				'space-admin', 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.1.4" 														// VERSION
+				"1.1.5" 														// VERSION
 			);
 
 			wp_enqueue_script(

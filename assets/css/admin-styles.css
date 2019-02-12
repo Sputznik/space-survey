@@ -200,8 +200,6 @@ textarea[data-behaviour~=space-autoresize]{
 
 /* SPACE BATCH PROCESS */
 [data-behaviour~=space-batch]{
-	border: #eee solid 1px;
-	padding: 20px;
 	margin: 20px auto;
 }
 
@@ -217,6 +215,26 @@ textarea[data-behaviour~=space-autoresize]{
 }
 [data-behaviour~=space-batch] .result{ font-weight: bold; }
 [data-behaviour~=space-batch] .logs-container{
-	border-top: #eee solid 1px;
+	border: #ccc solid 1px;
 	margin-top: 20px;
+	padding: 10px;
 }
+
+
+[data-behaviour~=space-batch] button{
+	background: #0085ba;
+	box-shadow: 0 1px 0 #006799;
+	color: #fff;
+	text-decoration: none;
+	text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
+	padding: 6px 14px;
+	line-height: normal;
+	font-size: 14px;
+	vertical-align: middle;
+	height: auto;
+	margin-bottom: 4px;
+	border: #006799 solid 1px;
+	cursor: pointer;
+	border-radius: 3px;
+}
+	
