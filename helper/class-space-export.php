@@ -1,17 +1,73 @@
 <?php
 /*
-* EXPORT MODEL
+* EXPORT HELPER CLASS
 */
 
 class SPACE_EXPORT extends SPACE_BASE{
 	
+	function __construct(){
+		
+		/* SAMPLE ACTION HOOK FOR AJAX CALL */
+		add_action('space_batch_action_export', function(){
+			
+			// GET PARAMETERS
+			$step 		= $_GET['space_batch_step'];
+			$batches 	= $_GET['space_batches'];
+			$survey_id 	= $_GET['survey'];
+			
+			/*
+			* DATABASE OPERATIONS - 
+			* GET THE LIST OF QUESTIONS IN THE SURVEY
+			* GET THE MAP OF CHOICES IN THE SURVEY
+			* GET PAGINATED GUESTS
+			*/ 
+			$survey_db = SPACE_DB_SURVEY::getInstance();
+			$questions = $survey_db->getQuestionsList( $survey_id );			
+			$choices = $survey_db->getChoicesList( $survey_id );				
+			$guests = $survey_db->getGuests( $survey_id, $step, 1 );		
+
+			$file_slug = 'space_survey' . $survey_id;
+			
+			// ADD HEADER ROW FOR THE FIRST BATCH REQUEST ONLY
+			if( $step == 1 ){
+				echo "<p>Header Row has been added in the CSV file</p>";
+				$this->addQuestionsAsHeader( $file_slug, $questions );
+			}
+			
+			/*
+			* ITERATE THROUGH EACH GUEST IN THE RESULT
+			* AND APPEND THEM AS ROW IN THE CSV FILE
+			*/ 
+			$question_ids = $this->getListQuestionIDs( $questions );
+			foreach( $guests['results'] as $guest ){
+				$guestResponses = $survey_db->getGuestDB()->getResponses( $guest->ID );
+				$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
+				$this->addGuestResponses( $file_slug, $responses, $question_ids );
+			}
+			$num_guests = count( $guests['results'] );
+			$total_guests = $guests['num_rows'];
+			echo "<p>$num_guests more guest responses have been added to the CSV file</p>";
+			
+			if( $step == $batches ){
+				$fileURL = $this->getFilePath( $file_slug )['url'];
+				echo "<p>File has been exported successfully. <a target='_blank' href='$fileURL'>Download here.</a></p>";
+			}
+			
+		});
+		
+	}
+	
 	// RETURNING THE FILE PATH WHICH EXISTS IN THE WP UPLOADS DIRECTORY
 	function getFilePath( $file_slug ){
+		$file = "$file_slug.csv";
 		$filePath = array();
 		$path = wp_upload_dir();
-		$filePath['path'] = $path['path']."/$file_slug.csv";
+		$filePath['path'] 	= $path['path'] . "/$file";
+		$filePath['url'] 	= $path['url'] . "/$file";
 		return $filePath;
 	}
+	
+	
 	
 	// POSSIBLY A NEW FILE WHERE HEADER IS THE FIRST ROW OF DATA IN THE FILE
 	function addHeaderToCSV( $file_slug, $header ){
@@ -29,20 +85,24 @@ class SPACE_EXPORT extends SPACE_BASE{
 		fclose($outstream); 
 	}
 	
+	// RETURNS THE ARRAY OF ALL QUESTION IDS WHEN PASSED THE ASSOCIATIVE ARRAY OF QUESTION
+	function getListQuestionIDs( $questions ){
+		$question_ids = array();
+		foreach( $questions as $question ){
+			array_push( $question_ids, $question->ID );
+		}
+		return $question_ids;
+	}
+	
 	function addQuestionsAsHeader( $file_slug, $questions ){
 		
 		$header = array();
 		
-		$question_ids = array();
-		
 		foreach( $questions as $question ){
 			array_push( $header, $question->title );
-			array_push( $question_ids, $question->ID );
 		}
 		
 		$this->addHeaderToCSV( $file_slug, $header );
-		
-		return $question_ids;
 		
 	}
 	
@@ -126,5 +186,7 @@ class SPACE_EXPORT extends SPACE_BASE{
 	}
 	
 }
-	
+
+// CREATE AN INSTANCE FOR THE AJAX CALLBACK TO BE HANDLED
+SPACE_EXPORT::getInstance();
 	

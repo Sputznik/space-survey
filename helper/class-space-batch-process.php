@@ -40,10 +40,11 @@ class SPACE_BATCH_PROCESS extends SPACE_BASE{
 			'desc'			=> 'Description of the process',
 			'batches' 		=> '10', 
 			'btn_text' 		=> 'Process Request', 
-			'batch_action' 	=> 'default' 
+			'batch_action' 	=> 'default',
+			'survey'		=> 0
 		), $atts, $this->slug );
 				
-		$url = admin_url( 'admin-ajax.php' ).'?action='.$this->slug;
+		$url = admin_url( 'admin-ajax.php' ) . '?action=' . $this->slug . '&survey=' . $atts['survey'];
 			
 		ob_start();
 				

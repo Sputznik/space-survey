@@ -66,9 +66,24 @@
 	$batch_process = SPACE_BATCH_PROCESS::getInstance();
 	
 	echo $batch_process->process( array(
-		
+		'title'			=> '',
+		'desc'			=> '',
+		'batches'		=> 3,
+		'btn_text' 		=> 'Generate CSV', 
+		'batch_action' 	=> 'export',
+		'survey'		=> 41290
 	) );
 	
 	
 	
 ?>
+<style>
+	[data-behaviour~=space-batch]{
+		padding: 0;
+	}
+	[data-behaviour~=space-batch] .logs-container{
+		border: #ccc solid 1px;
+		margin-top: 20px;
+		padding: 10px;
+	}
+</style>

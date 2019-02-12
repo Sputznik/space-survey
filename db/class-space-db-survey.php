@@ -125,14 +125,29 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	}
 	
 	// RETURNS THE LIST OF ASSOCIATED GUESTS
-	function getGuests( $survey_id ){
-
+	function getGuests( $survey_id, $page = 0, $per_page = 20 ){
+		
+		return $this->getGuestDB()->results( 
+			$page, 
+			$per_page, 
+			array( 
+				'col_formats' 	=>  array( 'survey_id'	=> '%d' ),
+				'col_values'	=> 	array( (int) $survey_id ),
+				'operator'		=> '='
+			)
+		);
+		
+		/*
+		
+		
+		/*
 		return $this->getGuestDB()->filter( 
 			array(
 				'survey_id'	=> '%d'
 			),
 			array( (int) $survey_id )
 		);
+		*/
 	}
 	
 	function getChoicesList( $survey_id ){
