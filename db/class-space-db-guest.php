@@ -189,18 +189,24 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 			
 			$sub_query = "";
 			$i = 0;
+			// ITERATE THROUGH EACH CHOICES AND CREATED A NESTED QUERY
 			foreach( $choices as $choice_id ){
-				$unique_choice_query = "SELECT DISTINCT guest_id FROM $responseTable WHERE choice_id = $choice_id";
-				if( $i > 0 ){
-					$sub_query = "$sub_query AND guest_id IN ( $unique_choice_query )";
+				if( $choice_id ){
+					$unique_choice_query = "SELECT DISTINCT guest_id FROM $responseTable WHERE choice_id = $choice_id";
+					if( $i > 0 ){
+						$sub_query = "$sub_query AND guest_id IN ( $unique_choice_query )";
+					}
+					else{
+						$sub_query = $unique_choice_query;
+					}
+					$i++;
 				}
-				else{
-					$sub_query = $unique_choice_query;
-				}
-				$i++;
 			}
 			
-			$query .= " AND guest_id IN (" . $sub_query . ")";
+			// ONLY IF THE SUB QUERY IS PRESENT THEN ADD TO THE MAIN QUERY
+			if( $sub_query ){
+				$query .= " AND guest_id IN (" . $sub_query . ")";
+			}
 		}
 		$query .= " GROUP BY guest_id";
 		$query = $this->prepare( $query, array( $survey_id ) );

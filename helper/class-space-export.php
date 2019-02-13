@@ -34,6 +34,8 @@ class SPACE_EXPORT extends SPACE_BASE{
 			$choices = $survey_db->getChoicesList( $survey_id );				
 			$guest_ids = $survey_db->listGuestIDs( $survey_id, $filterChoices, $step, $per_page );
 			
+			//print_r( $guest_ids );
+			
 			// ADD HEADER ROW FOR THE FIRST BATCH REQUEST ONLY
 			if( $step == 1 ){
 				echo "<p>Header Row has been added in the CSV file</p>";
