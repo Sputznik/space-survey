@@ -65,43 +65,7 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 			array( (int) $guest_id )
 		);
 	}
-	/*
-	function getFormattedResponses( $guest_id, $choices ){
-		
-		$data = array();
-		
-		$responseTable	= $this->getResponseDB()->getTable();
-		$questionTable 	= $this->getQuestionDB()->getTable();
-		
-		$query = "SELECT * FROM $responseTable r INNER JOIN $questionTable q ON r.question_id = q.ID WHERE r.guest_id = %d ORDER BY r.ID ASC";
-		
-		$query = $this->prepare( $query, array( $guest_id ) );
-		
-		$responses = $this->get_results( $query );
-		
-		foreach( $responses as $response ){
-			
-			if( ! isset( $data[ $response->question_id ] ) ){
-				$data[ $response->question_id ] = array(
-					'question_title'	=> $response->title,
-					'choices'			=> array()
-				);
-			}	
-			
-			
-			if( $response->choice_id && isset( $choices[ $response->choice_id ] ) && isset( $choices[ $response->choice_id ]->title ) ){
-				array_push( $data[ $response->question_id ][ 'choices' ], $choices[ $response->choice_id ]->title );
-			}
-			elseif( $response->choice_text ){
-				array_push( $data[ $response->question_id ][ 'choices' ], $response->choice_text );
-			}
-			
-		}
-		
-		return $data;
-		
-	}
-	*/
+	
 	function deleteResponses( $guest_id ){
 		$this->getResponseDB()->deleteResponsesForGuest( $guest_id );
 	}
@@ -208,17 +172,55 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 			array( (int) $survey_id )	
 		);
 		
-		/*
-		foreach( $pages as $page ){
-			
-			$page->questions = $this->getRelationDB()->listForPage( $page->ID );
-			
-		}
-		*/
-		
 		return $guests;
 	}
 	
+	function listIDsForSurvey( $survey_id, $choices = array(), $page = 1, $per_page = 10 ){
+		
+		$data = array( 'results' => array(), 'num_rows' => 0 );
+		
+		$table = $this->getTable();
+		$responseTable = $this->getResponseDB()->getTable();
+		
+		$query = "SELECT guest_id FROM $responseTable WHERE guest_id IN ( SELECT ID FROM $table WHERE survey_id = %d )";
+		
+		// FILTER THE GUESTS WITH THE CHOICES THAT THEY HAVE SELECTED
+		if( is_array( $choices ) && count( $choices ) ){
+			
+			$sub_query = "";
+			$i = 0;
+			foreach( $choices as $choice_id ){
+				$unique_choice_query = "SELECT DISTINCT guest_id FROM $responseTable WHERE choice_id = $choice_id";
+				if( $i > 0 ){
+					$sub_query = "$sub_query AND guest_id IN ( $unique_choice_query )";
+				}
+				else{
+					$sub_query = $unique_choice_query;
+				}
+				$i++;
+			}
+			
+			$query .= " AND guest_id IN (" . $sub_query . ")";
+		}
+		$query .= " GROUP BY guest_id";
+		$query = $this->prepare( $query, array( $survey_id ) );
+		
+		//echo $query;
+		
+		// FIND THE TOTAL NUMBER OF ROWS
+		$count_query = "SELECT count(*) FROM (" . $query . ") AS NEWTABLE";
+		$data['num_rows'] = $this->get_var( $count_query );
+		
+		$query .= $this->_limit_query( $page, $per_page );
+		$results = $this->get_results( $query );
+		foreach( $results as $row ){
+			array_push( $data['results'], $row->guest_id );
+		}
+		
+		
+		
+		return $data;
+	}
 
 }
 

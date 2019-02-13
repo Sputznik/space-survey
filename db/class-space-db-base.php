@@ -168,13 +168,15 @@ class SPACE_DB_BASE extends SPACE_BASE{
 		
 		$data['num_rows'] = $this->getCount( $search );
 		
-		// QUERY TO GET PAGINATED RESPONSE
-		$offset = ( $page-1 ) * $per_page;
 		$results_query = "SELECT *".$this->_from_query();
+		
+		// ADD CONDITIONS
 		if( $where_query ){
 			$results_query .= $where_query;
 		}
-		$results_query .= " LIMIT $offset,$per_page;";
+		
+		// QUERY TO GET PAGINATED RESPONSE
+		$results_query .= $this->_limit_query( $page, $per_page ).";";
 		
 		if( is_array( $search['col_values'] ) && count( $search['col_values'] ) ){
 			$results_query = $this->prepare( $results_query, $search['col_values'] );	
@@ -206,6 +208,11 @@ class SPACE_DB_BASE extends SPACE_BASE{
 		}
 
 		return $query;
+	}
+	
+	function _limit_query( $page, $per_page ){
+		$offset = ( $page - 1 ) * $per_page;
+		return " LIMIT $offset,$per_page";
 	}
 	
 	function filter( $col_formats, $col_values, $order_by = 'ID', $order = 'ASC' ){

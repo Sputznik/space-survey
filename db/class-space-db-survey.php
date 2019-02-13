@@ -139,6 +139,12 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 				'operator'		=> '='
 			)
 		);
+	}
+	
+	// RETURNS THE LIST OF GUEST IDs IN A PAGINATED FORMAT
+	function listGuestIDs( $survey_id, $choices, $page = 1, $per_page = 20 ){
+		
+		return $this->getGuestDB()->listIDsForSurvey( $survey_id, $choices, $page, $per_page );
 		
 		
 	}

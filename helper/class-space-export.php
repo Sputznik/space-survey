@@ -11,22 +11,28 @@ class SPACE_EXPORT extends SPACE_BASE{
 		add_action('space_batch_action_export', function(){
 			
 			// GET PARAMETERS
-			$step 		= $_GET['space_batch_step'];
-			$batches 	= $_GET['space_batches'];
-			$survey_id 	= $_GET['survey'];
+			$step 			= $_GET['space_batch_step'];
+			$batches 		= $_GET['space_batches'];
+			$survey_id 		= $_GET['survey_id'];
+			$per_page		= $_GET['per_page'];
+			$filterChoices 	= isset( $_GET['filterChoices'] ) ? explode( ',', $_GET['filterChoices'] ) : array();
+			$file_slug 		= 'space_survey' . $survey_id;
+			
+			if( ! $survey_id ){
+				echo "Invalid Survey Information";
+				wp_die();
+			}
 			
 			/*
 			* DATABASE OPERATIONS - 
 			* GET THE LIST OF QUESTIONS IN THE SURVEY
 			* GET THE MAP OF CHOICES IN THE SURVEY
-			* GET PAGINATED GUESTS
+			* GET PAGINATED GUESTS - ONLY THE ID
 			*/ 
 			$survey_db = SPACE_DB_SURVEY::getInstance();
 			$questions = $survey_db->getQuestionsList( $survey_id );			
 			$choices = $survey_db->getChoicesList( $survey_id );				
-			$guests = $survey_db->getGuests( $survey_id, $step, 100 );		
-
-			$file_slug = 'space_survey' . $survey_id;
+			$guest_ids = $survey_db->listGuestIDs( $survey_id, $filterChoices, $step, $per_page );
 			
 			// ADD HEADER ROW FOR THE FIRST BATCH REQUEST ONLY
 			if( $step == 1 ){
@@ -38,16 +44,21 @@ class SPACE_EXPORT extends SPACE_BASE{
 			* ITERATE THROUGH EACH GUEST IN THE RESULT
 			* AND APPEND THEM AS ROW IN THE CSV FILE
 			*/ 
-			$question_ids = $this->getListQuestionIDs( $questions );
-			foreach( $guests['results'] as $guest ){
-				$guestResponses = $survey_db->getGuestDB()->getResponses( $guest->ID );
-				$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
-				$this->addGuestResponses( $file_slug, $responses, $question_ids );
+			if( isset( $guest_ids['results'] ) && is_array( $guest_ids['results'] ) ){
+				$question_ids = $this->getListQuestionIDs( $questions );
+				foreach( $guest_ids['results'] as $guest_id ){
+					$guestResponses = $survey_db->getGuestDB()->getResponses( $guest_id );
+					$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
+					$this->addGuestResponses( $file_slug, $responses, $question_ids );
+				}
+				$num_guests = count( $guest_ids['results'] );
+				echo "<p>$num_guests guest responses have been added to the CSV file</p>";
 			}
-			$num_guests = count( $guests['results'] );
-			$total_guests = $guests['num_rows'];
-			echo "<p>$num_guests guest responses have been added to the CSV file</p>";
 			
+			
+			/*
+			* IN THE LAST ITERATION APPEND THE DOWNLOAD LINK
+			*/
 			if( $step == $batches ){
 				$fileURL = $this->getFilePath( $file_slug )['url'];
 				echo "<p>File has been exported successfully. <a target='_blank' href='$fileURL'>Download here.</a></p>";

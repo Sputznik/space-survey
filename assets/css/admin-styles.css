@@ -20,7 +20,7 @@
 }
 
 
-.space-choice-item, .space-question-item, .space-page-item, .space-rule-item{
+.space-choice-item, .space-question-item, .space-page-item, .space-rule-item, .space-filter-item{
 	border: #ccc solid 1px;
 	background: #fff;
 	padding: 10px;
@@ -65,6 +65,10 @@
 	width: 100%;
 }
 
+#space-filters{
+	max-width: 500px;
+}
+
 textarea[data-behaviour~=space-autoresize]{
 	border: none;
 	overflow: hidden;
@@ -85,6 +89,7 @@ textarea[data-behaviour~=space-autoresize]{
 	outline		: none;
 }
 
+/* CLOSE BUTTONS */
 .space-page-item .space-close-btn, .space-question-item .space-close-btn{
 	top: auto;
 	bottom: 10px;
@@ -93,13 +98,14 @@ textarea[data-behaviour~=space-autoresize]{
 	text-decoration: underline;
 }
 
-.space-choice-item .space-close-btn, .space-rule-item .space-close-btn{
+.space-choice-item .space-close-btn, .space-rule-item .space-close-btn, .space-filter-item .space-close-btn{
 	top: 5px;
 	bottom: auto;
 	font-size	: 30px;
 	color: inherit;
 	text-decoration: none;
 }
+/* CLOSE BUTTONS */
 
 .space-collapse::before{
 	content: "\f140";
@@ -136,6 +142,17 @@ textarea[data-behaviour~=space-autoresize]{
 
 .space-page-item .wp-editor-wrap{
 	margin-bottom: 30px;
+}
+
+
+.space-filter-item .space-rule-grid{
+	display: grid;
+	grid-template-columns: 250px 200px;
+	grid-gap: 20px;
+}
+
+.space-filter-item input[type=text].ui-autocomplete-input{
+	width: 100%;
 }
 	
 /* MODAL BOXES *

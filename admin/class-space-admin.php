@@ -213,7 +213,7 @@
 				'space-admin', 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.1.5" 														// VERSION
+				"1.1.6" 														// VERSION
 			);
 
 			wp_enqueue_script(
@@ -273,18 +273,26 @@
 			);
 			
 			wp_enqueue_script(
+				'space-repeater-export',
+				plugins_url( $plugin_assets_folder.'js/repeater-export-filters.js' ),
+				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
+				'1.0.0',
+				true
+			);
+			
+			wp_enqueue_script(
 				'space-batch-process',
 				plugins_url( $plugin_assets_folder.'js/batch-process.js' ),
 				array( 'jquery' ),
-				'1.0.1',
+				'1.0.2',
 				true
 			);
 			
 			wp_enqueue_script(
 				'space-script',
 				plugins_url( $plugin_assets_folder.'js/main.js' ),
-				array( 'space-repeater-choices', 'space-repeater-questions', 'space-repeater-pages', 'space-batch-process', 'wp-backbone', 'wp-api'),
-				'1.0.1',
+				array( 'space-repeater-choices', 'space-repeater-questions', 'space-repeater-pages', 'space-repeater-export', 'space-batch-process', 'wp-backbone', 'wp-api'),
+				'1.0.3',
 				true
 			);
 			

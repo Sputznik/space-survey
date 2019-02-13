@@ -2,11 +2,10 @@ $.fn.space_batch_process = function(){
 	
 	return this.each(function(){
 		
-		var el = $(this);
-		
-		var batches = el.data('batches');
-		
-		var batch_step = 1;
+		var el 			= $(this),
+			batches 	= el.data('batches'),
+			batch_step 	= 1,
+			params 		= el.data('params');
 		
 		/* HIDE ELEMENTS */
 		el.find('.space-progress-container').hide();
@@ -36,32 +35,33 @@ $.fn.space_batch_process = function(){
 		/* AJAX CALL */
 		el.ajaxCall = function(){
 			
-			/* FORM THE AJAX URL */
-			var url = el.data('url') + "&space_batch_action=" + el.data('action') + "&space_batches=" + batches + "&space_batch_step=" + batch_step;
+			// PREPARE THE DATA THAT NEEDS TO BE PASSES THROUGH THE AJAX CALL
+			var data = params;
+			data['space_batch_action'] 	= el.data('action');
+			data['space_batches']		= batches;
+			data['space_batch_step']	= batch_step;
 			
-			/* UPDATE THE PROGRESS IN THE BUTTON HTML */
+			// UPDATE THE PROGRESS IN THE BUTTON HTML
 			el.find('button').html( el.data('btn') + " " + ( batch_step - 1 ) + "/" + batches );
 			
 			$.ajax({
-				'url'		: url,
-				'error'		: function(){
-					alert( 'Error has occurred' );
-				},
+				'url'		: el.data('url'),
+				'error'		: function(){ alert( 'Error has occurred' ); },
+				'data'		: data,
 				'success'	: function( html ){
 					
 					/* CHECK IF BATCH STEP INCREMENT IS ITERATED */	
 					if( batch_step <= batches ){
 						
-						batch_step++;			/* INCREMENT BATCH STEP */
-
-						el.addLog( html );		/* ADD TO THE LOG FROM THE AJAX HTML RESPONSE */
+						batch_step++;			// INCREMENT BATCH STEP
 						
-						el.updateProgress();	/* UPDATE PROGRESS BAR */	
+						el.addLog( html );		// ADD TO THE LOG FROM THE AJAX HTML RESPONSE
+						
+						el.updateProgress();	// UPDATE PROGRESS BAR 	
 
-						el.ajaxCall();			/* EXECUTE THE NEXT BATCH CALL */
+						el.ajaxCall();			// EXECUTE THE NEXT BATCH CALL 
 						
 					}
-					
 				}
 			});
 		};

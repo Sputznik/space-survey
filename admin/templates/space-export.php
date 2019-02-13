@@ -1,5 +1,6 @@
 <?php
 	
+	
 	$survey_db = SPACE_DB_SURVEY::getInstance();
 	
 	$survey_id = isset( $_REQUEST['survey'] ) ? $_REQUEST['survey'] : 0;
@@ -32,6 +33,7 @@
 				<option value='<?php _e( $survey->ID );?>'><?php _e( $survey->post_title );?></option>
 				<?php endforeach;?>
 			</select>
+			<div data-behaviour='space-export-filters'></div>
 			<p><input type="submit" name="publish" class="button button-primary button-large" value="Generate CSV"></p>
 		</form>
 <?php 
@@ -40,10 +42,24 @@
 		
 		// SURVEY HAS ALREADY BEEN SELECTED AND THE ID HAS BEEN PASSED
 		
+		
+		// TAKE OUT THE CHOICES FROM THE FILTERS
+		$filterChoices = array();
+		if( isset( $_POST['rules'] ) && is_array( $_POST['rules'] ) ){
+			foreach( $_POST['rules'] as $filter ){
+				if( isset( $filter['value'] ) && $filter['value'] ){
+					array_push( $filterChoices, $filter['value'] );
+				}
+			}
+		}
+		
+		
 		// DB OPERATIONS
 		$survey_db = SPACE_DB_SURVEY::getInstance();
 		$survey = $survey_db->get_row( $survey_id );
-		$totGuests = $survey_db->totalGuests( $survey_id );
+		$totGuests = $survey_db->totalGuests( $survey_id, $filterChoices );
+		$guests = $survey_db->listGuestIDs( $survey_id, $filterChoices );
+		$totExportGuests = $guests['num_rows'];
 		
 		if( $survey && $totGuests ){
 			
@@ -52,17 +68,21 @@
 			$batches = $batches + 1;
 			
 			// SECONDARY TITLE
-			_e( "<p>Export <b>".$totGuests."</b> responses for <b>".$survey->post_title."</b> in CSV format</p>" );
+			_e( "<p>Export <b>$totExportGuests/$totGuests</b> responses for <b>".$survey->post_title."</b> in CSV format</p>" );
 			
 			$batch_process = SPACE_BATCH_PROCESS::getInstance();
 			
-			echo $batch_process->process( array(
+			$batch_process->process( array(
 				'title'			=> '',
 				'desc'			=> '',
 				'batches'		=> $batches,
 				'btn_text' 		=> 'Generate CSV', 
 				'batch_action' 	=> 'export',
-				'survey'		=> $survey_id
+				'params'		=> array(
+					'survey_id'		=> $survey_id,
+					'filterChoices'	=> implode( ',', $filterChoices ),
+					'per_page'		=> 100
+				)
 			) );
 			
 		}

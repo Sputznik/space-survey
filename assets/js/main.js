@@ -40,4 +40,6 @@ jQuery( document ).on( 'ready', function(){
 	
 	jQuery('[data-behaviour~=space-batch]').space_batch_process();
 	
+	jQuery('[data-behaviour~=space-export-filters]').space_export_filters();
+	
 } );
