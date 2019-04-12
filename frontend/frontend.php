@@ -12,9 +12,9 @@
 
 			add_action( 'wp_ajax_space_survey_save', array( $this, 'saveGuestData' ) );
 			add_action( 'wp_ajax_nopriv_space_survey_save', array( $this, 'saveGuestData' ) );
-			
+
 			add_shortcode( 'space_survey', array( $this, 'surveyHTML' ) );
-			
+
 			add_filter( 'the_content', array( $this, 'overrideContent' ) );
 
 		}
@@ -94,7 +94,7 @@
 				'space-slides',
 				plugins_url( $plugin_assets_folder.'js/slides.js' ),
 				array( 'jquery'),
-				'2.0.0',
+				'2.0.1',
 				true
 			);
 
@@ -106,22 +106,22 @@
 		}
 
 		function surveyHTML( $atts ){
-			
+
 			$survey_id = $atts['id'];
 
 			require_once('class-space-survey-frontend.php');
 			$survey_frontend = new SPACE_SURVEY_FRONTEND( $survey_id );
 			return $survey_frontend->html();
 		}
-		
+
 		function overrideContent( $content ){
-			
+
 			global $post;
-			
+
 			if( $post->post_type == 'space_survey' ){
 				$content = $this->surveyHTML( array( 'id' => $post->ID ) );
 			}
-			
+
 			return $content;
 		}
 
@@ -130,5 +130,3 @@
 
 	global $space_frontend;
 	$space_frontend = new SPACE_FRONTEND;
-	
-	

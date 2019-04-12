@@ -4,10 +4,10 @@ jQuery.fn.space_slides = function(){
 	return this.each(function() {
 
 		var $el 		= jQuery( this );
-		
+
 		/*
 		*	GET UNIQUE GUEST ID BY USING COOKIES
-		*/ 
+		*/
 		function guestData(){
 
 			jQuery.ajax({
@@ -19,10 +19,10 @@ jQuery.fn.space_slides = function(){
 					survey_id 	: getSurveyID()
 				},
 				success: function( response ){
-					
+
 					// SET GUEST ID WITHIN THE FORM
 					setGuestID( response.guest_id );
-					
+
 					// SET ANSWERS OF THE GUEST THAT WERE RECORDED PREVIOUSLY
 					jQuery.each( response.responses, function( i, row ){
 						setAnswerForQuestion( row );
@@ -35,7 +35,7 @@ jQuery.fn.space_slides = function(){
 			});
 
 		}
-		
+
 		// MAP GUEST RESPONSE ON THE FORM SELECTION
 		function setAnswerForQuestion( response ){
 
@@ -131,7 +131,7 @@ jQuery.fn.space_slides = function(){
 
 			return $el.find( '[data-slide~=' + prevSlideNumber + ']' );
 		}
-		
+
 		/*
 		* SLIDE TRANSITION FROM CURRENT TO THE NEXT ONE
 		* SAVE DATA BEFORE TRANSITION
@@ -139,7 +139,7 @@ jQuery.fn.space_slides = function(){
 		*/
 		function transitionSlide( $slide, $nextSlide ){
 			saveGuestData();
-			
+
 			$slide.removeClass('active');
 			$nextSlide.addClass('active');
 
@@ -157,31 +157,31 @@ jQuery.fn.space_slides = function(){
 
 			});
 		}
-		
-		
+
+
 		/*
 		* EVENT HANDLER FOR THE NEXT BUTTON
 		*/
 		$el.find('[data-behaviour~=space-slide-next]').click( function( ev ){
-			
+
 			ev.preventDefault();
-			
+
 			var $slide 		= getCurrentSlide(),
 				$nextSlide	= getNextSlide(),
 				totalQuest	= $slide.find('.space-question.required').length,
 				doneQuest	= $slide.find('.space-question.required.done').length;
-			
+
 			if( totalQuest == doneQuest ){
 				transitionSlide( $slide, $nextSlide );
 			}
 			else{
 				alert('Some required fields have not been filled');
 			}
-			
-			
-			
+
+
+
 		});
-		
+
 		/*
 		* EVENT HANDLER FOR THE PREVIOUS BUTTON
 		*/
@@ -191,22 +191,22 @@ jQuery.fn.space_slides = function(){
 
 			var $slide 		= getCurrentSlide(),
 				$nextSlide	= getPreviousSlide();
-			
+
 			transitionSlide( $slide, $nextSlide );
-		
+
 		});
-		
+
 		// HANDLE CHANGE ON INPUTS TO MARK THE PARENT CLASS WITH 'done'
 		$el.find('.space-question').each( function(){
-			
+
 			var $questionDiv = jQuery( this ),
 				questionType = $questionDiv.data('type');
-				
+
 			switch( questionType ){
 
 				case 'radio':
 					var $questionInput = $questionDiv.find('input[type="radio"]');
-					
+
 					// ON CLICK OF THE RADIO BUTTON IT GETS SELECTED
 					$questionInput.click( function( ev ){
 						$questionDiv.addClass('done');
@@ -215,10 +215,10 @@ jQuery.fn.space_slides = function(){
 
 				case 'checkbox':
 					var $questionInput = $questionDiv.find('input[type="checkbox"]');
-					
-					// TRACK ON CHECKBOX CLICK - IF THE INLINE NUMBER OF CHECKED CHECKBOXES ARE MORE THAN ZERO 
+
+					// TRACK ON CHECKBOX CLICK - IF THE INLINE NUMBER OF CHECKED CHECKBOXES ARE MORE THAN ZERO
 					$questionInput.click( function( ev ){
-						
+
 						var num_checked = $questionDiv.find('input[type="checkbox"]:checked').length;
 						if( num_checked > 0 ){
 							$questionDiv.addClass('done');
@@ -226,24 +226,24 @@ jQuery.fn.space_slides = function(){
 						else{
 							$questionDiv.removeClass('done');
 						}
-						
+
 					});
 					break;
-				
+
 				case 'dropdown':
 					var $questionInput = $questionDiv.find('select');
-					
+
 					$questionInput.change( function( ev ){
 						$questionDiv.addClass('done');
-						if( $questionInput.val().length == 0 ){
+						if( !$questionInput.val() || $questionInput.val().length == 0 ){
 							$questionDiv.removeClass('done');
 						}
 					});
 					break;
-				
+
 				case 'text':
 					var $questionInput = $questionDiv.find('input[type="text"]');
-					
+
 					$questionInput.change( function( ev ){
 						if( $questionInput.val().length ){
 							$questionDiv.addClass('done');
@@ -252,69 +252,69 @@ jQuery.fn.space_slides = function(){
 							$questionDiv.removeClass('done');
 						}
 					});
-					
+
 					break;
-				
+
 			}
 		});
-		
+
 		/*
 		* FORM CHANGE: CONDITIONAL DISPLAY
 		*/
 		$el.find('form').change( function( ev ){
-			
+
 			var $slide = getCurrentSlide();
-			
+
 			$slide.find('.space-question').not('.required').each( function(){
-				
+
 				var $questionDiv 	= jQuery( this ),
 					rules			= $questionDiv.data('rules');
-				
+
 				jQuery.each( rules, function( i, rule ){
-					
+
 					if( rule['action'] && rule['question'] && rule['value'] ){
-						
+
 						var flag 				= false,
 							$parentQuestionDiv 	= jQuery( '#q' + rule['question'] ),
 							parentType			= $parentQuestionDiv.data('type');
-						
+
 						switch( parentType ){
-							
+
 							case 'radio':
-							
+
 							case 'checkbox':
 								// CHECK IF THE INPUT THAT HAS BEEN SELECTED HAS THE SAME VALUE IN THE RULE
 								var $input = $parentQuestionDiv.find('input[value="' + rule['value'] + '"]:checked');
 								if( $input.length ){ flag = true; }
 								break;
-							
+
 							case 'dropdown':
 								var $input = $parentQuestionDiv.find('select');
 								if( $input.val() == rule['value'] ){ flag = true; }
 								break;
 						}
-						
+
 						if( flag ){
 							if( rule['action'] == 'show' ){
 								$questionDiv.removeClass('hide');
 							}
-							
+
 							if( rule['action'] == 'hide' ){
 								$questionDiv.addClass('hide');
 							}
 						}
-						
+
 					}
-					
-					
+
+
 				});
-				
+
 			});
-			
-			
+
+
 		});
-		
-		
+
+
 		// TRIGGER INITIALIZATION
 		init();
 
@@ -324,7 +324,7 @@ jQuery.fn.space_slides = function(){
 };
 
 jQuery( document ).ready( function(){
-	
+
 	jQuery('[data-behaviour~=space-slides]').space_slides();
-	
+
 });
