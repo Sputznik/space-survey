@@ -87,14 +87,14 @@
 				'space',	 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/styles.css' ), 			// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.0.3" 														// VERSION
+				SPACE_SURVEY_VERSION 														// VERSION
 			);
 
 			wp_enqueue_script(
 				'space-slides',
 				plugins_url( $plugin_assets_folder.'js/slides.js' ),
 				array( 'jquery'),
-				'2.0.2',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 

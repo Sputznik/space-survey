@@ -213,14 +213,14 @@
 				'space-admin', 													// SLUG OF THE CSS
 				plugins_url( $plugin_assets_folder.'css/admin-styles.css' ), 	// LOCATION OF THE CSS FILE
 				array(), 														// DEPENDENCIES EHICH WOULD NEED TO BE LOADED BEFORE THIS FILE IS LOADED
-				"1.1.6" 														// VERSION
+				SPACE_SURVEY_VERSION 														// VERSION
 			);
 
 			wp_enqueue_script(
 				'space-autosize',
 				plugins_url( $plugin_assets_folder.'js/autosize.js' ),
 				array( 'jquery'),
-				'1.0.1',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -228,7 +228,7 @@
 				'space-autocomplete',
 				plugins_url( $plugin_assets_folder.'js/autocomplete.js' ),
 				array( 'jquery', 'jquery-ui-autocomplete' ),
-				'1.0.2',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -236,7 +236,7 @@
 				'space-repeater',
 				plugins_url( $plugin_assets_folder.'js/repeater.js' ),
 				array( 'jquery'),
-				'1.0.8',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -244,7 +244,7 @@
 				'space-repeater-choices',
 				plugins_url( $plugin_assets_folder.'js/repeater-choices.js' ),
 				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
-				'1.0.0',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -252,7 +252,7 @@
 				'space-repeater-rules',
 				plugins_url( $plugin_assets_folder.'js/repeater-rules.js' ),
 				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
-				'1.0.2',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -260,7 +260,7 @@
 				'space-repeater-questions',
 				plugins_url( $plugin_assets_folder.'js/repeater-questions.js' ),
 				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater', 'space-repeater-rules' ),
-				'1.0.5',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -268,7 +268,7 @@
 				'space-repeater-pages',
 				plugins_url( $plugin_assets_folder.'js/repeater-pages.js' ),
 				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
-				'1.0.1',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -276,7 +276,7 @@
 				'space-repeater-export',
 				plugins_url( $plugin_assets_folder.'js/repeater-export-filters.js' ),
 				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
-				'1.0.0',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -284,7 +284,7 @@
 				'space-batch-process',
 				plugins_url( $plugin_assets_folder.'js/batch-process.js' ),
 				array( 'jquery' ),
-				'1.0.2',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
@@ -292,7 +292,7 @@
 				'space-script',
 				plugins_url( $plugin_assets_folder.'js/main.js' ),
 				array( 'space-repeater-choices', 'space-repeater-questions', 'space-repeater-pages', 'space-repeater-export', 'space-batch-process', 'wp-backbone', 'wp-api'),
-				'1.0.3',
+				SPACE_SURVEY_VERSION,
 				true
 			);
 
