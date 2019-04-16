@@ -1,29 +1,29 @@
 jQuery.fn.space_rules = function( parent_name ){
-	
+
 	return this.each(function() {
 		/*
 		* VARIABLES ASSIGNMENT
 		*/
 		var $el 	= jQuery(this),
 			rules 	= $el.attr( 'data-rules' );	// RULES FROM THE DB
-			
+
 		// JSON PARSE FROM STRING
 		rules = typeof rules != 'object' ? JSON.parse( rules ) : [];
-		
+
 		var repeater = SPACE_REPEATER( {
 			$el				: $el,
 			btn_text		: '+ Add Rule',
 			list_id			: 'space-rules-list',
 			list_item_id	: 'space-rule-item',
 			init	: function( repeater ){
-				
+
 				/*
 				* INITIALIZE: CREATES THE UNLISTED LIST WHICH WILL TAKE CARE OF THE QUESTION, HIDDEN FIELD AND THE ADD BUTTON
 				*/
-				
+
 				// ITERATE THROUGH EACH QUESTIONS IN THE DB
 				jQuery.each( rules, function( i, rule ){
-					
+
 					if( rule['action'] != undefined && rule['question'] != undefined && rule['value'] != undefined && rule['data'] != undefined ){
 						rule['data'] = typeof rule['data'] != 'object' ? JSON.parse( rule['data'] ) : {};
 						repeater.addItem( rule );
@@ -31,18 +31,18 @@ jQuery.fn.space_rules = function( parent_name ){
 				});
 			},
 			addItem	: function( repeater, $list_item, $closeButton, rule ){
-				
+
 				/*
-				* ADD LIST ITEM TO THE UNLISTED LIST 
+				* ADD LIST ITEM TO THE UNLISTED LIST
 				* DROPDOWN		: ACTIONS (SHOW, HIDE)
 				* AUTOCOMPLETE	: QUESTIONS
 				* DROPDOWN		: CHOICES
 				*/
-				
+
 				if( rule == undefined || rule['action'] == undefined ){
-					rule = { action : 'hide', data : {} };
+					rule = { action : 'show', data : {} };
 				}
-				
+
 				// WRAPPER THAT ENSURES THE FIELDS WILL BE IN GRID FORMAT
 				var $ruleGridWrapper = repeater.createField({
 					element	: 'div',
@@ -51,25 +51,25 @@ jQuery.fn.space_rules = function( parent_name ){
 					},
 					append	: $list_item
 				});
-				
+
 				var $action = repeater.createDropdownField({
 					attr	:  {
 						name	: parent_name + '[rules]['+ repeater.count +'][action]',
 					},
 					options : {
 						show	: 'Show',
-						hide	: 'Hide'
+						//hide	: 'Hide'
 					},
 					value	: rule['action'],
 					append	: $ruleGridWrapper,
 					label	: 'Action'
 				});
-				
+
 				// CREATE AUTOCOMPLETE THAT WILL HOLD THE QUESTION TEXT
 				var $question_div = repeater.createField({
 					element	: 'div',
 					attr	: {
-						'data-behaviour': 'space-autocomplete',	
+						'data-behaviour': 'space-autocomplete',
 						'data-field'	: JSON.stringify( {
 							slug				: parent_name + '[rules]['+ repeater.count +'][question]',
 							type				: 'autocomplete',
@@ -83,7 +83,7 @@ jQuery.fn.space_rules = function( parent_name ){
 					append	: $ruleGridWrapper
 				});
 				$question_div.space_autocomplete();
-				
+
 				// VALUE OF QUESTION TO BE SELECTED FOR THE RULE
 				var $value = repeater.createDropdownField({
 					attr	:  {
@@ -98,7 +98,7 @@ jQuery.fn.space_rules = function( parent_name ){
 				if( rule['value'] ){	// SELECT THE OPTION THAT COMES FROM THE DB
 					$value.selectOption( rule['value'] );
 				}
-				
+
 				// HIDDEN TEXTAREA THAT WILL HOLD THE ADDITIONAL INFORMATION ABOUT THE QUESTION
 				var $textarea = repeater.createField({
 					element : 'textarea',
@@ -109,7 +109,7 @@ jQuery.fn.space_rules = function( parent_name ){
 					append	: $list_item,
 				});
 				$textarea.hide();
-				
+
 				// UPDATE THE OPTIONS WHEN ITEM FROM THE AUTOCOMPLETE HAS BEEN SELECTED
 				$question_div.on('space_autocomplete:select', function( ev, question_data ){
 					$textarea.html( JSON.stringify( question_data ) );
@@ -117,7 +117,7 @@ jQuery.fn.space_rules = function( parent_name ){
 						$value.setOptions( question_data['choices'] );
 					}
 				});
-				
+
 				// HANDLE CLOSE BUTTON EVENT
 				$closeButton.click( function( ev ){
 					ev.preventDefault();
@@ -125,10 +125,10 @@ jQuery.fn.space_rules = function( parent_name ){
 						$list_item.remove();
 					}
 				});
-				
-				
+
+
 			},
-			
+
 		} );
 	});
 };

@@ -163,9 +163,9 @@
 				}
 
 			}
-			
-			
-			
+
+
+
 		}
 
 		function admin_head(){
@@ -223,7 +223,7 @@
 				'1.0.1',
 				true
 			);
-			
+
 			wp_enqueue_script(
 				'space-autocomplete',
 				plugins_url( $plugin_assets_folder.'js/autocomplete.js' ),
@@ -239,7 +239,7 @@
 				'1.0.8',
 				true
 			);
-			
+
 			wp_enqueue_script(
 				'space-repeater-choices',
 				plugins_url( $plugin_assets_folder.'js/repeater-choices.js' ),
@@ -247,15 +247,15 @@
 				'1.0.0',
 				true
 			);
-			
+
 			wp_enqueue_script(
 				'space-repeater-rules',
 				plugins_url( $plugin_assets_folder.'js/repeater-rules.js' ),
 				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
-				'1.0.1',
+				'1.0.2',
 				true
 			);
-			
+
 			wp_enqueue_script(
 				'space-repeater-questions',
 				plugins_url( $plugin_assets_folder.'js/repeater-questions.js' ),
@@ -263,7 +263,7 @@
 				'1.0.5',
 				true
 			);
-			
+
 			wp_enqueue_script(
 				'space-repeater-pages',
 				plugins_url( $plugin_assets_folder.'js/repeater-pages.js' ),
@@ -271,7 +271,7 @@
 				'1.0.1',
 				true
 			);
-			
+
 			wp_enqueue_script(
 				'space-repeater-export',
 				plugins_url( $plugin_assets_folder.'js/repeater-export-filters.js' ),
@@ -279,7 +279,7 @@
 				'1.0.0',
 				true
 			);
-			
+
 			wp_enqueue_script(
 				'space-batch-process',
 				plugins_url( $plugin_assets_folder.'js/batch-process.js' ),
@@ -287,7 +287,7 @@
 				'1.0.2',
 				true
 			);
-			
+
 			wp_enqueue_script(
 				'space-script',
 				plugins_url( $plugin_assets_folder.'js/main.js' ),
@@ -295,13 +295,13 @@
 				'1.0.3',
 				true
 			);
-			
+
 			wp_enqueue_editor();
-			
-			wp_enqueue_media(); 
-			
+
+			wp_enqueue_media();
+
 			$survey_db = SPACE_DB_SURVEY::getInstance();
-			
+
 			wp_localize_script( 'space-script', 'space_settings', array(
 				'ajax_url'				=> admin_url('admin-ajax.php'),
 				'required_questions'	=> $survey_db->listRequiredQuestions(),
