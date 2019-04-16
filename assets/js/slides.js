@@ -274,9 +274,9 @@ jQuery.fn.space_slides = function(){
 
 					if( rule['action'] && rule['question'] && rule['value'] ){
 
-						var flag 				= false,
+						var flag 							= false,
 							$parentQuestionDiv 	= jQuery( '#q' + rule['question'] ),
-							parentType			= $parentQuestionDiv.data('type');
+							parentType					= $parentQuestionDiv.data('type');
 
 						switch( parentType ){
 
@@ -294,7 +294,9 @@ jQuery.fn.space_slides = function(){
 								break;
 						}
 
-						if( flag ){
+						if( flag && rule['action'] == 'show' ){
+							$questionDiv.removeClass('hide');
+							/*
 							if( rule['action'] == 'show' ){
 								$questionDiv.removeClass('hide');
 							}
@@ -302,6 +304,10 @@ jQuery.fn.space_slides = function(){
 							if( rule['action'] == 'hide' ){
 								$questionDiv.addClass('hide');
 							}
+							*/
+						}
+						else{
+							$questionDiv.addClass('hide');
 						}
 
 					}
