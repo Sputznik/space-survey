@@ -1,14 +1,14 @@
 <?php
 /*
 * Template: called from display() of space-survey/admin/class-space-form.php
-* Idea: to create a reusable dashboard that looks similar to `Edit Post` 
+* Idea: to create a reusable dashboard that looks similar to `Edit Post`
 */
 ?>
 <h1><?php _e( $this->getPageTitle() );?></h1>
 <form action="" method="post">
 	<div id="poststuff">
 		<div id="post-body" class="metabox-holder columns-2">
-			
+
 			<div id="post-body-content" style="position: relative;">
 				<?php $this->do_action('body-div');?>
 			</div><!-- /post-body-content -->
@@ -30,13 +30,13 @@
 										<?php $this->do_action('publish-div');?>
 									</div>
 									<div class="clear"></div>
-								</div>	
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			
+
 		</div><!-- /post-body -->
 		<br class="clear">
 	</div>
