@@ -289,7 +289,7 @@ jQuery.fn.space_slides = function(){
 								if( $input.length ){
 
 									$input.each( function(){
-										var selectedValue = $(this).val().toString();
+										var selectedValue = jQuery(this).val().toString();
 										// CHECK IF THE SELECTED VALUE IS IN THE RULE ARRAY
 										if( jQuery.inArray( selectedValue, rule['value'] ) != -1 ){
 											flag = true;
