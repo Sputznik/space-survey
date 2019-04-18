@@ -262,9 +262,9 @@ jQuery.fn.space_slides = function(){
 		*/
 		$el.find('form').change( function( ev ){
 
-			var $slide = getCurrentSlide();
+			//var $slide = getCurrentSlide();
 
-			$slide.find('.space-question').not('.required').each( function(){
+			$el.find('form .space-question').not('.required').each( function(){
 
 				var $questionDiv 	= jQuery( this ),
 					rules			= $questionDiv.data('rules');
