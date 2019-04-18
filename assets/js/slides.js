@@ -307,6 +307,8 @@ jQuery.fn.space_slides = function(){
 								break;
 						}
 
+						console.log( flag );
+
 						if( flag && rule['action'] == 'show' ){
 							$questionDiv.removeClass('hide');
 							/*
