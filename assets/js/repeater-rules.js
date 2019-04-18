@@ -87,10 +87,11 @@ jQuery.fn.space_rules = function( parent_name ){
 				// VALUE OF QUESTION TO BE SELECTED FOR THE RULE
 				var $value = repeater.createDropdownField({
 					attr	:  {
-						name	: parent_name + '[rules]['+ repeater.count +'][value]',
+						name	: parent_name + '[rules]['+ repeater.count +'][value][]',
 					},
-					append	: $ruleGridWrapper,
-					label	: 'Has value'
+					append		: $ruleGridWrapper,
+					multiple	: true,
+					label			: 'Has value'
 				});
 				if( rule['data']['choices'] ){ // RESET OPTIONS WITHIN THE DROPDOWN
 					$value.setOptions( rule['data']['choices'] );

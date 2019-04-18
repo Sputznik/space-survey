@@ -274,6 +274,8 @@ jQuery.fn.space_slides = function(){
 
 					if( rule['action'] && rule['question'] && rule['value'] ){
 
+
+
 						var flag 							= false,
 							$parentQuestionDiv 	= jQuery( '#q' + rule['question'] ),
 							parentType					= $parentQuestionDiv.data('type');
@@ -284,13 +286,25 @@ jQuery.fn.space_slides = function(){
 
 							case 'checkbox':
 								// CHECK IF THE INPUT THAT HAS BEEN SELECTED HAS THE SAME VALUE IN THE RULE
-								var $input = $parentQuestionDiv.find('input[value="' + rule['value'] + '"]:checked');
-								if( $input.length ){ flag = true; }
+								var $input = $parentQuestionDiv.find('input:checked');
+								if( $input.length ){
+
+									$input.each( function(){
+										var selectedValue = $(this).val().toString();
+										// CHECK IF THE SELECTED VALUE IS IN THE RULE ARRAY
+										if( jQuery.inArray( selectedValue, rule['value'] ) != -1 ){
+											flag = true;
+										}
+									});
+
+								}
 								break;
 
 							case 'dropdown':
 								var $input = $parentQuestionDiv.find('select');
-								if( $input.val() == rule['value'] ){ flag = true; }
+								if( jQuery.inArray( $input.val().toString(), rule['value'] ) != -1 ){
+									flag = true;
+								}
 								break;
 						}
 

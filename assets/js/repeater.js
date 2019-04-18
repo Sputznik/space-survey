@@ -6,7 +6,7 @@
 */
 
 var SPACE_REPEATER = function( options ){
-	
+
 	var self = {
 		count	: 0,		// KEEP A COUNT OF THE ITEMS THAT HAVE BEEN ADDED
 		$list	: null,		// PARENT LIST THAT HOLDS THE CHOICES
@@ -22,9 +22,9 @@ var SPACE_REPEATER = function( options ){
 			reorder 		: function(){}
 		}, options )
 	};
-	
+
 	self.init = function(){
-		
+
 		// MAIN LIST THAT HOLDS THE LIST OF CHOICES
 		self.$list = self.createField({
 			element: 'ul',
@@ -38,7 +38,7 @@ var SPACE_REPEATER = function( options ){
 				self.reorder();
 			}
 		});
-		
+
 		// BUTTON THAT ADDS THE REPEATER ITEM
 		self.$btn = self.createField({
 			element	: 'button',
@@ -48,46 +48,46 @@ var SPACE_REPEATER = function( options ){
 			html	: self.options.btn_text,
 			append	: self.options.$el
 		});
-		
+
 		self.$btn.click( function( ev ){
 			ev.preventDefault();
 			self.addItem();
 		});
-		
+
 		// FOR CUSTOM FUNCTIONALITY
 		self.options.init( self );
-		
+
 	};
-	
+
 	self.createField = function( field ){
-		
+
 		var $form_field = jQuery( document.createElement( field['element'] ) );
-		
+
 		for( attr in field['attr'] ){
 			$form_field.attr( attr, field['attr'][attr] );
 		}
-		
+
 		if( field['append'] ){
 			$form_field.appendTo( field['append'] );
 		}
-		
+
 		if( field['prepend'] ){
 			$form_field.prependTo( field['prepend'] );
 		}
-		
+
 		if( field['html'] ){
 			$form_field.html( field['html'] );
 		}
-		
+
 		return $form_field;
-		
+
 	};
-	
+
 	/*
-	* ADD LIST ITEM TO THE UNLISTED LIST 
+	* ADD LIST ITEM TO THE UNLISTED LIST
 	*/
 	self.addItem = function( $data ){
-		
+
 		// CREATE PARENT LIST ITEM: LI
 		var $list_item = self.createField({
 			element	: 'li',
@@ -96,7 +96,7 @@ var SPACE_REPEATER = function( options ){
 			},
 			append	: self.$list
 		});
-		
+
 		// CLOSE BUTTON - TO REMOVE THE LIST ITEM
 		var $button = self.createField({
 			element	: 'button',
@@ -106,20 +106,20 @@ var SPACE_REPEATER = function( options ){
 			html	: self.options.close_btn_text,
 			append	: $list_item
 		});
-		
+
 		self.options.addItem( self, $list_item, $button, $data );
-		
+
 		// INCREMENT COUNT AFTER AN ITEM HAS BEEN ADDED TO MAINTAIN THE ARRAY OF INPUT NAMES
 		self.count++;
-		
+
 	};
-	
+
 	/*
 	* CREATE BASIC MARKUP FOR COLLAPSIBLE ITEM
 	* HEADER & CONTENT AREA
 	*/
 	self.addCollapsibleItem = function( $list_item, $closeButton ){
-		
+
 		// CREATE NEAT HEADER AREA FOR THE ITEM
 		var $header = self.createField({
 			element	: 'div',
@@ -128,7 +128,7 @@ var SPACE_REPEATER = function( options ){
 			},
 			append	: $list_item
 		});
-		
+
 		// CREATE NEAT CONTENT AREA FOR THE ITEM
 		var $content = self.createField({
 			element	: 'div',
@@ -137,10 +137,10 @@ var SPACE_REPEATER = function( options ){
 			},
 			append	: $list_item
 		});
-		
+
 		// APPEND THE CLOSE BUTTON TO THE LIST CONTENT
 		$closeButton.appendTo( $content );
-		
+
 		// BUTTON THAT COLLAPSES THE ENTIRE LIST
 		var $collapseBtn = self.createField({
 			element	: 'button',
@@ -149,45 +149,45 @@ var SPACE_REPEATER = function( options ){
 			},
 			append 	: $header
 		});
-		
+
 		// ON CLICK OF COLLAPSE BUTTON, TOGGLE THE CONTENT AREA
 		$collapseBtn.click( function( ev ){
 			ev.preventDefault();
 			$content.slideToggle();
 		});
 		$collapseBtn.click();
-		
+
 	};
-	
+
 	/*
 	* TINYMCE EDITOR
 	*/
 	self.createRichText = function( field ){
-		
+
 		field['element'] = 'textarea';
 		field['attr'] = field['attr'] ? field['attr'] : {};
 		field['attr']['id'] = field['attr']['id'] ? field['attr']['id'] : 'sample-id';
-		
+
 		var $textarea = self.createField( field );
-		
+
 		// INITIALIZE WP EDITOR FOR THE TEXTAREA
-		wp.editor.initialize( field['attr']['id'], { tinymce: {height: 300}, quicktags: true } );	
-		
+		wp.editor.initialize( field['attr']['id'], { tinymce: {height: 300}, quicktags: true } );
+
 		return $textarea;
-		
+
 	};
-	
+
 	/*
 	* BOOLEAN FIELD
 	*/
 	self.createBooleanField = function( field ){
-		
+
 		var $label = self.createField({
 			element	: 'label',
 			append	: field['append'],
 			html	: field['label']
 		});
-		
+
 		var $booleanField = self.createField({
 			element	: 'input',
 			attr	: {
@@ -198,16 +198,16 @@ var SPACE_REPEATER = function( options ){
 			},
 			prepend	: $label
 		});
-		
+
 		return $label;
-		
+
 	};
-	
+
 	/*
 	* DROPDOWN FIELD
 	*/
 	self.createDropdownField = function( field ){
-		
+
 		var $wrapper = self.createField({
 			element	: 'div',
 			attr	: {
@@ -215,13 +215,13 @@ var SPACE_REPEATER = function( options ){
 			},
 			append	: field['append']
 		});
-		
+
 		var $label = self.createField({
 			element	: 'label',
 			append	: $wrapper,
 			html	: field['label']
 		});
-		
+
 		var $select = self.createField({
 			element	: 'select',
 			attr	: {
@@ -229,10 +229,14 @@ var SPACE_REPEATER = function( options ){
 			},
 			append	: $wrapper,
 		});
-		
+
+		if( field['multiple'] ){
+			$select.attr( 'multiple', 'true' );
+		}
+
 		// ADD ONE OPTION TO THE SELECT DROPDOWN
 		$wrapper.addOption = function( slug, value ){
-			
+
 			var $option = self.createField({
 				element	: 'option',
 				attr	: {
@@ -241,9 +245,9 @@ var SPACE_REPEATER = function( options ){
 				html	: value,
 				append	: $select
 			});
-			
+
 		};
-		
+
 		// SET THE ENTIRE OPTIONS FOR THE SELECT DROPDOWN
 		$wrapper.setOptions = function( options ){
 			// FIRST REMOVE ALL THE CURRENT OPTIONS THAT ARE THERE
@@ -252,28 +256,28 @@ var SPACE_REPEATER = function( options ){
 				$wrapper.addOption( slug, options[slug] );
 			}
 		}
-		
+
 		$wrapper.selectOption = function( slug ){
 			$select.val( slug );
 		};
-		
+
 		if( field['options'] ){
 			$wrapper.setOptions( field['options'] );
 		}
-		
-		
+
+
 		if( field['value'] ){
 			$wrapper.selectOption( field['value'] );
 		}
-		
+
 		return $wrapper;
 	};
-	
+
 	self.reorder = function(){
 		self.options.reorder( self );
 	};
-	
+
 	self.init();
-	
+
 	return self;
 };
