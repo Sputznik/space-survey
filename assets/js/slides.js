@@ -139,11 +139,10 @@ jQuery.fn.space_slides = function(){
 		*/
 		function transitionSlide( $slide, $nextSlide ){
 			saveGuestData();
-
 			$slide.removeClass('active');
 			$nextSlide.addClass('active');
-
 			$nextSlide.trigger('space_survey:slideEnters');
+			jQuery( 'html, body' ).animate( {scrollTop : 0}, 1000 );
 		}
 
 		function init(){
