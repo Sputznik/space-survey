@@ -42,7 +42,7 @@
 	border: none;
 	outline: none;
 	box-shadow: none;
-	
+
 }
 
 .space-rule-item [data-behaviour~=space-autocomplete]{
@@ -51,7 +51,7 @@
 
 .space-rule-item .space-rule-grid{
 	display: grid;
-	grid-template-columns: 200px 1fr 200px;
+	grid-template-columns: 1fr 150px;
 	grid-gap: 20px;
 }
 
@@ -114,7 +114,7 @@ textarea[data-behaviour~=space-autoresize]{
 	display: block;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	
+
 }
 
 .form_page_desc{
@@ -154,7 +154,7 @@ textarea[data-behaviour~=space-autoresize]{
 .space-filter-item input[type=text].ui-autocomplete-input{
 	width: 100%;
 }
-	
+
 /* MODAL BOXES *
 .space-modal{
 	position: fixed;
@@ -202,7 +202,7 @@ textarea[data-behaviour~=space-autoresize]{
 
 #survey-pages.postbox, #survey-pages.postbox .inside{
 	padding: 0;
-	margin: 0;	
+	margin: 0;
 }
 #survey-pages.postbox{
 	background: transparent;
@@ -254,4 +254,3 @@ textarea[data-behaviour~=space-autoresize]{
 	cursor: pointer;
 	border-radius: 3px;
 }
-	

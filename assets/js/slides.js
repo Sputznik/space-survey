@@ -262,18 +262,14 @@ jQuery.fn.space_slides = function(){
 		*/
 		$el.find('form').change( function( ev ){
 
-			//var $slide = getCurrentSlide();
-
 			$el.find('form .space-question').not('.required').each( function(){
 
 				var $questionDiv 	= jQuery( this ),
-					rules			= $questionDiv.data('rules');
+					rules						= $questionDiv.data('rules');
 
 				jQuery.each( rules, function( i, rule ){
 
-					if( rule['action'] && rule['question'] && rule['value'] ){
-
-
+					if( rule['question'] && rule['value'] ){
 
 						var flag 							= false,
 							$parentQuestionDiv 	= jQuery( '#q' + rule['question'] ),
@@ -307,23 +303,9 @@ jQuery.fn.space_slides = function(){
 								break;
 						}
 
-						console.log( flag );
-
-						if( flag && rule['action'] == 'show' ){
-							$questionDiv.removeClass('hide');
-							/*
-							if( rule['action'] == 'show' ){
-								$questionDiv.removeClass('hide');
-							}
-
-							if( rule['action'] == 'hide' ){
-								$questionDiv.addClass('hide');
-							}
-							*/
-						}
-						else{
-							$questionDiv.addClass('hide');
-						}
+						// IF THE FLAG IS TRUE THEN SHOW THE QUESTION OTHERWISE HIDE IT
+						if( flag ){ $questionDiv.removeClass('hide'); }
+						else{ $questionDiv.addClass('hide'); }
 
 					}
 

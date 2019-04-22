@@ -24,7 +24,7 @@ jQuery.fn.space_rules = function( parent_name ){
 				// ITERATE THROUGH EACH QUESTIONS IN THE DB
 				jQuery.each( rules, function( i, rule ){
 
-					if( rule['action'] != undefined && rule['question'] != undefined && rule['value'] != undefined && rule['data'] != undefined ){
+					if( rule['question'] != undefined && rule['value'] != undefined && rule['data'] != undefined ){
 						rule['data'] = typeof rule['data'] != 'object' ? JSON.parse( rule['data'] ) : {};
 						repeater.addItem( rule );
 					}
@@ -38,9 +38,9 @@ jQuery.fn.space_rules = function( parent_name ){
 				* AUTOCOMPLETE	: QUESTIONS
 				* DROPDOWN		: CHOICES
 				*/
-
-				if( rule == undefined || rule['action'] == undefined ){
-					rule = { action : 'show', data : {} };
+				console.log( rule );
+				if( rule == undefined ){
+					rule = { data : {} };
 				}
 
 				// WRAPPER THAT ENSURES THE FIELDS WILL BE IN GRID FORMAT
@@ -52,6 +52,7 @@ jQuery.fn.space_rules = function( parent_name ){
 					append	: $list_item
 				});
 
+				/*
 				var $action = repeater.createDropdownField({
 					attr	:  {
 						name	: parent_name + '[rules]['+ repeater.count +'][action]',
@@ -64,20 +65,21 @@ jQuery.fn.space_rules = function( parent_name ){
 					append	: $ruleGridWrapper,
 					label	: 'Action'
 				});
+				*/
 
 				// CREATE AUTOCOMPLETE THAT WILL HOLD THE QUESTION TEXT
 				var $question_div = repeater.createField({
 					element	: 'div',
 					attr	: {
-						'data-behaviour': 'space-autocomplete',
-						'data-field'	: JSON.stringify( {
-							slug				: parent_name + '[rules]['+ repeater.count +'][question]',
-							type				: 'autocomplete',
-							placeholder			: "Type title of the question here",
-							url					: space_settings['ajax_url'] + '?action=space_questions',
-							value				: rule['question'] ? rule['question'] : "",
-							autocomplete_value	: rule['data']['label'] ? rule['data']['label'] : "",
-							label				: 'When Question'
+						'data-behaviour'		: 'space-autocomplete',
+						'data-field'				: JSON.stringify( {
+							slug							: parent_name + '[rules]['+ repeater.count +'][question]',
+							type							: 'autocomplete',
+							placeholder				: "Type title of the question here",
+							url								: space_settings['ajax_url'] + '?action=space_questions',
+							value							: rule['question'] ? rule['question'] : "",
+							autocomplete_value: rule['data']['label'] ? rule['data']['label'] : "",
+							label							: 'Show when question'
 						} ),
 					},
 					append	: $ruleGridWrapper
