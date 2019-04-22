@@ -170,10 +170,42 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		return $data;
 	}
 
+	// COMMON REPO FOR GATHERING QUERIES FOR QUESTIONS PER SURVEY
+	function getQuestionsQuery( $survey_id, $search_term = '', $page = 1, $per_page = 10 ){
+
+		$queries = array();
+
+		$search_term = '%'.$this->esc_like( $search_term ).'%';
+
+		$params = array( $search_term );
+
+		$questionTable 	= $this->getQuestionDB()->getTable();
+		$pageTable		= $this->getPageDB()->getTable();
+		$relationTable 	= $this->getPageDB()->getRelationDB()->getTable();
+
+		$queries['common'] = " FROM $questionTable WHERE title LIKE %s";
+
+		if( $survey_id ){
+			$queries['filter_by_survey'] = " AND ID IN (
+				SELECT question_id FROM $relationTable WHERE page_id IN ( SELECT ID from $pageTable WHERE survey_id = %d )
+			)";
+			$queries['common'] .= $queries['filter_by_survey'];
+			array_push( $params, $survey_id );
+		}
+
+		$queries['results'] = $this->prepare( "SELECT *". $queries['common'], $params );
+		if( $page && $per_page ){
+			$queries['results'] .= $this->_limit_query( $page, $per_page );
+		}
+		$queries['count'] = $this->prepare( "SELECT COUNT(*)". $queries['common'], $params );
+
+		return $queries;
+	}
+
 	function getQuestionsList( $survey_id ){
 
 		$data = array();
-
+		/*
 		$questionTable 	= $this->getQuestionDB()->getTable();
 		$pageTable		= $this->getPageDB()->getTable();
 		$relationTable 	= $this->getPageDB()->getRelationDB()->getTable();
@@ -182,7 +214,15 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 		$query = $this->prepare( $query, array( $survey_id ) );
 
-		$questions = $this->get_results( $query );
+		*/
+
+		/*
+		* PARAMS: SURVEY_ID, SEARCH_TERM, PAGE, ITEMS_PER_PAGE
+		* PASS PAGE AND ITEMS_PER_PAGE AS 0 TO REMOVE THE LIMIT QUERY
+		*/
+		$queries = $this->getQuestionsQuery( $survey_id, '', 0, 0 );
+
+		$questions = $this->get_results( $queries['results'] );
 
 		foreach( $questions as $question ){
 			$data[ $question->ID ] = $question;
@@ -204,7 +244,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 		if( isset( $_POST['post_type'] ) && $_POST['post_type'] == 'space_survey' ){
 
-			/*	
+			/*
 			print_r( $survey_id );
 			echo "<pre>";
 			print_r( $_POST );
