@@ -216,7 +216,12 @@
 				$filter_by_survey = $_GET['survey'];
 			}
 
-			$queries = $survey_db->getQuestionsQuery( $filter_by_survey, "", $page, $per_page );
+			$search_term = "";
+			if( isset( $_GET['s'] ) && $_GET['s'] ){
+				$search_term = $_GET['s'];
+			}
+
+			$queries = $survey_db->getQuestionsQuery( $filter_by_survey, $search_term, $page, $per_page );
 
 			//echo "<pre>";
 			//print_r( $queries );

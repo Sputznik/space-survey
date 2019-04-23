@@ -1,10 +1,22 @@
 <?php
 	$url = admin_url( 'admin.php?page='.$_GET['page'] );
 
-	if( isset( $_POST['filter_by_survey'] ) ){
+	$url_has_changed = false;
+
+	if( isset( $_POST['filter_by_survey'] ) && $_POST['filter_by_survey'] ){
 		$url .= '&survey='.$_POST['filter_by_survey'];
+		$url_has_changed = true;
+	}
+
+	if( isset( $_POST['s'] ) && $_POST['s']  ){
+		$url .= '&s='.$_POST['s'];
+		$url_has_changed = true;
+	}
+
+	if( $url_has_changed ){
 		_e("<script>location.href='$url';</script>");
 	}
+
 ?>
 <h1 class='wp-heading-inline'>Questions</h1>
 <a href="?page=space-question-edit" class="page-title-action">Add New</a>
