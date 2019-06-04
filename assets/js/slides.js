@@ -265,15 +265,15 @@ jQuery.fn.space_slides = function(){
 			$el.find('form .space-question').not('.required').each( function(){
 
 				var $questionDiv 	= jQuery( this ),
-					rules						= $questionDiv.data('rules');
+					rules						= $questionDiv.data('rules'),
+					flag 						= false;
 
 				jQuery.each( rules, function( i, rule ){
 
 					if( rule['question'] && rule['value'] ){
 
-						var flag 							= false,
-							$parentQuestionDiv 	= jQuery( '#q' + rule['question'] ),
-							parentType					= $parentQuestionDiv.data('type');
+						var $parentQuestionDiv 	= jQuery( '#q' + rule['question'] ),
+							parentType						= $parentQuestionDiv.data('type');
 
 						switch( parentType ){
 
@@ -301,21 +301,17 @@ jQuery.fn.space_slides = function(){
 									flag = true;
 								}
 								break;
-						}
+						} 				// END OF SWITCH CASE
+					}					  // END OF IF CONDITION
 
-						// IF THE FLAG IS TRUE THEN SHOW THE QUESTION OTHERWISE HIDE IT
-						if( flag ){ $questionDiv.removeClass('hide'); }
-						else{ $questionDiv.addClass('hide'); }
+				});						// END OF ITERATION OF RULES
 
-					}
+				// IF THE FLAG IS TRUE THEN SHOW THE QUESTION OTHERWISE HIDE IT
+				if( flag ){ $questionDiv.removeClass('hide'); }
+				else{ $questionDiv.addClass('hide'); }
 
-
-				});
-
-			});
-
-
-		});
+			});							// END OF ITERATION OF FORM FIELDS THAT ARE NOT REQUIRED
+		});								// END OF EVENT HANDLING WHEN FORM CHANGES
 
 
 		// TRIGGER INITIALIZATION
