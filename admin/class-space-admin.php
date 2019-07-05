@@ -61,6 +61,12 @@
 					'supports'	=>	array('editor')
 				),
 				array(
+					'id'		=> 'survey-buttons',
+					'title'		=> 'Settings',
+					'box_html'	=> 'buttons_metabox_html',
+					'supports'	=>	array('editor')
+				),
+				array(
 					'id'		=> 'survey-results',
 					'title'		=> 'Results',
 					'box_html'	=> 'results_metabox_html',

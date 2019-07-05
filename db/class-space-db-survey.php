@@ -284,6 +284,11 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			$this->updateRequiredQuestions( $survey_id, $required_questions );
 			$this->updateRules( $survey_id, $rules );
 
+			// SAVE ADDITIONAL SETTINGS FROM THE meta_boxes
+			if( $survey_id && isset( $_POST[ 'survey_settings' ] ) ){
+				update_post_meta( $survey_id, 'survey_settings', $_POST[ 'survey_settings' ] );
+			}
+
 		}
 
 	}

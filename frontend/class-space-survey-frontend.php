@@ -43,7 +43,7 @@
 			return ob_get_clean();
 		}
 
-		function html( $atts ){
+		function html(){
 			ob_start();
 			include( "partials/slides.php" );
 			return ob_get_clean();

@@ -2,7 +2,7 @@
 
 	$survey_id = $this->survey->ID;
 	$pages = $this->survey->pages;
-
+	$settings = get_post_meta( $survey_id, 'survey_settings', true );
 ?>
 <div data-behaviour='space-slides' data-id='<?php _e( $survey_id );?>'>
 	<form>
@@ -18,10 +18,10 @@
 			<?php echo $this->page_html( $page );?>
 			<ul class='space-list space-list-inline'>
 				<?php if( $i > 0 ):?>
-				<li><button data-behaviour='space-slide-prev'><?php _e( $atts['prev'] ); ?></button></li>
+				<li><button data-behaviour='space-slide-prev'><?php ( $settings['prev-text'] ) ? _e( $settings['prev-text'] ) : _e( 'Previous' ) ?></button></li>
 				<?php endif;?>
 				<?php if( $i != $num_pages-1 ):?>
-				<li><button data-behaviour='space-slide-next'><?php _e( $atts['next'] ); ?></button></li>
+				<li><button data-behaviour='space-slide-next'><?php ( $settings['next-text'] ) ?  _e( $settings['next-text'] ) : _e( 'Next' ) ?></button></li>
 				<?php endif;?>
 			</ul>
 		</div>
