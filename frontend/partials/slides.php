@@ -1,8 +1,8 @@
 <?php
-	
+
 	$survey_id = $this->survey->ID;
 	$pages = $this->survey->pages;
-	
+
 ?>
 <div data-behaviour='space-slides' data-id='<?php _e( $survey_id );?>'>
 	<form>
@@ -17,11 +17,11 @@
 		<div class='<?php _e( $slide_class );?>'>
 			<?php echo $this->page_html( $page );?>
 			<ul class='space-list space-list-inline'>
-				<?php if( $i > 0 ):?>	
-				<li><button data-behaviour='space-slide-prev'>Go Back</button></li>
+				<?php if( $i > 0 ):?>
+				<li><button data-behaviour='space-slide-prev'><?php _e( $atts['prev'] ); ?></button></li>
 				<?php endif;?>
 				<?php if( $i != $num_pages-1 ):?>
-				<li><button data-behaviour='space-slide-next'>Continue</button></li>
+				<li><button data-behaviour='space-slide-next'><?php _e( $atts['next'] ); ?></button></li>
 				<?php endif;?>
 			</ul>
 		</div>

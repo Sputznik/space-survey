@@ -106,12 +106,16 @@
 		}
 
 		function surveyHTML( $atts ){
-
+			$atts = shortcode_atts( array(
+					'id'		=>	0,
+					'prev'	=>	'Go Back',
+					'next'	=>	'Continue'
+				) , $atts);
+				
 			$survey_id = $atts['id'];
-
 			require_once('class-space-survey-frontend.php');
 			$survey_frontend = new SPACE_SURVEY_FRONTEND( $survey_id );
-			return $survey_frontend->html();
+			return $survey_frontend->html( $atts );
 		}
 
 		function overrideContent( $content ){
