@@ -19,6 +19,7 @@
 			'type'		=> 'dropdown',
 			'options'	=> $question_db->getTypes()
 		),
+		/*
 		'parent' => array(
 			'label'			=> 'Parent',
 			'slug'			=> 'parent',
@@ -32,6 +33,7 @@
 			'type'	=> 'number',
 			'default'	=> '0'
 		)
+		*/
 	);
 
 	// CURRENT PAGE - USED WITHIN THE ACTION HOOKS
@@ -79,7 +81,7 @@
 			*/
 			if( $question_id && isset( $_POST[ 'choices' ] ) ){
 
-				
+
 
 				// UPDATE OR ADD NEW CHOICES
 				$question_db->updateChoices( $question_id, $_POST[ 'choices' ] );

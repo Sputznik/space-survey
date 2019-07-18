@@ -23,6 +23,8 @@ jQuery.fn.space_slides = function(){
 					// SET GUEST ID WITHIN THE FORM
 					setGuestID( response.guest_id );
 
+					console.log( response.responses );
+
 					// SET ANSWERS OF THE GUEST THAT WERE RECORDED PREVIOUSLY
 					jQuery.each( response.responses, function( i, row ){
 						setAnswerForQuestion( row );
@@ -43,6 +45,14 @@ jQuery.fn.space_slides = function(){
 				questionType = $questionDiv.data('type');
 
 			switch( questionType ){
+
+				case 'checkbox-other':
+					if( response.choice_text ){
+						var $questionInput = $questionDiv.find('input[type=text]');
+						$questionInput.val( response.choice_text );
+						$questionInput.change();
+					}
+
 
 				case 'radio':
 
@@ -97,7 +107,7 @@ jQuery.fn.space_slides = function(){
 				}
 			});
 
-			console.log( form.serialize() );
+			//console.log( form.serialize() );
 
 		}
 
@@ -210,6 +220,23 @@ jQuery.fn.space_slides = function(){
 					$questionInput.click( function( ev ){
 						$questionDiv.addClass('done');
 					});
+					break;
+
+				case 'checkbox-other':
+					var $questionInputText 	= $questionDiv.find('input[type="text"]'),
+					 $questionInputCheckbox = $questionDiv.find('input[type="checkbox"]');
+
+					function validate_checkbox_other(){
+						if( $questionInputText.val().length || $questionDiv.find('input[type="checkbox"]:checked').length ){
+							$questionDiv.addClass('done');
+						}
+						else{
+							$questionDiv.removeClass('done');
+						}
+					}
+					// TRACK ON CHECKBOX CLICK - IF THE INLINE NUMBER OF CHECKED CHECKBOXES ARE MORE THAN ZERO
+					$questionInputCheckbox.click( function( ev ){ validate_checkbox_other(); });
+					$questionInputText.change( function( ev ){ validate_checkbox_other(); });
 					break;
 
 				case 'checkbox':

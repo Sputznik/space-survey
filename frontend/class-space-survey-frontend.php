@@ -14,8 +14,8 @@
 		function setSurvey( $survey ){ $this->survey = $survey;}
 		function getSurvey(){ return $this->survey; }
 
-		function get_input_name( $id ){
-			return "quest[$id][val]";
+		function get_input_name( $id, $key = 'val' ){
+			return "quest[$id][$key]";
 		}
 
 		function question_type_field( $question ){
