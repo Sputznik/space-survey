@@ -2,6 +2,8 @@
 
 	$question_db = SPACE_DB_QUESTION::getInstance();
 
+
+
 	$form_fields = array(
 		'title'	=> array(
 			'placeholder'	=> 'Enter question here',
@@ -66,6 +68,35 @@
 		* CHOOSE BETWEEN UPDATING OR INSERTING THE ROW IN THE DATABASE BASED ON THE PRESENCE OF THE ID
 		*/
 		if( isset( $_POST['publish'] ) ) {
+
+
+			/* UPDATE THE CHOICES DATA FROM THE CSV */
+			if( isset( $_FILES['file'] ) && $_FILES['file'] ){
+
+				$csv = SPACE_CSV::getInstance();
+
+				// UPLOAD THE CSV FILE
+				$movefile = $csv->upload( $_FILES['file'] );
+
+				// // CHECK IF UPLOAD PROCESS WAS COMPLETED WITHOUT ANY ERROR
+				if ( $movefile && !isset( $movefile['error'] ) ) {
+
+					// CONVERT THE UPLOADED FILE TO ARRAY FORMAT
+					$arrayCsv = $csv->convertToArray( $movefile['file'] );
+
+					if( is_array( $arrayCsv ) && count( $arrayCsv ) ){
+						$_POST['choices'] = array();
+						foreach ( $arrayCsv as $row ) {
+							if( is_array( $row ) && count( $row ) ){
+								array_push( $_POST['choices'], array( 'title'	=> $row[ 0 ], 'id' => 0, 'rank' => 0 ) );
+							}
+						}
+					}
+				}
+			}
+
+
+
 			/*
 			* UPDATE QUESTION MODEL
 			* CHECK USING $_GET['ID'] - IF DATA EXISTS THEN IT NEEDS TO BE UPDATED OR IT NEEDS TO BE INSERTED
@@ -79,54 +110,6 @@
 			else{
 
 				$question_id = $question_db->insert( $question_data );
-
-				/* UPLOAD CSV */
-				if ( isset($_FILES['file']) ) {
-
-					// INCLUDE THE NECESSARY FILES FOR UPLOAD
-					if (!function_exists('wp_handle_upload')) {
-						require_once ABSPATH . 'wp-admin/includes/file.php';
-					}
-
-					$movefile = wp_handle_upload($_FILES['file'], array('test_form' => false));
-
-					// CHECK IF UPLOAD PROCESS WAS COMPLETED WITHOUT ANY ERROR
-					if ( $movefile && !isset($movefile['error'] ) ) {
-						$file     = fopen(  $movefile['file'], "r" );
-						$arrayCsv = array();
-
-						while ( !feof( $file ) ) {
-							$fpTotal = fgetcsv( $file );
-							array_push($arrayCsv, $fpTotal);
-						}
-
-						fclose($file);
-
-						if( is_array( $arrayCsv ) && count( $arrayCsv ) ){
-							$_POST['choices'] = array();
-							foreach ( $arrayCsv as $row ) {
-
-								if( is_array( $row ) && count( $row ) ){
-									array_push( $_POST['choices'], array(
-										'title'	=> $row[ 0 ],
-										'id'		=> 0,
-										'rank'	=> 0
-									) );
-								}
-							}
-						}
-
-						//echo "<br>Choice<br>";
-
-						//echo "<pre>";
-						//print_r( $_POST['choices'] );
-						//echo "</pre>";
-
-						//wp_die();
-					}
-
-				}
-				/* UPLOAD CSV */
 			}
 			// END OF UPDATING QUESTION MODEL
 
@@ -138,8 +121,8 @@
 				// UPDATE OR ADD NEW CHOICES
 				$question_db->updateChoices( $question_id, $_POST[ 'choices' ] );
 			}
-
 			if( $question_id && isset( $_POST['choices_delete'] ) && $_POST['choices_delete'] ){
+
 				// $_POST['choices_delete'] HAS A COMMA SEPERATED STRING OF CHOICE IDs THAT ARE NO LONGER NEEDED
 				$question_db->deleteChoices( explode(',', $_POST['choices_delete'] ) );
 			}

@@ -39,7 +39,9 @@ class SPACE_FORM{
 		}
 
 		if( $field['type'] == 'file' ){
+
 			_e('<input name="'.$field['slug'].'" type="file" id="'.$field['slug'].'" value="'.$field['value'].'">');
+			_e( '<p class="help">Choices from the CSV will override all the existing ones</p>' );
 		}
 
 		if( $field['type'] == 'text' ){
