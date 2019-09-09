@@ -7,6 +7,8 @@
 		var $post_types;
 		var $meta_boxes;
 
+		var $survey_slug;
+
 		function __construct(){
 
 			/* INCLUDE FILES */
@@ -15,6 +17,8 @@
 				'class-space-list-table.php',
 				'class-space-question-list-table.php',
 			);
+
+			$this->setSurveySlug( get_option( 'survey-slug' ) );
 
 			foreach( $this->includes as $inc_file ){
 				require_once( $inc_file );
@@ -50,6 +54,10 @@
 				'space-export'	=> array(
 					'title'	=> 'Export',
 					'menu'	=> 'space-survey'
+				),
+				'space-settings'	=> array(
+					'title'	=> 'Settings',
+					'menu'	=> 'space-survey'
 				)
 			) );
 
@@ -84,12 +92,18 @@
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
 
+			// TO CHANGE THE PERMALINK STRUCTURE OF THE SURVEY
+			add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 3 );
+
+
 			//add_action( 'save_post', array( $this, 'handle_survey_metabox' ) );
 
 			// AJAX ACTION TO DROP TABLES. REMOVE FROM PRODUCTION
 			add_action('wp_ajax_space_survey_drop', array($this, 'drop_db_tables'));
 
 		}
+
+
 
 		/*
 		* GETTER AND SETTER FUNCTIONS
@@ -102,6 +116,9 @@
 
 		function getMetaBoxes(){ return $this->meta_boxes; }
 		function setMetaBoxes( $meta_boxes ){ $this->meta_boxes = $meta_boxes; }
+
+		function getSurveySlug(){ return $this->survey_slug; }
+		function setSurveySlug( $survey_slug ){ $this->survey_slug = $survey_slug; }
 		/*
 		* END OF GETTER AND SETTER FUNCTIONS
 		*/
@@ -130,8 +147,38 @@
 				);
 			}
 
+			// REWRITE PERMALINKS WITH CUSTOM SLUG
+			$slug = $this->getSurveySlug();
+			if( $slug ){
+				add_rewrite_rule( '^' . $slug . '/([^/]+)/?', 'index.php?space_survey=$matches[1]', 'top');
+				add_rewrite_rule( '^'.$slug, 'index.php?post_type=space_survey', 'top');
+			}
 
 
+		}
+
+		/*
+		* REWRITE PERMALINKS WITH CUSTOM SLUGS FROM THE SURVEY SETTINGS PAGE
+		*/
+		function post_type_link( $permalink, $post_id, $leavename ){
+
+			$post = get_post( $post_id );
+
+			$slug = $this->getSurveySlug();
+
+			// echo $slug;
+			// wp_die();
+			if( $slug && $post->post_type == 'space_survey' && $post->post_status == 'publish' ){
+
+				$rewritecode = array( 'space_survey' );
+
+				$rewritereplace = array( $slug );
+
+				$permalink = str_replace( $rewritecode, $rewritereplace, $permalink );
+
+			}
+
+			return $permalink;
 		}
 
 		function add_meta_boxes(){
