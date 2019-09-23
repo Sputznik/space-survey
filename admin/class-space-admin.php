@@ -99,7 +99,10 @@
 			//add_action( 'save_post', array( $this, 'handle_survey_metabox' ) );
 
 			// AJAX ACTION TO DROP TABLES. REMOVE FROM PRODUCTION
-			add_action('wp_ajax_space_survey_drop', array($this, 'drop_db_tables'));
+			add_action( 'wp_ajax_space_survey_drop', array( $this, 'drop_db_tables' ) );
+
+			// AJAX ACTION TO ALTER TABLES
+			add_action( 'wp_ajax_space_survey_alter', array( $this, 'alter_db_tables' ) );
 
 		}
 
@@ -372,7 +375,13 @@
 
 		/*AJAX CALLBACK TO DROP DB TABLES*/
 		function drop_db_tables(){
-			do_action('space_survey_drop');
+			do_action( 'space_survey_drop' );
+			wp_die();
+		}
+
+		/*AJAX CALLBACK TO DROP DB TABLES*/
+		function alter_db_tables(){
+			do_action( 'space_survey_alter' );
 			wp_die();
 		}
 

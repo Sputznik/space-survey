@@ -151,7 +151,7 @@
 			$fields['desc']['value'] = $row->description;
 			$fields['type']['value'] = $row->type;
 			$fields['parent']['value'] = $row->parent;
-			$fields['order']['value'] = $row->rank;
+			$fields['order']['value'] = 0; //$row->rank;
 
 			if( $row->parent ){
 				$parent_question = $question_db->get_row( $row->parent );

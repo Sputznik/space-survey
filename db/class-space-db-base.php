@@ -17,7 +17,11 @@ class SPACE_DB_BASE extends SPACE_BASE{
 		$this->create();
 
 		// REMOVE TABLE FROM PRODUCTION
-		add_action('space_survey_drop', array($this, 'drop_table'));
+		add_action( 'space_survey_drop', array( $this, 'drop_table' ) );
+
+		// ALTER TABLE IN PRODUCTION
+		add_action( 'space_survey_alter', array( $this, 'alter_table' ) );
+
 	}
 
 
@@ -181,7 +185,7 @@ class SPACE_DB_BASE extends SPACE_BASE{
 		if( is_array( $search['col_values'] ) && count( $search['col_values'] ) ){
 			$results_query = $this->prepare( $results_query, $search['col_values'] );
 		}
-		
+
 		$data['results'] = $this->get_results( $results_query );
 
 		//echo $count_query."<br>";
@@ -267,4 +271,7 @@ class SPACE_DB_BASE extends SPACE_BASE{
 
 		echo "$table Table dropped.<br/>";
 	}
+
+	function alter_table(){}
+
 }

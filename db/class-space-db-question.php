@@ -35,6 +35,13 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 	function setChoiceDB( $choice_db ){ $this->choice_db = $choice_db; }
 	/* GETTER AND SETTER FUNCTIONS */
 
+	function alter_table(){
+		$table = $this->getTable();
+		$sql = "ALTER TABLE $table ADD `meta` TEXT AFTER `parent`;";
+		echo "Added meta columm in $table <br>";
+		return $this->query( $sql );
+	}
+
 	function create(){
 
 		$table = $this->getTable();
@@ -47,10 +54,13 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			type VARCHAR(20),
 			author_id BIGINT(20),
 			parent BIGINT(20),
+			meta TEXT,
 			created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
 			modified_on DATETIME ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY(ID)
 		) $charset_collate;";
+
+		// ALTER TABLE $table ADD meta VARCHAR(255)
 
 		return $this->query( $sql );
 	}
