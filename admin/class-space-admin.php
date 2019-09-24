@@ -279,6 +279,13 @@
 				SPACE_SURVEY_VERSION,
 				true
 			);
+			wp_enqueue_script(
+				'space-admin-script',
+				plugins_url( $plugin_assets_folder.'js/admin.js' ),
+				array( 'jquery'),
+				SPACE_SURVEY_VERSION,
+				true
+			);
 
 			wp_enqueue_script(
 				'space-autocomplete',

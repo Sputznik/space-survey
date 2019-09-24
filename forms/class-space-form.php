@@ -15,7 +15,11 @@ class SPACE_FORM{
 			return 0;
 		}
 
+		$container_class = isset( $field['container_class'] ) ? $field['container_class'] : "space-form-field";
+
+		_e('<div class="'.$container_class.'">');
 		$field['value'] = isset( $field['value'] ) ? $field['value'] : ( isset( $field['default'] ) ? $field['default'] : '' );
+
 
 		if( isset( $field['label'] ) ){
 			_e('<p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="'.$field['slug'].'">'.$field['label'].'</label></p>');
@@ -41,12 +45,21 @@ class SPACE_FORM{
 		if( $field['type'] == 'file' ){
 
 			_e('<input name="'.$field['slug'].'" type="file" id="'.$field['slug'].'" value="'.$field['value'].'">');
-			_e( '<p class="help">Choices from the CSV will override all the existing ones</p>' );
+
 		}
 
 		if( $field['type'] == 'text' ){
 			_e('<input name="'.$field['slug'].'" type="text" id="'.$field['slug'].'" value="'.$field['value'].'">');
 		}
+
+		/*
+		if( $field['type'] == 'meta-field' ){
+			_e( '<div class="meta-field">' );
+			_e( '<p><strong><label for="'.$field['slug'].'">'.$field['title'].'</label></strong></p>' );
+			_e('<input name="'.$field['slug'].'" type="text" id="'.$field['slug'].'" value="'.$field['value'].'">');
+			_e( '</div>' );
+		}
+		*/
 
 		if( $field['type'] == 'number' ){
 			_e('<input name="'.$field['slug'].'" type="number" id="'.$field['slug'].'" value="'.$field['value'].'">');
@@ -63,6 +76,13 @@ class SPACE_FORM{
 		if( $field['type'] == 'autocomplete' ){
 			_e("<div data-behaviour='space-autocomplete' data-field='".wp_json_encode( $field )."'></div>");
 		}
+
+		if( isset( $field['help'] ) && $field['help'] ){
+			_e( '<p class="help">'.$field['help'].'</p>' );
+		}
+
+		_e('</div>');
+
 	}
 
 }

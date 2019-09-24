@@ -27,6 +27,15 @@
 			'label'		=> 'Import Choices from CSV File',
 			'slug'		=> 'file',
 			'type'		=> 'file',
+			'help'		=> 'Choices from the CSV will override all the existing ones'
+		),
+		//METABOX FOR SETTING NUMBER CHECKBOXES TO BE DISPLAYED
+		'limit'	=> array(
+			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'label'		=> 'For limited selection',
+			'slug'		=> 'limit',
+			'type'		=> 'number',
+			'help'		=> 'Limit the number of selection'
 		),
 		/*
 		'parent' => array(
@@ -68,7 +77,11 @@
 		* CHOOSE BETWEEN UPDATING OR INSERTING THE ROW IN THE DATABASE BASED ON THE PRESENCE OF THE ID
 		*/
 		if( isset( $_POST['publish'] ) ) {
-
+			//
+			// echo "<pre>";
+			// print_r( $_POST );
+			// echo "</pre>";
+			// wp_die();
 
 			/* UPDATE THE CHOICES DATA FROM THE CSV */
 			if( isset( $_FILES['file'] ) && $_FILES['file'] ){
@@ -146,10 +159,14 @@
 		if( isset( $_GET['ID'] ) && $_GET['ID'] ){
 			$row = $question_db->get_row( $_GET['ID'] );
 
+			$meta_info = $question_db->getMetaInfo( $row );
+
 			$fields = $form->getFields();
+
 			$fields['title']['value'] = $row->title;
 			$fields['desc']['value'] = $row->description;
 			$fields['type']['value'] = $row->type;
+			$fields['limit']['value'] = isset( $meta_info['limit'] ) ? $meta_info['limit'] : "";
 			$fields['parent']['value'] = $row->parent;
 			$fields['order']['value'] = 0; //$row->rank;
 
@@ -193,6 +210,8 @@
 		$form->display_field( $form->fields['type'] );
 
 		$form->display_field( $form->fields['import_choices'] );
+
+		$form->display_field( $form->fields['limit'] );
 
 		$form->display_field( $form->fields['parent'] );
 

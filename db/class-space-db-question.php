@@ -118,7 +118,21 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			'parent' 		=> absint( $data['parent'] ),
 			'modified_on'	=> current_time('mysql', false)
 		);
+
+		if( isset( $data['limit'] ) ){
+			$questionData['meta'] = serialize( array( 'limit'	=> $data['limit'] ) );
+		}
+
 		return $questionData;
+	}
+
+	// RETURNS AN UNSERIALIZED VERSION OF THE FIELD
+	function getMetaInfo( $row ){
+		$meta_info = array();
+		if( isset( $row->meta ) && $row->meta ){
+			$meta_info = unserialize( $row->meta );
+		}
+		return $meta_info;
 	}
 
 	/*
