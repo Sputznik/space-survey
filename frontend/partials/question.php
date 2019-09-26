@@ -23,7 +23,7 @@
 	}
 
 ?>
-<div id='<?php _e( 'q'.$question->ID );?>' data-rules='<?php _e( wp_json_encode( $question->rules ) );?>' data-type='<?php _e( $question->type );?>' class='<?php _e( $question_class );?>'>
+<div id='<?php _e( 'q'.$question->ID );?>' data-meta='<?php  _e( wp_json_encode( unserialize( $question->meta ) ) );?>' data-rules='<?php _e( wp_json_encode( $question->rules ) );?>' data-type='<?php _e( $question->type );?>' class='<?php _e( $question_class );?>'>
 	<h5><?php _e( $question->title );?></h5>
 	<div class='space-desc'><?php _e( $question->description );?></div>
 	<?php echo $this->choices_html( $question );?>
