@@ -9,11 +9,31 @@
       'label' => 'Next',
       'type'  => 'text'
     ),
+    'disable-cookie' => array(
+      'label' => 'Disable cookies to allow user to submit multiple times',
+      'type'  => 'boolean'
+    )
   );
 
   global $post;
 
+  function displayTextField($name_attr, $value_attr, $label){
+    _e('<input type="text" name="' . $name_attr . '" placeholder="' . $label . '" value="' . $value_attr . '" />');
+  }
 
+  function displayBooleanField($name_attr, $value_attr, $label){
+    $flag = false;
+    if($value_attr){ $flag = true; }
+
+    $field = '<input type="checkbox" name="' . $name_attr . '" value="1"';
+    if( $flag ){
+      $field .= 'checked="checked"';
+    }
+    $field .= ' />';
+
+    _e($field);
+    _e( $label );
+  }
 
   $data = get_post_meta( $post->ID, 'survey_settings', true );
 
@@ -23,10 +43,17 @@
     $value_attr = isset( $data[ $slug ] ) ? $data[ $slug ] : '';
 
     _e('<div style="margin-bottom: 20px;">');
-    _e( '<label style="display:block">' . $field['label'] . '</label>' );
-    ?>
-    <input type="text" name="<?php _e( $name_attr );?>" value="<?php _e( $value_attr );?>" />
-    <?php
+
+    switch ($field['type']) {
+      case 'text':
+        displayTextField($name_attr, $value_attr, $field['label']);
+        break;
+
+      default:
+        displayBooleanField($name_attr, $value_attr, $field['label']);
+        break;
+    }
+
     _e('</div>');
   }
 

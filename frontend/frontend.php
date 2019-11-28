@@ -31,6 +31,8 @@
 
 			try{
 
+				if( $this->isCookieDisabled( $data['survey_id'] ) ) throw new Exception("Cookie has been disabled");
+
 				$guest = $guest_db->get_row( $_COOKIE[ $cookie_name ] );
 
 				if( !$guest ) throw new Exception('Guest does not exist');
@@ -59,6 +61,13 @@
 			print_r( wp_json_encode( $data ) );
 
 			wp_die();
+		}
+
+		function isCookieDisabled($survey_id){
+			$data = get_post_meta( $survey_id, 'survey_settings', true );
+			$value_attr = isset( $data[ 'disable-cookie' ] ) ? $data[ 'disable-cookie' ] : '';
+			if($value_attr){ return true; }
+			return false;
 		}
 
 		function saveGuestData(){
