@@ -20,13 +20,14 @@ class SPACE_PAGE_FORM extends SPACE_FORM{
 	*/
 	function display(){
 
+		/*
 		if( isset( $_GET['post'] )  && $_GET['post'] == 417 ){
 			echo "<pre>";
 			print_r( $this->getPages() );
 			echo "<pre>";
 		}
-
-
+		*/
+		
 		_e( "<div class='space-box' data-pages='".wp_json_encode( $this->getPages() )."' data-behaviour='space-pages'></div>" );
 
 	}
