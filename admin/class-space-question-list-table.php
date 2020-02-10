@@ -47,7 +47,7 @@
 				'operator'		=> '='
 			) );
 
-			$filter_by_survey = $_GET['survey'];
+			$filter_by_survey = isset( $_GET['survey'] ) ? $_GET['survey'] : 0;
 
 			// LABEL
 			printf( "<label for='%s' class='%s'>%s</label>\n",
