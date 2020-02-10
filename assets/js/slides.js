@@ -94,7 +94,7 @@ jQuery.fn.space_slides = function(){
 
 			var form = $el.find('form');
 
-			console.log( form.serialize() );
+			//console.log( form.serialize() );
 
 			jQuery.ajax({
 				type	: 'POST',
