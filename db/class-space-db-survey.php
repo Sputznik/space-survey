@@ -273,7 +273,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 							if( isset( $question['required'] ) && isset( $question['id'] ) ){
 								array_push( $required_questions, $question['id'] );
 							}
-							elseif( isset( $question['id'] ) && isset( $question['rules']) && is_array( $question['rules'] ) ){
+							if( isset( $question['id'] ) && isset( $question['rules']) && is_array( $question['rules'] ) ){
 								// OBVIOUSLY ASSUMING THAT A QUESTION WILL BE ADDED ONLY ONCE IN A SURVEY
 								$rules[ $question['id'] ] = $question['rules'];
 							}

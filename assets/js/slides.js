@@ -94,6 +94,8 @@ jQuery.fn.space_slides = function(){
 
 			var form = $el.find('form');
 
+			console.log( form.serialize() );
+
 			jQuery.ajax({
 				type	: 'POST',
 				url		: space_settings.ajax_url + '?action=' + 'space_survey_save',
@@ -177,8 +179,8 @@ jQuery.fn.space_slides = function(){
 
 			var $slide 		= getCurrentSlide(),
 				$nextSlide	= getNextSlide(),
-				totalQuest	= $slide.find('.space-question.required').length,
-				doneQuest	= $slide.find('.space-question.required.done').length;
+				totalQuest	= $slide.find('.space-question.required:not(.hide)').length,
+				doneQuest	= $slide.find('.space-question.required.done:not(.hide)').length;
 
 			if( totalQuest == doneQuest ){
 				transitionSlide( $slide, $nextSlide );
@@ -289,7 +291,7 @@ jQuery.fn.space_slides = function(){
 		*/
 		$el.find('form').change( function( ev ){
 
-			$el.find('form .space-question').not('.required').each( function(){
+			$el.find('form .space-question').each( function(){
 
 				var $questionDiv 	= jQuery( this ),
 					rules						= $questionDiv.data('rules'),
@@ -333,9 +335,12 @@ jQuery.fn.space_slides = function(){
 
 				});						// END OF ITERATION OF RULES
 
-				// IF THE FLAG IS TRUE THEN SHOW THE QUESTION OTHERWISE HIDE IT
-				if( flag ){ $questionDiv.removeClass('hide'); }
-				else{ $questionDiv.addClass('hide'); }
+				if( rules.length ){
+					// IF THE FLAG IS TRUE THEN SHOW THE QUESTION OTHERWISE HIDE IT
+					if( flag ){ $questionDiv.removeClass('hide'); }
+					else{ $questionDiv.addClass('hide'); }
+				}
+
 
 			});							// END OF ITERATION OF FORM FIELDS THAT ARE NOT REQUIRED
 		});								// END OF EVENT HANDLING WHEN FORM CHANGES

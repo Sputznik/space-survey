@@ -79,6 +79,10 @@
 
 			} else {
 
+				//echo "<pre>";
+				//print_r( $_POST );
+				//echo "</pre>";
+
 				$guest_db = SPACE_DB_GUEST::getInstance();
 
 				$guest_db->saveResponses( $_POST );

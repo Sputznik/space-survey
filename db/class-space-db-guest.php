@@ -92,7 +92,6 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 								'guest_id'		=> $data['guest_id'],
 								'choice_id'		=> $quest['val']
 							) );
-
 							array_push( $responses, $partialResponse );
 
 						break;
@@ -105,8 +104,9 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 									'guest_id'		=> $data['guest_id'],
 									'choice_text'	=> $quest['other']
 								) );
+								array_push( $responses, $partialResponse );
 							}
-							array_push( $responses, $partialResponse );
+
 
 						case 'checkbox':
 							if( is_array( $quest['val'] ) ){
@@ -119,8 +119,13 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 										'choice_id'		=> $choice_id
 									) );
 
+
+
 									array_push( $responses, $partialResponse );
 								}
+
+
+
 							}
 							break;
 
@@ -145,6 +150,10 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 
 			// DELETE ALL RESPONSES FOR THE PARTICULAR GUEST
 			$this->deleteResponses( $data['guest_id'] );
+
+			//echo "<pre>";
+			//print_r( $responses );
+			//echo "<pre>";
 
 			// INSERT MULTIPLE RESPONSES FOR THE GUEST AT ONCE USING SINGLE QUERY
 			$this->getResponseDB()->insert_rows( $responses );
