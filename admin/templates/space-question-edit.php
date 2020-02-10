@@ -2,8 +2,6 @@
 
 	$question_db = SPACE_DB_QUESTION::getInstance();
 
-
-
 	$form_fields = array(
 		'title'	=> array(
 			'placeholder'	=> 'Enter question here',
@@ -213,9 +211,9 @@
 
 		$form->display_field( $form->fields['limit'] );
 
-		$form->display_field( $form->fields['parent'] );
+		//$form->display_field( $form->fields['parent'] );
 
-		$form->display_field( $form->fields['order'] );
+		//$form->display_field( $form->fields['order'] );
 
 	});
 

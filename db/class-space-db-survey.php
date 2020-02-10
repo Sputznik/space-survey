@@ -202,6 +202,36 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		return $queries;
 	}
 
+	// COMMON REPO FOR GATHERING QUERIES FOR RESPONSES PER SURVEY
+	function getResponsesQuery( $survey_id, $search_term = '', $page = 1, $per_page = 10 ){
+
+		$queries = array();
+
+		$search_term = '%'.$this->esc_like( $search_term ).'%';
+
+		$params = array( $search_term );
+
+		$guestTable 	= $this->getGuestDB()->getTable();
+
+		$queries['common'] = " FROM $guestTable WHERE meta LIKE %s";
+
+		if( $survey_id ){
+			$queries['filter_by_survey'] = " AND survey_id = %d";
+			$queries['common'] .= $queries['filter_by_survey'];
+			array_push( $params, $survey_id );
+		}
+
+		$queries['common'] .= " ORDER BY ID DESC";
+
+		$queries['results'] = $this->prepare( "SELECT *". $queries['common'], $params );
+		if( $page && $per_page ){
+			$queries['results'] .= $this->_limit_query( $page, $per_page );
+		}
+		$queries['count'] = $this->prepare( "SELECT COUNT(*)". $queries['common'], $params );
+
+		return $queries;
+	}
+
 	function getQuestionsList( $survey_id ){
 
 		$data = array();
