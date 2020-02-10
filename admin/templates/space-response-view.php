@@ -5,6 +5,12 @@ $survey_db = SPACE_DB_SURVEY::getInstance();
 
 $guest_id = $_GET['ID'];
 
+if( isset( $_GET['ID'] ) && $_GET['ID'] && isset( $_GET['action'] ) && 'trash' == $_GET['action'] ){
+  $guest_db->delete_row( $_GET['ID'] );
+  _e( "<script>location.href='?page=space-responses';</script>" );
+  wp_die();
+}
+
 $guest = $guest_db->get_row( $guest_id );
 
 $survey = $survey_db->get_row( $guest->survey_id );

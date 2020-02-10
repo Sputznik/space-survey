@@ -1,6 +1,12 @@
 <?php
-	$url = admin_url( 'admin.php?page='.$_GET['page'] );
 
+	// MULTIPLE DELETION
+	if( isset( $_POST['action'] ) && $_POST['action'] == 'trash' && isset( $_POST['guests'] ) && is_array( $_POST['guests'] ) && count( $_POST['guests'] ) ){
+		$guest_ids = $_POST['guests'];
+		SPACE_DB_GUEST::getInstance()->delete_rows( $_POST['guests'] );
+	}
+
+	$url = admin_url( 'admin.php?page='.$_GET['page'] );
 	$url_has_changed = false;
 
 	if( isset( $_POST['filter_by_survey'] ) && $_POST['filter_by_survey'] ){

@@ -24,8 +24,8 @@
 			$this->screen = get_current_screen();
 
 			parent::__construct( array(
-				'singular'  => 'question',     //singular name of the listed records
-				'plural'    => 'questions',    //plural name of the listed records
+				'singular'  => 'response',     //singular name of the listed records
+				'plural'    => 'responses',    //plural name of the listed records
 				'ajax'      => false
 			) );
 
@@ -170,7 +170,7 @@
 		}
 
 		function column_cb( $item ) {
-			return '<input type="checkbox" name="question[]" value="'.$item->ID.'" />';
+			return '<input type="checkbox" name="guests[]" value="'.$item->ID.'" />';
 		}
 
 		function prepare_items() {
