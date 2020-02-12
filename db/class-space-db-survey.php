@@ -26,6 +26,19 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 		add_action( 'save_post', array( $this, 'saveSurvey' ) );
 
+		add_action( 'wp_ajax_surveys_json', array( $this, 'json' ) );
+
+	}
+
+	function json(){
+		global $wpdb;
+		$search = $_GET['term'];
+		$query = "SELECT ID, post_title FROM ".$wpdb->posts." WHERE post_title LIKE '%".$search."%' AND post_type='space_survey' ORDER BY post_title ASC LIMIT 0,10";
+		$posts = array();
+		foreach($wpdb->get_results($query) as $row){
+			array_push( $posts, array( 'id' => $row->ID, 'value'=> $row->post_title ) );
+		}
+		wp_send_json( $posts );
 	}
 
 	//GETTER AND SETTER FUNCTIONS
@@ -141,13 +154,11 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		);
 	}
 
-	// RETURNS THE LIST OF GUEST IDs IN A PAGINATED FORMAT
+	/* RETURNS THE LIST OF GUEST IDs IN A PAGINATED FORMAT
 	function listGuestIDs( $survey_id, $choices, $page = 1, $per_page = 20 ){
-
 		return $this->getGuestDB()->listIDsForSurvey( $survey_id, $choices, $page, $per_page );
-
-
 	}
+	*/
 
 	function getChoicesList( $survey_id ){
 
@@ -203,7 +214,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	}
 
 	// COMMON REPO FOR GATHERING QUERIES FOR RESPONSES PER SURVEY
-	function getResponsesQuery( $survey_id, $search_term = '', $page = 1, $per_page = 10 ){
+	function getResponsesQuery( $survey_id, $filterChoices, $search_term = '', $page = 1, $per_page = 10 ){
 
 		$queries = array();
 
@@ -212,6 +223,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		$params = array( $search_term );
 
 		$guestTable 	= $this->getGuestDB()->getTable();
+		$responsesTable = $this->getGuestDB()->getResponseDB()->getTable();
 
 		$queries['common'] = " FROM $guestTable WHERE meta LIKE %s";
 
@@ -221,7 +233,17 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			array_push( $params, $survey_id );
 		}
 
+		//print_r( $filterChoices );
+
+		if( is_array( $filterChoices ) && count( $filterChoices ) ){
+			$queries['filter_by_choices'] = $this->getGuestDB()->getNestedQueryForChoices( $filterChoices );
+			//echo $queries['filter_by_choices'];
+			$queries['common'] .= " AND ID IN (" . $queries['filter_by_choices'] . ")";
+		}
+
 		$queries['common'] .= " ORDER BY ID DESC";
+
+		//print_r( "SELECT *". $queries['common'] );
 
 		$queries['results'] = $this->prepare( "SELECT *". $queries['common'], $params );
 		if( $page && $per_page ){

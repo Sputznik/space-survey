@@ -9,6 +9,19 @@
 	$url = admin_url( 'admin.php?page='.$_GET['page'] );
 	$url_has_changed = false;
 
+	// FILTER RULES
+	$filterChoices = array();
+	$rules = isset( $_POST['rules'] ) ? $_POST['rules'] : array();
+	foreach( $rules as $slug => $rule ){
+		$rules[ $slug ][ 'data' ] = json_decode( stripslashes( $rule['data'] ), true );
+		if( isset( $rule['value'] ) && $rule['value'] ){
+			array_push( $filterChoices, $rule['value'] );
+		}
+	}
+	//echo "<pre>";
+	//print_r( $rules );
+	//echo "</pre>";
+
 	if( isset( $_POST['filter_by_survey'] ) && $_POST['filter_by_survey'] ){
 		$url .= '&survey='.$_POST['filter_by_survey'];
 		$url_has_changed = true;
@@ -26,13 +39,35 @@
 ?>
 <h1 class='wp-heading-inline'>Responses</h1>
 <form action="<?php _e( $url );?>" method="POST" data-behaviour="space-form-table">
+	<div class='filters-box'>
+		<?php
+
+			//echo "<pre>";
+			//print_r( $_POST );
+			//echo "</pre>";
+
+			$survey = isset( $_POST['survey'] ) ? $_POST['survey'] : array( 'id' => 0, 'title' => '' );
+			$field = array(
+				'slug'								=> 'survey[id]',
+				'placeholder'					=> 'Type title of the survey here',
+				'url'									=> admin_url( 'admin-ajax.php?action=surveys_json' ),
+				'value'								=> $survey['id'],
+				'autocomplete_value'	=> $survey['title'],
+				'autocomplete_slug'		=> 'survey[title]'
+			);
+
+		?>
+		<div class='survey-autocomplete' data-behaviour='space-autocomplete' data-field='<?php _e( wp_json_encode( $field ) );?>'></div>
+		<div data-behaviour='space-export-filters' data-rules='<?php _e( wp_json_encode( $rules ) );?>'></div>
+		<p><input type='submit' name='filters' class='button button-primary button-large' value='Apply Filters'></p>
+	</div>
 <?php
 
 	$data = array();
 
 	$spaceResponsesTable = new SPACE_RESPONSES_LIST_TABLE;
 
-	$spaceResponsesTable->prepare_items();
+	$spaceResponsesTable->prepare_items( $survey['id'], $filterChoices );
 
 	$spaceResponsesTable->search_box( 'Search', 'search-id' );
 
@@ -40,3 +75,15 @@
 
 ?>
 </form>
+<style>
+	.filters-box{
+		margin-top: 20px;
+		margin-bottom: 20px;
+		padding: 10px;
+		border: #ccc solid 1px;
+		background: #ccc;
+	}
+	.filters-box .survey-autocomplete .ui-autocomplete-input{
+		min-width: 300px;
+	}
+</style>

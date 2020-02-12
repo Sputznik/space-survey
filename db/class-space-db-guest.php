@@ -195,20 +195,19 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 		return $guests;
 	}
 
-	function listIDsForSurvey( $survey_id, $choices = array(), $page = 1, $per_page = 10 ){
-
-		$data = array( 'results' => array(), 'num_rows' => 0 );
+	function getNestedQueryForChoices( $choices ){
 
 		$table = $this->getTable();
 		$responseTable = $this->getResponseDB()->getTable();
 
-		$query = "SELECT guest_id FROM $responseTable WHERE guest_id IN ( SELECT ID FROM $table WHERE survey_id = %d )";
+		$query = "SELECT guest_id FROM $responseTable";
 
 		// FILTER THE GUESTS WITH THE CHOICES THAT THEY HAVE SELECTED
 		if( is_array( $choices ) && count( $choices ) ){
 
 			$sub_query = "";
 			$i = 0;
+
 			// ITERATE THROUGH EACH CHOICES AND CREATED A NESTED QUERY
 			foreach( $choices as $choice_id ){
 				if( $choice_id ){
@@ -225,10 +224,26 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 
 			// ONLY IF THE SUB QUERY IS PRESENT THEN ADD TO THE MAIN QUERY
 			if( $sub_query ){
-				$query .= " AND guest_id IN (" . $sub_query . ")";
+				$query .= " WHERE guest_id IN (" . $sub_query . ")";
 			}
 		}
 		$query .= " GROUP BY guest_id";
+		return $query;
+	}
+
+	/*
+	function listIDsForSurvey( $survey_id, $choices = array(), $page = 1, $per_page = 10 ){
+		$data = array( 'results' => array(), 'num_rows' => 0 );
+
+		$table = $this->getTable();
+		$responseTable = $this->getResponseDB()->getTable();
+
+		$query = "SELECT DISTINCT guest_id FROM $responseTable WHERE guest_id IN ( SELECT ID FROM $table WHERE survey_id = %d )";
+
+		$sub_query = $this->getNestedQueryForChoices( $choices );
+
+		$query .= " AND guest_id IN ( $sub_query ) GROUP BY guest_id";
+
 		$query = $this->prepare( $query, array( $survey_id ) );
 
 		//echo $query;
@@ -242,11 +257,9 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 		foreach( $results as $row ){
 			array_push( $data['results'], $row->guest_id );
 		}
-
-
-
 		return $data;
 	}
+	*/
 
 }
 

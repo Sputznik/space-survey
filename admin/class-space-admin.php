@@ -274,6 +274,7 @@
 
 					// HIDE EDIT RESPONSE SUBMENU - NEEDS TO NAVIGATE FROM THE LIST OF RESPONSES ONLY
 					$("#adminmenu a[href='admin.php?page=space-response-view']").hide();
+					$("#adminmenu a[href='admin.php?page=space-export']").hide();
 
 				});
 			</script>
