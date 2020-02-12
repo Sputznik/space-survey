@@ -48,6 +48,7 @@
 
 			$survey = isset( $_POST['survey'] ) ? $_POST['survey'] : array( 'id' => 0, 'title' => '' );
 			$field = array(
+				'label'								=> 'Choose Survey',
 				'slug'								=> 'survey[id]',
 				'placeholder'					=> 'Type title of the survey here',
 				'url'									=> admin_url( 'admin-ajax.php?action=surveys_json' ),
@@ -70,7 +71,7 @@
 	$spaceResponsesTable->prepare_items( $survey['id'], $filterChoices );
 
 	$spaceResponsesTable->search_box( 'Search', 'search-id' );
-
+	
 	$spaceResponsesTable->display();
 
 ?>
@@ -81,7 +82,11 @@
 		margin-bottom: 20px;
 		padding: 10px;
 		border: #ccc solid 1px;
-		background: #ccc;
+		background: #fff;
+	}
+	.filters-box label{
+		display: block;
+		margin-bottom: 10px;
 	}
 	.filters-box .survey-autocomplete .ui-autocomplete-input{
 		min-width: 300px;
