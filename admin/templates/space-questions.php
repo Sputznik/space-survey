@@ -20,11 +20,8 @@
 ?>
 <h1 class='wp-heading-inline'>Questions</h1>
 <a href="?page=space-question-edit" class="page-title-action">Add New</a>
-<form action="<?php _e( $url );?>" method="POST">
+<form action="<?php _e( $url );?>" method="POST" data-behaviour="space-form-table">
 <?php
-
-
-
 
 	$data = array();
 
