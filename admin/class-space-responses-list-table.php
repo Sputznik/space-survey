@@ -140,9 +140,11 @@
 		function column_default( $item, $column_name ) {
 			switch( $column_name ) {
 				case 'created_on':
-					return $item->created_on;
+					return date("F d, Y h:i:s", strtotime( $item->created_on ) );
 				case 'meta':
 					return $item->meta;
+				case 'survey':
+					return get_the_title( $item->survey_id );
 				default:
 					return print_r( $item, true ) ; //Show the whole array for troubleshooting purposes
 			}
@@ -164,7 +166,8 @@
 				'cb'					=> '<input type="checkbox" />',
 				'ipaddress' 	=> 'IP Address',
 				'meta'    		=> 'Meta',
-				'created_on' 	=> 'Created on'
+				'created_on' 	=> 'Created on',
+				'survey'			=> 'Survey'
 			);
 			return $columns;
 		}
