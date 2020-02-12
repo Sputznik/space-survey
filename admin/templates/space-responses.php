@@ -119,4 +119,9 @@
 	.filters-box .survey-autocomplete .ui-autocomplete-input{
 		min-width: 300px;
 	}
+
+	th#tot_questions{ width: 120px; }
+	th#survey{ width: 250px; }
+	th#created_on{ width: 180px; }
+	th#ipaddress{ width: 120px; }
 </style>

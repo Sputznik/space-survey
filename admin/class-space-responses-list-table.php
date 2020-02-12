@@ -121,9 +121,9 @@
 				'cb'					=> '<input type="checkbox" />',
 				'ipaddress' 	=> 'IP Address',
 				'meta'    		=> 'Meta',
-				'created_on' 	=> 'Created on',
 				'survey'			=> 'Survey',
-				'tot_questions'	=> 'Attempted Questions'
+				'tot_questions'	=> 'Attempted Questions',
+				'created_on' 	=> 'Created on',
 			);
 			return $columns;
 		}
