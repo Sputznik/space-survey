@@ -38,8 +38,9 @@
 
 ?>
 <h1 class='wp-heading-inline'>Responses</h1>
+<a href="#" class="page-title-action" data-behaviour="responses-filter-btn">Filter</a>
 <form action="<?php _e( $url );?>" method="POST" data-behaviour="space-form-table">
-	<div class='filters-box'>
+	<div class='filters-box <?php if( !$_POST ){ _e('hide');}?>'>
 		<?php
 
 			//echo "<pre>";
@@ -71,7 +72,7 @@
 	$spaceResponsesTable->prepare_items( $survey['id'], $filterChoices );
 
 	$spaceResponsesTable->search_box( 'Search', 'search-id' );
-	
+
 	$spaceResponsesTable->display();
 
 ?>
@@ -81,9 +82,36 @@
 		margin-top: 20px;
 		margin-bottom: 20px;
 		padding: 10px;
-		border: #ccc solid 1px;
+
+		position: relative;
 		background: #fff;
+		border: 10px solid #c2e1f5;
 	}
+	.filters-box:after, .filters-box:before {
+		bottom: 100%;
+		left: 120px;
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+	}
+
+	.filters-box:after {
+		border-color: rgba(136, 183, 213, 0);
+		border-bottom-color: #c2e1f5;
+		border-width: 12px;
+		margin-left: -12px;
+	}
+	.filters-box:before {
+		border-color: rgba(194, 225, 245, 0);
+		border-bottom-color: #c2e1f5;
+		border-width: 26px;
+		margin-left: -26px;
+	}
+	.filters-box.hide{ display: none; }
+	
 	.filters-box label{
 		display: block;
 		margin-bottom: 10px;

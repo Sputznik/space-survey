@@ -37,6 +37,14 @@ jQuery( document ).ready(function(){
 
  } );
 
+ jQuery('[data-behaviour~=responses-filter-btn').each( function(){
+   var $btn = jQuery( this );
 
+   $btn.click( function( ev ){
+     ev.preventDefault();
+
+     jQuery( '.filters-box' ).toggleClass('hide');
+   });
+ });
 
 });
