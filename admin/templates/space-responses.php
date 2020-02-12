@@ -25,7 +25,7 @@
 
 ?>
 <h1 class='wp-heading-inline'>Responses</h1>
-<form action="<?php _e( $url );?>" method="POST">
+<form action="<?php _e( $url );?>" method="POST" data-behaviour="space-form-table">
 <?php
 
 	$data = array();

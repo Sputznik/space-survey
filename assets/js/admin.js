@@ -23,4 +23,20 @@ jQuery( document ).ready(function(){
 
  } );
 
+ jQuery('[data-behaviour~=space-form-table]').each( function(){
+    var $form = jQuery( this );
+
+    /*
+    * ADDING CLASSES TO THE PAGINATE BUTTON TO STYLE IT MORE LIKE THE BUTTONS IN THE PAGES SECTION
+    */
+    $form.find('.tablenav.top .tablenav-pages .pagination-links .tablenav-pages-navspan').addClass('button disabled');
+    $form.find('.tablenav.top .tablenav-pages .pagination-links .next-page').addClass('button');
+    $form.find('.tablenav.top .tablenav-pages .pagination-links .prev-page').addClass('button');
+    $form.find('.tablenav.top .tablenav-pages .pagination-links .last-page').addClass('button');
+    $form.find('.tablenav.top .tablenav-pages .pagination-links .first-page').addClass('button');
+    
+ } );
+
+
+
 });
