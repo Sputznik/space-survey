@@ -231,6 +231,13 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 		return $query;
 	}
 
+	function totalQuestionsAttempted( $guest_id ){
+		$responseTable = $this->getResponseDB()->getTable();
+		$query = "SELECT count( DISTINCT question_id ) FROM $responseTable WHERE guest_id = %d";
+		$query = $this->prepare( $query, array( $guest_id ) );
+		return $this->get_var( $query );
+	}
+
 	/*
 	function listIDsForSurvey( $survey_id, $choices = array(), $page = 1, $per_page = 10 ){
 		$data = array( 'results' => array(), 'num_rows' => 0 );

@@ -98,6 +98,8 @@
 					return $item->meta;
 				case 'survey':
 					return get_the_title( $item->survey_id );
+				case 'tot_questions':
+					return SPACE_DB_GUEST::getInstance()->totalQuestionsAttempted( $item->ID );
 				default:
 					return print_r( $item, true ) ; //Show the whole array for troubleshooting purposes
 			}
@@ -120,7 +122,8 @@
 				'ipaddress' 	=> 'IP Address',
 				'meta'    		=> 'Meta',
 				'created_on' 	=> 'Created on',
-				'survey'			=> 'Survey'
+				'survey'			=> 'Survey',
+				'tot_questions'	=> 'Attempted Questions'
 			);
 			return $columns;
 		}
