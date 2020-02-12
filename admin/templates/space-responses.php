@@ -111,7 +111,7 @@
 		margin-left: -26px;
 	}
 	.filters-box.hide{ display: none; }
-	
+	.filters-box #space-filters{ max-width: 600px; }
 	.filters-box label{
 		display: block;
 		margin-bottom: 10px;
