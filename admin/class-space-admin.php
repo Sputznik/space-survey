@@ -16,6 +16,7 @@
 				plugin_dir_path(__FILE__).'../forms/class-space-admin-form.php',
 				'class-space-list-table.php',
 				'class-space-question-list-table.php',
+				'class-space-responses-list-table.php',
 			);
 
 			$this->setSurveySlug( get_option( 'survey-slug' ) );
@@ -50,6 +51,15 @@
 				'space-question-edit' => array(
 					'title'	=> 'Add Question',
 					'menu'	=> 'space-survey'
+				),
+				'space-responses' => array(
+					'title'	=> 'Responses',
+					'menu'	=> 'space-survey'
+				),
+				'space-response-view' => array(
+					'title'	=> 'View Response',
+					'menu'	=> 'space-survey',
+					'hide'	=> true
 				),
 				'space-export'	=> array(
 					'title'	=> 'Export',
@@ -222,6 +232,8 @@
 
 
 
+
+
 		}
 
 		function admin_head(){
@@ -236,6 +248,10 @@
 				jQuery(document).ready(function($) {
 					$('#toplevel_page_space-survey').addClass('wp-has-current-submenu wp-menu-open menu-top menu-top-first').removeClass('wp-not-current-submenu');
 					$('#toplevel_page_space-survey > a').addClass('wp-has-current-submenu').removeClass('wp-not-current-submenu');
+
+
+
+
 				});
 			</script>
 			<?php
@@ -254,6 +270,10 @@
 					for( var i=0; i<anchors.length; i++ ){
 						$( "a[href='" + anchors[i][0] + "']" ).attr( 'href', anchors[i][1] );
 					}
+
+
+					// HIDE EDIT RESPONSE SUBMENU - NEEDS TO NAVIGATE FROM THE LIST OF RESPONSES ONLY
+					$("#adminmenu a[href='admin.php?page=space-response-view']").hide();
 
 				});
 			</script>
