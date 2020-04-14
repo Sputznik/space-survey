@@ -173,7 +173,7 @@
 				$fields['parent']['autocomplete_value'] = $parent_question->title;
 			}
 
-			$form->setFields( $fields );
+			$form->setFields( wp_unslash( $fields ) );
 		}
 
 

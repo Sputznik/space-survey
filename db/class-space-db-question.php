@@ -111,17 +111,25 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 
 	function sanitize( $data ){
 		$questionData = array(
-			'title' 		=> sanitize_text_field( $data['title'] ),
+			'title' 			=> sanitize_text_field( $data['title'] ),
 			'description'	=> sanitize_text_field( $data['desc'] ),
-			'type' 			=> $data['type'],
+			'type' 				=> $data['type'],
 			'author_id'		=> get_current_user_id(),
-			'parent' 		=> absint( $data['parent'] ),
+			'parent' 			=> isset( $data['parent'] ) ? absint( $data['parent'] ) : 0,
 			'modified_on'	=> current_time('mysql', false)
 		);
 
 		if( isset( $data['limit'] ) ){
 			$questionData['meta'] = serialize( array( 'limit'	=> $data['limit'] ) );
 		}
+
+
+		/*
+		echo "<pre>";
+		print_r( $questionData );
+		print_r( wp_unslash( $questionData ) );
+		echo "</pre>";
+		*/
 
 		return $questionData;
 	}

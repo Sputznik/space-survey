@@ -9,6 +9,17 @@ class SPACE_FORM{
 	// OVERRIDEN BY CHILD CLASSES FOR IMPLEMENTATION
 	function display(){}
 
+	function json( $type, $data ){
+		?>
+		<script type="text/javascript">
+		if( window.browserData === undefined || window.browserData[ '<?php _e( $type );?>' ] === undefined ){
+			var data = window.browserData = window.browserData || {};
+			browserData[ '<?php _e( $type );?>' ] = <?php echo json_encode( wp_unslash( $data ) );?>;
+		}
+		</script>
+		<?php
+	}
+
 	function display_field( $field ){
 
 		if( !isset( $field['slug'] ) || !isset( $field['type'] ) ){

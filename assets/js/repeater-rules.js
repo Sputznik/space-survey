@@ -38,7 +38,7 @@ jQuery.fn.space_rules = function( parent_name ){
 				* AUTOCOMPLETE	: QUESTIONS
 				* DROPDOWN		: CHOICES
 				*/
-				console.log( rule );
+				//console.log( rule );
 				if( rule == undefined ){
 					rule = { data : {} };
 				}
