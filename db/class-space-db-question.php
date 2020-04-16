@@ -13,6 +13,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			'radio'						=> 'Radio Button',
 			'checkbox'				=> 'Checkboxes',
 			'checkbox-other'	=> 'Checkboxes With Other',
+			'checkbox-ranking'	=> 'Checkboxes With Ranking',
 			'dropdown'				=> 'Dropdown',
 			'text'						=> 'Textbox'
 		) );

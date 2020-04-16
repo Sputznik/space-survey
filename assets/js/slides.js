@@ -241,6 +241,9 @@ jQuery.fn.space_slides = function(){
 					$questionInputText.change( function( ev ){ validate_checkbox_other(); });
 					break;
 
+
+				case 'checkbox-ranking':
+
 				case 'checkbox':
 					var $questionInput = $questionDiv.find('input[type="checkbox"]');
 

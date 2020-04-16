@@ -107,6 +107,7 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 								array_push( $responses, $partialResponse );
 							}
 
+						case 'checkbox-ranking':	
 
 						case 'checkbox':
 							if( is_array( $quest['val'] ) ){
