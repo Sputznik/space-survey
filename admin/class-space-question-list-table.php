@@ -232,7 +232,7 @@
 			/*
 			* FEEDING THE DATA FROM THE DATABASE INTO THE LIST TABLE UI
 			*/
-			$this->items = $survey_db->get_results( $queries['results'] );
+			$this->items = wp_unslash( $survey_db->get_results( $queries['results'] ) );
 			$this->set_pagination_args( array(
 				'total_items'	=> $survey_db->get_var( $queries['count'] ),
 				'per_page'		=> $per_page
