@@ -156,10 +156,9 @@ class SPACE_EXPORT extends SPACE_BASE{
 
 		foreach( $responses as $response ){
 
+			// SETTING DEFAULT VALUES
 			if( ! isset( $data[ $response->question_id ] ) ){
-
 				if( isset( $questions[ $response->question_id ] ) && isset( $questions[ $response->question_id ]->title ) ){
-
 					$data[ $response->question_id ] = array(
 						'question_title'	=> $questions[ $response->question_id ]->title,
 						'choices'			=> array()
@@ -169,11 +168,20 @@ class SPACE_EXPORT extends SPACE_BASE{
 
 
 			if( $response->choice_id && isset( $choices[ $response->choice_id ] ) && isset( $choices[ $response->choice_id ]->title ) ){
-				array_push( $data[ $response->question_id ][ 'choices' ], $choices[ $response->choice_id ]->title );
+				// CHECK IF THE CHOICE TEXT HAS THE RANKING VALUE
+				if( $response->choice_text && is_numeric( $response->choice_text ) ){
+					$data[ $response->question_id ][ 'choices' ][ $response->choice_text ] = $choices[ $response->choice_id ]->title;
+				}
+				else{
+					array_push( $data[ $response->question_id ][ 'choices' ], $choices[ $response->choice_id ]->title );
+				}
 			}
 			elseif( $response->choice_text ){
 				array_push( $data[ $response->question_id ][ 'choices' ], $response->choice_text );
 			}
+
+			// SORTING THE CHOICES BY KEY : USEFUL FOR CHECKBOX WITH RANKING
+			ksort( $data[ $response->question_id ][ 'choices' ] );
 
 		}
 

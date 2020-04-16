@@ -20,6 +20,8 @@ $guestResponses = $guest_db->getResponses( $guest_id );
 
 $responses = SPACE_EXPORT::getInstance()->getFormattedResponses( $guestResponses, $questions, $choices );
 
+//ORBIT_UTIL::getInstance()->test( $responses );
+
 $phpdate = strtotime( $guest->created_on );
 
 ?>
