@@ -107,21 +107,17 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 								array_push( $responses, $partialResponse );
 							}
 
-						case 'checkbox-ranking':	
+						case 'checkbox-ranking':
 
 						case 'checkbox':
 							if( is_array( $quest['val'] ) ){
 
 								foreach( $quest['val'] as $choice_id ){
-
 									$partialResponse = $this->getResponseDB()->sanitize( array(
 										'question_id'	=> $quest_id,
 										'guest_id'		=> $data['guest_id'],
 										'choice_id'		=> $choice_id
 									) );
-
-
-
 									array_push( $responses, $partialResponse );
 								}
 

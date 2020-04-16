@@ -9,38 +9,41 @@ jQuery.fn.space_rank_choices = function(){
 				getSelectedChoice(ev);
 		});
 
+		function getRankElement( $choiceEl ){
+			return $choiceEl.closest( 'li.space-choice.rank-field' ).find( 'label.rank' );
+		}
 
     // Gets the selected choice
     function getSelectedChoice( choice ){
 
-			var meta    = $quest.data('meta'),
-			limit = meta['limit'];
+			var meta    								= $quest.data('meta'),													// META INFORMATION
+					limit 									= meta['limit'],																// LIMIT
+					selectedChoice 					= choice.target,																// SELECTED CHOICE ELEMENT
+					isSelectedChoiceChecked = selectedChoice.checked,												// CHECKED ATTRIBUTE
+					selectedChoiceValue 		= jQuery( selectedChoice ).attr('data-id'),			// VALUE ATTRIBUTE
+					selectedChoiceRank 			= getRankElement( jQuery( selectedChoice ) ),		// GET RANK ELEMENT
+					selectedChoiceDataRank 	= selectedChoiceRank.attr('data-rank'); 				// Set the data-rank to 0 for all elements
 
-      var selectedChoice = choice.target;
-      var isSelectedChoiceChecked = selectedChoice.checked;
-      var selectedChoiceValue = selectedChoice.value;
-      var selectedChoiceRank = jQuery('#choice-'+selectedChoice.value);
-			var selectedChoiceDataRank = selectedChoiceRank.attr('data-rank'); //Set the data-rank to 0 for all elements
+			// If checkbox is checked
+			// change the background of the rank field
+			// and add rank to the field.
+			if( isSelectedChoiceChecked ){
 
-				// If checkbox is checked
-				// change the background of the rank field
-				// and add rank to the field.
-				if( isSelectedChoiceChecked ){
+				rank++;					// Increment the rank counter
 
-					// Increment the rank counter
-          rank++;
+        selectedChoiceRank.css({
+          'background-color': '#000',
+          'color':  '#fff'
+        });
 
-          selectedChoiceRank.css({
-            'background-color': '#000',
-            'color':  '#fff'
-          });
+				// Set the data rank for the rank field
+				selectedChoiceRank.attr( 'data-rank', rank );
 
-					// Set the data rank for the rank field
-					selectedChoiceRank.attr('data-rank',rank);
+				jQuery( selectedChoice ).val( jQuery( selectedChoice ).attr('data-id') + ";" + rank );
 
-					//Update the rank field UI
-          selectedChoiceRank.find('span').text(rank);
-        }
+				//Update the rank field UI
+        selectedChoiceRank.find('span').text(rank);
+      }
 
 				// If the checked limit exceeds the limit
 				// set the rank = limit
@@ -75,9 +78,7 @@ jQuery.fn.space_rank_choices = function(){
 		}
 
 		//Get the total number of checked checkboxes on every click
-    function getCheckedNum(){
-      return $quest.find('input[type=checkbox]:checked').length;
-    }
+    function getCheckedNum(){ return $quest.find('input[type=checkbox]:checked').length; }
 
 		// Changes the rank dynamically
 		function changeRank( uncheckedIndex){
@@ -93,7 +94,7 @@ jQuery.fn.space_rank_choices = function(){
 			// extracts their id and data-rank
 			// and adds to checkedList = []
 			checkedElements.each(function(index){
-				var checkedElement = jQuery('#choice-'+checkedElements[index].value);
+				var checkedElement = getRankElement( jQuery( checkedElements[index] ) ); //jQuery('#choice-'+checkedElements[index].value);
 				checkedList.push({'id':'#'+checkedElement.attr('id'), 'dataRank':checkedElement.attr('data-rank')});
 			});
 
