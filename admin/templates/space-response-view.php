@@ -14,8 +14,8 @@ if( isset( $_GET['ID'] ) && $_GET['ID'] && isset( $_GET['action'] ) && 'trash' =
 $guest = $guest_db->get_row( $guest_id );
 
 $survey = $survey_db->get_row( $guest->survey_id );
-$questions = $survey_db->getQuestionsList( $guest->survey_id );
-$choices = $survey_db->getChoicesList( $guest->survey_id );
+$questions = wp_unslash( $survey_db->getQuestionsList( $guest->survey_id ) );
+$choices = wp_unslash( $survey_db->getChoicesList( $guest->survey_id ) );
 $guestResponses = $guest_db->getResponses( $guest_id );
 
 $responses = SPACE_EXPORT::getInstance()->getFormattedResponses( $guestResponses, $questions, $choices );

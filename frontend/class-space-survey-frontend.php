@@ -23,6 +23,7 @@
 		}
 
 		function question_html( $question ){
+			$question = wp_unslash( $question );
 			$question_tmp = apply_filters( 'space-question-template',  'partials/question.php' );
 			ob_start();
 			include( $question_tmp );
