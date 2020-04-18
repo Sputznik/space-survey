@@ -14,13 +14,13 @@ jQuery.fn.space_rank_choices = function(){
     // Gets the selected choice
     function getSelectedChoice( choice ){
 
-			var meta 										= $quest.data('meta'),													// META INFORMATION
-					limit 									= meta['limit'],																// LIMIT
-					selectedChoice 					= choice.target,																// SELECTED CHOICE ELEMENT
-					isSelectedChoiceChecked	= selectedChoice.checked,												// CHECKED ATTRIBUTE
-					selectedChoiceValue 		= jQuery( selectedChoice ).attr('data-id'),			// VALUE ATTRIBUTE
-					selectedChoiceRank 			= getRankElement( jQuery( selectedChoice ) ),		// GET RANK ELEMENT
-					selectedChoiceDataRank 	= selectedChoiceRank.attr('data-rank'); 				// Set the data-rank to 0 for all elements
+			var meta 									= $quest.data('meta'),													// META INFORMATION
+				limit 									= meta['limit'],																// LIMIT
+				selectedChoice 					= choice.target,																// SELECTED CHOICE ELEMENT
+				isSelectedChoiceChecked	= selectedChoice.checked,												// CHECKED ATTRIBUTE
+				selectedChoiceValue 		= jQuery( selectedChoice ).attr('data-id'),			// VALUE ATTRIBUTE
+				selectedChoiceRank 			= getRankElement( jQuery( selectedChoice ) ),		// GET RANK ELEMENT
+				selectedChoiceDataRank 	= selectedChoiceRank.attr('data-rank'); 				// Set the data-rank to 0 for all elements
 
 			if( isSelectedChoiceChecked ){
 
@@ -31,10 +31,10 @@ jQuery.fn.space_rank_choices = function(){
 
 				rank++;					// Increment the rank counter
 
-        selectedChoiceRank.css({
-          'background-color': '#000',
-          'color':  '#fff'
-        });
+				selectedChoiceRank.css({
+					'background-color': '#000',
+					'color':  '#fff'
+				});
 
 				// Set the data rank for the rank field
 				selectedChoiceRank.attr( 'data-rank', rank );
@@ -42,8 +42,8 @@ jQuery.fn.space_rank_choices = function(){
 				jQuery( selectedChoice ).val( jQuery( selectedChoice ).attr('data-id') + ";" + rank );
 
 				//Update the rank field UI
-        selectedChoiceRank.find('span').text(rank);
-      }
+				selectedChoiceRank.find('span').text(rank);
+			}
 			else if( !( isSelectedChoiceChecked ) && ( getCheckedNum() == limit ) &&  ( limit != '' ) ){
 				/*
 				* If the checked limit exceeds the limit, set the rank = limit
@@ -60,25 +60,25 @@ jQuery.fn.space_rank_choices = function(){
 				// Dynamically sort the rank fields of checked checkboxes in ascending order
 				changeRank( selectedChoiceDataRank );
 
-        // Decrement the global rank counter when a checkbox is unchecked
-        rank--;
+				// Decrement the global rank counter when a checkbox is unchecked
+				rank--;
 
 				selectedChoiceRank.css({
-          'background-color': '#fff',
-          'color':  '#000'
-        });
+					'background-color': '#fff',
+					'color':  '#000'
+				});
 
 				// Sets the unchecked checkboxes data rank to 0
 				selectedChoiceRank.attr('data-rank', 0);
 
 				// Sets the unchecked checkboxes rank field value to default value
-        selectedChoiceRank.find('span').text('#');
+				selectedChoiceRank.find('span').text('#');
 			}
 			//console.log('Rank:'+rank+' '+ 'Meta Limit: ' + limit);
 		}
 
 		// Get the total number of checked checkboxes on every click
-    function getCheckedNum(){ return $quest.find('input[type=checkbox]:checked').length; }
+		function getCheckedNum(){ return $quest.find('input[type=checkbox]:checked').length; }
 
 		// Changes the rank dynamically
 		function changeRank( uncheckedIndex ){
