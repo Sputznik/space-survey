@@ -11,7 +11,7 @@ jQuery.fn.space_rank_choices = function(){
 		// GET THE LABEL THAT SHOWS THE RANK ELEMENT OF A PARTICULAR CHECKBOX
 		function getRankElement( $choiceEl ){ return $choiceEl.closest( 'li.space-choice.rank-field' ).find( 'label.rank' ); }
 
-    // Gets the selected choice
+		// Gets the selected choice
 		function getSelectedChoice( choice ){
 
 			var meta 									= $quest.data('meta'),													// META INFORMATION
