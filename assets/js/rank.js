@@ -2,8 +2,8 @@ jQuery.fn.space_rank_choices = function(){
 
 	return this.each(function() {
 
-    var $quest 	= jQuery( this ),
-			rank 			= 0;									// Rank counter
+		var $quest 	= jQuery( this ),
+			rank			= 0;									// Rank counter
 
 		// TRACK CLICK EVENT OF CHECKBOXES WITHIN THIS QUESTION
 		$quest.find('input[type=checkbox]').click( function( ev ){ getSelectedChoice(ev); });
@@ -14,10 +14,10 @@ jQuery.fn.space_rank_choices = function(){
     // Gets the selected choice
     function getSelectedChoice( choice ){
 
-			var meta    								= $quest.data('meta'),													// META INFORMATION
+			var meta 										= $quest.data('meta'),													// META INFORMATION
 					limit 									= meta['limit'],																// LIMIT
 					selectedChoice 					= choice.target,																// SELECTED CHOICE ELEMENT
-					isSelectedChoiceChecked = selectedChoice.checked,												// CHECKED ATTRIBUTE
+					isSelectedChoiceChecked	= selectedChoice.checked,												// CHECKED ATTRIBUTE
 					selectedChoiceValue 		= jQuery( selectedChoice ).attr('data-id'),			// VALUE ATTRIBUTE
 					selectedChoiceRank 			= getRankElement( jQuery( selectedChoice ) ),		// GET RANK ELEMENT
 					selectedChoiceDataRank 	= selectedChoiceRank.attr('data-rank'); 				// Set the data-rank to 0 for all elements
@@ -120,5 +120,5 @@ jQuery.fn.space_rank_choices = function(){
 };
 
 jQuery( document ).ready(function(){
-  jQuery('.space-question[data-type~=checkbox-ranking]').space_rank_choices();
+	jQuery('.space-question[data-type~=checkbox-ranking]').space_rank_choices();
 });
