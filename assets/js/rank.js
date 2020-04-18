@@ -12,12 +12,12 @@ jQuery.fn.space_rank_choices = function(){
 		function getRankElement( $choiceEl ){ return $choiceEl.closest( 'li.space-choice.rank-field' ).find( 'label.rank' ); }
 
     // Gets the selected choice
-    function getSelectedChoice( choice ){
+		function getSelectedChoice( choice ){
 
 			var meta 									= $quest.data('meta'),													// META INFORMATION
 				limit 									= meta['limit'],																// LIMIT
 				selectedChoice 					= choice.target,																// SELECTED CHOICE ELEMENT
-				isSelectedChoiceChecked	= selectedChoice.checked,												// CHECKED ATTRIBUTE
+				isSelectedChoiceChecked = selectedChoice.checked,												// CHECKED ATTRIBUTE
 				selectedChoiceValue 		= jQuery( selectedChoice ).attr('data-id'),			// VALUE ATTRIBUTE
 				selectedChoiceRank 			= getRankElement( jQuery( selectedChoice ) ),		// GET RANK ELEMENT
 				selectedChoiceDataRank 	= selectedChoiceRank.attr('data-rank'); 				// Set the data-rank to 0 for all elements
