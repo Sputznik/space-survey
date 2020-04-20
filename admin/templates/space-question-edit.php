@@ -97,9 +97,11 @@
 
 					if( is_array( $arrayCsv ) && count( $arrayCsv ) ){
 						$_POST['choices'] = array();
+						$rank = 0;
 						foreach ( $arrayCsv as $row ) {
 							if( is_array( $row ) && count( $row ) ){
-								array_push( $_POST['choices'], array( 'title'	=> $row[ 0 ], 'id' => 0, 'rank' => 0 ) );
+								array_push( $_POST['choices'], array( 'title'	=> $row[ 0 ], 'id' => 0, 'rank' => $rank ) );
+								$rank++;
 							}
 						}
 					}
