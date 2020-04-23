@@ -119,6 +119,14 @@
 				true
 			);
 
+			wp_enqueue_script(
+				'space-rank',
+				plugins_url( $plugin_assets_folder.'js/rank.js' ),
+				array( 'jquery'),
+				time() ,
+				true
+			);
+
 			wp_localize_script( 'space-slides', 'space_settings', array(
 				'ajax_url'	=> admin_url('admin-ajax.php')
 			) );

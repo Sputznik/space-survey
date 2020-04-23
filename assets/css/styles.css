@@ -1,29 +1,19 @@
-.space-slide{
-	display: none;
-}
-.space-slide.active{
-	display: block;
-}
+.space-slide{ display: none; }
+.space-slide.active{ display: block; }
 
-.space-question{
-	margin-bottom: 30px;
-}
+.space-question{ margin-bottom: 30px; }
 
-.space-choices, .space-list{
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
+.space-choices, .space-list{ margin: 0; padding: 0; list-style: none; }
 
-.space-title.page-desc{
-	margin-bottom: 30px;
-}
+.space-title.page-desc{ margin-bottom: 30px; }
 
-.space-list-inline li{
-	display: inline;
-	margin-right: 10px;
-}
+.space-list-inline li{ display: inline; margin-right: 10px; }
 
-.space-choice input{
-	margin-right: 10px !important;
-}
+.space-choice input{ margin-right: 10px !important; }
+
+/* CHECKBOX WITH RANKING */
+.space-choice.rank-field{ display:block; user-select:none; }
+.space-choice.rank-field > .choice-type{ max-width:400px; width:100%; }
+.space-choice.rank-field > .rank{ width: 46px; height: 46px; text-align: center; user-select:none; margin:0; }
+.space-choice.rank-field > .rank > span{ display: block; line-height: 28px; }
+/* CHECKBOX WITH RANKING */

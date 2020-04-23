@@ -62,7 +62,8 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 			array(
 				'guest_id'	=> '%d'
 			),
-			array( (int) $guest_id )
+			array( (int) $guest_id ),
+			'choice_text'									// THIS ORDER BY WAS ADDED FOR CHOICES WITH RANKING
 		);
 	}
 
@@ -86,15 +87,32 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 						case 'dropdown':
 
 						case 'radio':
-
 							$partialResponse = $this->getResponseDB()->sanitize( array(
 								'question_id'	=> $quest_id,
 								'guest_id'		=> $data['guest_id'],
 								'choice_id'		=> $quest['val']
 							) );
 							array_push( $responses, $partialResponse );
+							break;
 
-						break;
+						case 'checkbox-ranking':
+							if( is_array( $quest['val'] ) ){
+								foreach( $quest['val'] as $choice_id_rank ){
+
+									$choice_id_rank = explode( ';', $choice_id_rank );
+									$choice_id = $choice_id_rank[0];
+									$choice_rank = count( $choice_id_rank ) > 1 ? $choice_id_rank[1] : 0;
+
+									$partialResponse = $this->getResponseDB()->sanitize( array(
+										'question_id'	=> $quest_id,
+										'guest_id'		=> $data['guest_id'],
+										'choice_id'		=> $choice_id,
+										'choice_text'	=> $choice_rank
+									) );
+									array_push( $responses, $partialResponse );
+								}
+							}
+							break;
 
 						case 'checkbox-other':
 							// save other text
@@ -107,25 +125,16 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 								array_push( $responses, $partialResponse );
 							}
 
-
 						case 'checkbox':
 							if( is_array( $quest['val'] ) ){
-
 								foreach( $quest['val'] as $choice_id ){
-
 									$partialResponse = $this->getResponseDB()->sanitize( array(
 										'question_id'	=> $quest_id,
 										'guest_id'		=> $data['guest_id'],
 										'choice_id'		=> $choice_id
 									) );
-
-
-
 									array_push( $responses, $partialResponse );
 								}
-
-
-
 							}
 							break;
 

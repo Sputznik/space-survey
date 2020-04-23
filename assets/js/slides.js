@@ -56,6 +56,8 @@ jQuery.fn.space_slides = function(){
 
 				case 'radio':
 
+				case 'checkbox-ranking':
+
 				case 'checkbox':
 					var $questionInput = $questionDiv.find('input[value=' + response.choice_id + ']');
 					$questionInput.click();
@@ -240,6 +242,9 @@ jQuery.fn.space_slides = function(){
 					$questionInputCheckbox.click( function( ev ){ validate_checkbox_other(); });
 					$questionInputText.change( function( ev ){ validate_checkbox_other(); });
 					break;
+
+
+				case 'checkbox-ranking':
 
 				case 'checkbox':
 					var $questionInput = $questionDiv.find('input[type="checkbox"]');
