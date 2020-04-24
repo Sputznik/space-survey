@@ -13,7 +13,7 @@
 		exit;
 	}
 	//Constant changes all the js and css version on the go
-	define( 'SPACE_SURVEY_VERSION', '2.1.5' );	//2.1.1. 
+	define( 'SPACE_SURVEY_VERSION', '2.1.6' );
 
 	$inc_files = array(
 		'class-space-base.php',
