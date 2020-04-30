@@ -9,7 +9,7 @@ jQuery.fn.space_pages = function(){
 			pages 				= window.browserData['pages'] != undefined ? window.browserData['pages'] : [],	// PAGES FROM THE DB
 			deleted_list 	= []; // LIST OF ID THAT HAVE BEEN REMOVED WHEN THE CLOSE BUTTON IS CLICKED
 
-		
+
 		var $hidden_delete; // INITIALIZED LATER WITHIN THE INIT FUNCTION
 
 		var repeater = SPACE_REPEATER( {
@@ -115,10 +115,10 @@ jQuery.fn.space_pages = function(){
 				var $hiddenRank = repeater.createField({
 					element	: 'input',
 					attr	: {
-						'type'				: 'hidden',
-						'value'				: page['rank'] ? page['rank'] : 0,
-						'data-behaviour' 	: 'space-rank',
-						'name'				: 'pages[' + repeater.count + '][rank]'
+						'type'						: 'hidden',
+						'value'						: page['rank'] ? page['rank'] : 0,
+						'data-behaviour' 	: 'space-pages-rank',
+						'name'						: 'pages[' + repeater.count + '][rank]'
 					},
 					append	: $list_item
 				});
@@ -142,13 +142,21 @@ jQuery.fn.space_pages = function(){
 				* REORDER LIST
 				*/
 				var rank = 0;
-				repeater.$list.find( '[data-behaviour~=space-rank]' ).each( function(){
+				repeater.$list.find( '[data-behaviour~=space-pages-rank]' ).each( function(){
 					var $hiddenRank = jQuery( this );
 					$hiddenRank.val( rank );
 					rank++;
 				});
 			},
 		} );
+
+		//console.log(  $el.closest('form').length );
+
+		// REORDER THE ENTIRE FORM BEFORE THE FORM IS UPDATED
+		$el.closest('form').submit( function( ev ){
+			repeater.reorder();
+		});
+
 
 	});
 };
