@@ -16,8 +16,8 @@
 
 	_e( "<a href='".admin_url( 'admin.php?page=space-export&survey='.$survey_id )."'>Generate CSV</a>" );
 
+	/*
 	$debug_settings = array( 'space_required_questions', 'space_rules' );
-
 	foreach( $debug_settings as $setting ){
 		$value = get_post_meta( $survey_id, $setting, true );
 		echo "<p>" . $setting . "</p>";
@@ -25,3 +25,4 @@
 		print_r( $value );
 		echo "</pre>";
 	}
+	*/
