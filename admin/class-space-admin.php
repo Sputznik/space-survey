@@ -34,7 +34,7 @@
 						'singular_name' => 'Space Survey',
 						'add_new_item'	=> 'Add New Survey'
 					),
-					'supports'	=> array( 'title','author' ),
+					'supports'	=> array( 'title','author', 'custom-fields' ),
 					'menu_icon'	=> 'dashicons-editor-kitchensink'
 				)
 			) );
