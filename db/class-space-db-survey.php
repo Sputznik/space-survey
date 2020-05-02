@@ -113,6 +113,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 	// DELETE MULTIPLE PAGES BY ARRAY OF PAGE IDs
 	function deletePages( $pages_id_arr ){
+		if( !is_user_logged_in() ){ return false; }
 		return $this->getPageDB()->delete_rows( $pages_id_arr );
 	}
 
