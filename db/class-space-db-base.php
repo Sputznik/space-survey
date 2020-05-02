@@ -230,16 +230,14 @@ class SPACE_DB_BASE extends SPACE_BASE{
 
 	// DELETE SPECIFIC ROW
 	function delete_row( $ID ){
-		if( is_user_logged_in() ){
-			$table = $this->getTable();
-			$sql = "DELETE FROM $table WHERE ID = %d;";
-			$this->query( $this->prepare( $sql, $ID ) );
-		}
+		$table = $this->getTable();
+		$sql = "DELETE FROM $table WHERE ID = %d;";
+		$this->query( $this->prepare( $sql, $ID ) );
 	}
 
 	// DELETE MULTIPLE ROWS WITH MATCHING ID
 	function delete_rows( $ids_arr ){
-		if( is_user_logged_in() && is_array( $ids_arr ) && count( $ids_arr ) ){
+		if( is_array( $ids_arr ) && count( $ids_arr ) ){
 			$ids_str = implode( ',', $ids_arr );
 			$table = $this->getTable();
 			$query = "DELETE FROM $table WHERE ID IN ($ids_str);";
@@ -249,11 +247,13 @@ class SPACE_DB_BASE extends SPACE_BASE{
 
 	// DELETE MULTIPLE ROWS FILTERED BY WHERE QUERY
 	function delete_selected_rows( $col_formats, $col_values ){
-		if( is_user_logged_in() ){
-			global $wpdb;
-			$query = 'Delete'.$this->_from_query().$this->_where_query( $col_formats );
-			$wpdb->query( $this->prepare( $query, $col_values ) );
-		}
+
+		global $wpdb;
+
+		$query = 'Delete'.$this->_from_query().$this->_where_query( $col_formats );
+
+		$wpdb->query( $this->prepare( $query, $col_values ) );
+
 	}
 
 	// TO BE IMPLEMENTED BY CHILD CLASSES - HANDLES TABLE CREATION

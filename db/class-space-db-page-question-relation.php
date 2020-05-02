@@ -66,11 +66,9 @@ class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
 	}
 
 	function deleteForPage( $page_id ){
-		if( is_user_logged_in() ){
-			$table = $this->getTable();
-			$query = $this->prepare( "DELETE FROM $table WHERE page_id = %d;", array( $page_id ) );
-			$this->query( $query );
-		}
+		$table = $this->getTable();
+		$query = $this->prepare( "DELETE FROM $table WHERE page_id = %d;", array( $page_id ) );
+		$this->query( $query );
 	}
 
 
