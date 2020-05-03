@@ -47,4 +47,77 @@ jQuery( document ).ready(function(){
    });
  });
 
+ jQuery('[data-behaviour~=space-survey-import-export').each( function(){
+	 var $el 			= jQuery( this ),
+	 		$form			= $el.closest('form'),
+	 		survey_id = $el.data('survey'),
+	 		$btn			= $el.find('button'),
+			$loader		= $el.find('.space-loader');
+
+		// DOWNLOAD JSON FILE
+		function downloadJSON( jsonData ) {
+			disableLoader();
+
+			//Convert JSON Array to string.
+			var json = JSON.stringify( jsonData );
+
+			//Convert JSON string to BLOB.
+			json = [json];
+			var blob1 = new Blob(json, { type: "text/plain;charset=utf-8" });
+
+			//Check the Browser.
+			var isIE = false || !!document.documentMode;
+			if (isIE) {
+				window.navigator.msSaveBlob(blob1, "survey.json");
+			}
+			else {
+				var url = window.URL || window.webkitURL;
+				link = url.createObjectURL(blob1);
+				var a = jQuery("<a />");
+				a.attr("download", "survey.json");
+				a.attr("href", link);
+				jQuery("body").append(a);
+				a[0].click();
+				jQuery("body").remove(a);
+			}
+    }
+
+		// DISPLAY THE LOADER
+		function enableLoader(){
+			$btn.hide();
+			$loader.show();
+		}
+
+		// HIDE THE LOADER
+		function disableLoader(){
+			$btn.show();
+			$loader.hide();
+		}
+
+		function init(){
+			disableLoader();
+			$form.attr( 'enctype', 'multipart/form-data' );
+			//console.log( $form.attr('action') );
+		}
+
+		init();
+
+		// EXPORT BUTTON CLICK HANDLE EVENT
+		$btn.click( function(){
+			enableLoader();
+
+			// AJAX REQUEST
+			jQuery.ajax({
+				dataType	: 'json',
+				url				: space_settings['ajax_url'],
+				data			: {
+					'survey_id' : survey_id,
+					'action'		:	'space_survey_settings_json'
+				},
+				success		: downloadJSON
+			});
+		});
+
+ });
+
 });

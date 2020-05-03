@@ -2,11 +2,11 @@
 
   $fields_arr = array(
     'prev-text' => array(
-      'label' => 'Previous',
+      'label' => 'Previous Button Text',
       'type'  => 'text'
     ),
     'next-text' => array(
-      'label' => 'Next',
+      'label' => 'Next Button Text',
       'type'  => 'text'
     ),
     'disable-cookie' => array(

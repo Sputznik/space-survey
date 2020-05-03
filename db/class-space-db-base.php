@@ -247,7 +247,7 @@ class SPACE_DB_BASE extends SPACE_BASE{
 
 	// DELETE MULTIPLE ROWS FILTERED BY WHERE QUERY
 	function delete_selected_rows( $col_formats, $col_values ){
-
+	
 		global $wpdb;
 
 		$query = 'Delete'.$this->_from_query().$this->_where_query( $col_formats );

@@ -183,7 +183,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 				$temp['choices'][$choice->ID] = $choice->title;
 			}
 
-			array_push( $final_data, $temp );
+			array_push( $final_data, wp_unslash( $temp ) );
 		}
 
 		print_r( wp_json_encode( $final_data ) );

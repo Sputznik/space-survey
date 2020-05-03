@@ -28,6 +28,53 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 		add_action( 'wp_ajax_surveys_json', array( $this, 'json' ) );
 
+		add_action( 'wp_ajax_space_survey_settings_json', array( $this, 'settingsJson' ) );
+
+	}
+
+	function settingsJson(){
+
+		$data = array();
+
+		$survey_id = isset( $_GET['survey_id'] ) ? $_GET['survey_id'] : 0;
+
+		if( $survey_id ){
+
+			$unset_question_fields = array(
+				'ID', 'question_id', 'choices', 'page_id', 'title', 'description', 'type', 'author_id', 'parent', 'meta' ,
+				'created_on', 'modified_on'
+			);
+
+			$data['pages'] = array();
+			$pages = $this->listPages( $survey_id );
+			foreach ( $pages as $page ) {
+				unset( $page->ID );
+				unset( $page->survey_id );
+				$page->id = 0;
+
+
+				foreach( $page->questions as $question ){
+					$question->id = $question->question_id;
+
+					foreach( $unset_question_fields as $field ){
+						unset( $question->$field );
+					}
+				}
+				array_push( $data['pages'], wp_unslash( $page ) );
+			}
+
+
+			$data['required_questions'] = $this->listRequiredQuestions( $survey_id );
+			$data['rules'] = $this->listRules( $survey_id );
+
+			//echo "<pre>";
+			//print_r( $data );
+			//echo "</pre>";
+		}
+
+		wp_send_json( $data );
+
+		//wp_die();
 	}
 
 	function json(){
@@ -89,8 +136,6 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	// REQUIRED QUESTIONS WITHIN THE SURVEY
 	function updateRequiredQuestions( $survey_id, $required_questions ){
 		update_post_meta( $survey_id, 'space_required_questions', $required_questions );
-
-
 	}
 	function listRequiredQuestions( $survey_id = 0 ){
 		return $this->listMetaInfo( $survey_id, 'space_required_questions' );
@@ -104,12 +149,15 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		return $this->listMetaInfo( $survey_id, 'space_rules' );
 	}
 
-	//RETURN THE LIST OF ASSOCIATED PAGES
-	function listPages( $survey_id ){
-
-		return $this->getPageDB()->listForSurvey( $survey_id );
-
+	// SURVEY SETTINGS
+	function updateSettings( $survey_id, $settings ){
+		if( is_array( $settings ) ){
+			update_post_meta( $survey_id, 'survey_settings', $settings );
+		}
 	}
+
+	//RETURN THE LIST OF ASSOCIATED PAGES
+	function listPages( $survey_id ){ return $this->getPageDB()->listForSurvey( $survey_id ); }
 
 	// DELETE MULTIPLE PAGES BY ARRAY OF PAGE IDs
 	function deletePages( $pages_id_arr ){
@@ -122,10 +170,8 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 		foreach( $pages as $page ){
 			// CHECK IF DATA MEETS THE MINIMUM REQUIREMENT
 			if( isset( $page['id'] ) && isset( $page['title'] ) && $page['title'] ){
-
 				$page['survey_id'] = $survey_id;
 				$this->getPageDB()->updateForSurvey( $page );
-
 			}
 		}
 	}
@@ -305,43 +351,72 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			wp_die();
 			*/
 
-			if( $survey_id && isset( $_POST[ 'pages' ] ) ){
+			echo "<pre>";
+			print_r( $_FILES );
+			echo "</pre>";
+
+			// CHECK FILE NEEDS TO BE IMPORTED
+			if( $survey_id && isset( $_FILES['survey-file'] ) && $_FILES['survey-file'] && $_FILES['survey-file']['error'] == 0 ){
+
+				$survey_json_str = file_get_contents( $_FILES['survey-file']['tmp_name'] );
+
+				// Convert JSON string to Array
+  			$survey_json = json_decode( $survey_json_str, true );
+
+				if( isset( $survey_json[ 'pages' ] ) ){
+					$this->updatePages( $survey_id, wp_unslash( $survey_json[ 'pages' ] ) );
+				}
+
+				if( isset( $survey_json[ 'required_questions' ] ) ){
+					$this->updateRequiredQuestions( $survey_id, $survey_json[ 'required_questions' ] );
+				}
+
+				if( isset( $survey_json[ 'rules' ] ) ){
+					$this->updateRules( $survey_id, $survey_json[ 'rules' ] );
+				}
+			}
+			else{
+				// NORMAL UPDATION OF THE POST
+
 				// UPDATE OR ADD NEW PAGE
-				$this->updatePages( $survey_id, $_POST[ 'pages' ] );
-			}
+				if( $survey_id && isset( $_POST[ 'pages' ] ) ){
+					$this->updatePages( $survey_id, $_POST[ 'pages' ] );
+				}
 
-			if( $survey_id && isset( $_POST['pages_delete'] ) && $_POST['pages_delete'] ){
 				// $_POST['pages_delete'] HAS A COMMA SEPERATED STRING OF PAGE IDs THAT ARE NO LONGER NEEDED
-				$this->deletePages( explode(',', $_POST['pages_delete'] ) );
-			}
+				if( $survey_id && isset( $_POST['pages_delete'] ) && $_POST['pages_delete'] ){
+					$this->deletePages( explode(',', $_POST['pages_delete'] ) );
+				}
 
-
-			// FIND THE REQUIRED QUESTIONS
-			$required_questions = array();
-			$rules = array();
-			if( isset( $_POST['pages'] ) && is_array( $_POST['pages'] ) ){
-				foreach( $_POST['pages'] as $page ){
-					if( isset( $page['questions'] ) && is_array( $page['questions'] ) ){
-						foreach( $page['questions'] as $question ){
-							if( isset( $question['required'] ) && isset( $question['id'] ) ){
-								array_push( $required_questions, $question['id'] );
-							}
-							if( isset( $question['id'] ) && isset( $question['rules']) && is_array( $question['rules'] ) ){
-								// OBVIOUSLY ASSUMING THAT A QUESTION WILL BE ADDED ONLY ONCE IN A SURVEY
-								$rules[ $question['id'] ] = $question['rules'];
+				// FIND THE REQUIRED QUESTIONS
+				$required_questions = array();
+				$rules = array();
+				if( isset( $_POST['pages'] ) && is_array( $_POST['pages'] ) ){
+					foreach( $_POST['pages'] as $page ){
+						if( isset( $page['questions'] ) && is_array( $page['questions'] ) ){
+							foreach( $page['questions'] as $question ){
+								if( isset( $question['required'] ) && isset( $question['id'] ) ){
+									array_push( $required_questions, $question['id'] );
+								}
+								if( isset( $question['id'] ) && isset( $question['rules']) && is_array( $question['rules'] ) ){
+									// OBVIOUSLY ASSUMING THAT A QUESTION WILL BE ADDED ONLY ONCE IN A SURVEY
+									$rules[ $question['id'] ] = $question['rules'];
+								}
 							}
 						}
 					}
 				}
-			}
-			$this->updateRequiredQuestions( $survey_id, $required_questions );
-			$this->updateRules( $survey_id, $rules );
+				$this->updateRequiredQuestions( $survey_id, $required_questions );
+				$this->updateRules( $survey_id, $rules );
 
-			// SAVE ADDITIONAL SETTINGS FROM THE meta_boxes
-			if( $survey_id && isset( $_POST[ 'survey_settings' ] ) ){
-				update_post_meta( $survey_id, 'survey_settings', $_POST[ 'survey_settings' ] );
+				// SAVE ADDITIONAL SETTINGS FROM THE meta_boxes
+				if( $survey_id && isset( $_POST[ 'survey_settings' ] ) ){
+					$this->updateSettings( $survey_id, $_POST[ 'survey_settings' ] );
+				}
+
 			}
 
+			//wp_die();
 		}
 
 	}

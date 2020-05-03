@@ -75,20 +75,25 @@
 				array(
 					'id'		=> 'survey-pages',
 					'title'		=> 'Pages For Survey',
-					'box_html'	=> 'survey_metabox_html',
+					//'box_html'	=> 'survey_metabox_html',
 					'supports'	=>	array('editor')
 				),
 				array(
 					'id'		=> 'survey-buttons',
 					'title'		=> 'Settings',
-					'box_html'	=> 'buttons_metabox_html',
+					//'box_html'	=> 'buttons_metabox_html',
 					'supports'	=>	array('editor')
 				),
 				array(
 					'id'		=> 'survey-results',
 					'title'		=> 'Results',
-					'box_html'	=> 'results_metabox_html',
+					//'box_html'	=> 'results_metabox_html',
 					'supports'	=>	array('editor')
+				),
+				array(
+					'id'			=> 'survey-import-export',
+					'title'		=> 'Import & Export',
+					'context'	=> 'side'
 				)
 			) );
 
@@ -113,6 +118,13 @@
 
 			// AJAX ACTION TO ALTER TABLES
 			add_action( 'wp_ajax_space_survey_alter', array( $this, 'alter_db_tables' ) );
+
+			/*
+			add_filter( 'upload_mimes', function( $mime_types ){
+				$mime_types['json'] = 'application/json'; // Adding .json extension
+				return $mime_types;
+			} );
+			*/
 
 		}
 

@@ -26,7 +26,7 @@ class SPACE_CSV extends SPACE_BASE{
       array_push( $arrayCsv, $fpTotal );
     }
     fclose($file);
-
+		
     return $arrayCsv;
   }
 
