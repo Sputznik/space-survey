@@ -165,6 +165,26 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 
 	}
 
+	// USED FOR FILTERING CHOICES IN THE SPACE RESPONSES
+	function getQuestionFromChoice( $choice_id ){
+		$table = $this->getTable();
+		$choiceTable = $this->getChoiceDB()->getTable();
+
+		$query = "SELECT * FROM $table WHERE ID IN ( SELECT question_id FROM $choiceTable WHERE ID = %d )";
+		$query = $this->prepare( $query, array( $choice_id ) );
+
+		$questions = $this->get_results( $query );
+		$question = $questions[0];
+		$question->choices = array();
+
+		$choices = $this->listChoices( $question->ID );
+		foreach( $choices as $choice ){
+			$question->choices[ $choice->ID ] = $choice->title;
+		}
+
+		return $question;
+	}
+
 	function ajaxQuestions(){
 
 		$data = $this->listQuestions( 1, 10, $_GET[ 'term' ] );

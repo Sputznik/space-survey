@@ -2,6 +2,7 @@
 
 
 	$inc_files = array(
+		'class-space-util.php',
 		'class-space-export.php',
 		'class-space-batch-process.php',
 		'class-space-csv.php'

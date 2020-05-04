@@ -5,10 +5,7 @@ jQuery.fn.space_export_filters = function(){
 		* VARIABLES ASSIGNMENT
 		*/
 		var $el 	= jQuery(this),
-			rules 	= $el.attr( 'data-rules' );						// RULES FROM THE PREVIOUS SELECTION
-
-		// JSON PARSE FROM STRING
-		rules = typeof rules != 'object' ? JSON.parse( rules ) : [];
+			rules 	= window.browserData['rules'] != undefined ? window.browserData['rules'] : [];			// RULES FROM THE PREVIOUS SELECTION
 
 		var repeater = SPACE_REPEATER( {
 			$el						: $el,
