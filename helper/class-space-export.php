@@ -30,8 +30,13 @@ class SPACE_EXPORT extends SPACE_BASE{
 			* GET PAGINATED GUESTS - ONLY THE ID
 			*/
 			$survey_db = SPACE_DB_SURVEY::getInstance();
-			$questions = $survey_db->getQuestionsList( $survey_id );
-			$choices = $survey_db->getChoicesList( $survey_id );
+			$response_db = SPACE_DB_RESPONSE::getInstance();
+
+			$questions = wp_unslash( $response_db->getQuestionsList( $survey_id ) );
+			$choices = wp_unslash( $response_db->getChoicesList( $survey_id ) );
+
+			//$questions = $survey_db->getQuestionsList( $survey_id );
+			//$choices = $survey_db->getChoicesList( $survey_id );
 
 			$queries = $survey_db->getResponsesQuery( $survey_id, $filterChoices, '', $step, $per_page );
 			$guests = $survey_db->get_results( $queries['results'] );
@@ -176,12 +181,16 @@ class SPACE_EXPORT extends SPACE_BASE{
 					array_push( $data[ $response->question_id ][ 'choices' ], $choices[ $response->choice_id ]->title );
 				}
 			}
-			elseif( $response->choice_text ){
+			elseif( $response->choice_text && isset( $data[ $response->question_id ][ 'choices' ] ) && is_array( $data[ $response->question_id ][ 'choices' ] ) ){
 				array_push( $data[ $response->question_id ][ 'choices' ], $response->choice_text );
 			}
 
 			// SORTING THE CHOICES BY KEY : USEFUL FOR CHECKBOX WITH RANKING
-			ksort( $data[ $response->question_id ][ 'choices' ] );
+			if( isset( $data[ $response->question_id ][ 'choices' ] ) && is_array( $data[ $response->question_id ][ 'choices' ] ) ){
+				ksort( $data[ $response->question_id ][ 'choices' ] );
+			}
+
+
 
 		}
 

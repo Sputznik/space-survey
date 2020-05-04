@@ -14,10 +14,22 @@ if( isset( $_GET['ID'] ) && $_GET['ID'] && isset( $_GET['action'] ) && 'trash' =
 $guest = $guest_db->get_row( $guest_id );
 
 $survey = $survey_db->get_row( $guest->survey_id );
-$questions = wp_unslash( $survey_db->getQuestionsList( $guest->survey_id ) );
-$choices = wp_unslash( $survey_db->getChoicesList( $guest->survey_id ) );
-$guestResponses = $guest_db->getResponses( $guest_id );
 
+$questions = wp_unslash( $guest_db->getQuestionsList( $guest_id ) );
+$choices = wp_unslash( $guest_db->getChoicesList( $guest_id ) );
+
+/*
+$questions_responses = SPACE_DB_RESPONSE::getInstance()->getQuestionsList( $guest->survey_id );
+$choices_responses = SPACE_DB_RESPONSE::getInstance()->getChoicesList( $guest->survey_id );
+
+echo "<pre>";
+print_r( $questions_responses );
+print_r( $choices_responses );
+echo "</pre>";
+*/
+
+
+$guestResponses = $guest_db->getResponses( $guest_id );
 $responses = SPACE_EXPORT::getInstance()->getFormattedResponses( $guestResponses, $questions, $choices );
 
 //ORBIT_UTIL::getInstance()->test( $responses );

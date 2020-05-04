@@ -14,6 +14,7 @@ class SPACE_DB_RESPONSE extends SPACE_DB_BASE{
 
 	/* GETTER AND SETTER FUNCTIONS */
 
+
 	/* GETTER AND SETTER FUNCTIONS */
 	function create(){
 
@@ -44,14 +45,45 @@ class SPACE_DB_RESPONSE extends SPACE_DB_BASE{
 	}
 
 	function deleteResponsesForGuest( $guest_id ){
-
 		$this->delete_selected_rows( array( 'guest_id'	=> '%d' ), array( $guest_id ) );
-
 	}
 
+	/* USED WHEN EACH SURVEY IS SELECTED */
+	function getQuestionsList( $survey_id ){
+		$responseTable = $this->getTable();
+		$guestTable = $this->getGuestDB()->getTable();
+		$questionTable = $this->getQuestionDB()->getTable();
 
+		$data = array();
 
+		$query = "SELECT * FROM $questionTable WHERE ID IN ( SELECT DISTINCT( question_id ) as ID FROM $responseTable WHERE guest_id
+			IN ( SELECT ID FROM $guestTable WHERE survey_id = %d ) )";
+		$query = $this->prepare( $query, array( $survey_id ) );
 
+		$questions = $this->get_results( $query );
+		foreach( $questions as $question ){
+			$data[ $question->ID ] = $question;
+		}
+		return $data;
+	}
+	function getChoicesList( $survey_id ){
+		$responseTable = $this->getResponseDB()->getTable();
+		$guestTable = $this->getGuestDB()->getTable();
+		$choiceTable = $this->getChoiceDB()->getTable();
+
+		$data = array();
+
+		$query = "SELECT * FROM $choiceTable WHERE question_id IN ( SELECT DISTINCT( question_id ) as ID FROM $responseTable WHERE guest_id
+			IN ( SELECT ID FROM $guestTable WHERE survey_id = %d )  )";
+		$query = $this->prepare( $query, array( $survey_id ) );
+
+		$choices = $this->get_results( $query );
+		foreach( $choices as $choice ){
+			$data[ $choice->ID ] = $choice;
+		}
+		return $data;
+	}
+	/* USED WHEN EACH SURVEY IS SELECTED */
 }
 
 SPACE_DB_RESPONSE::getInstance();

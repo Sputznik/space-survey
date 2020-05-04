@@ -247,35 +247,38 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 		return $this->get_var( $query );
 	}
 
-	/*
-	function listIDsForSurvey( $survey_id, $choices = array(), $page = 1, $per_page = 10 ){
-		$data = array( 'results' => array(), 'num_rows' => 0 );
-
-		$table = $this->getTable();
+	/* USED WHEN EACH RESPONSE IS VIEWED */
+	function getQuestionsList( $guest_id ){
 		$responseTable = $this->getResponseDB()->getTable();
+		$questionTable = $this->getQuestionDB()->getTable();
 
-		$query = "SELECT DISTINCT guest_id FROM $responseTable WHERE guest_id IN ( SELECT ID FROM $table WHERE survey_id = %d )";
+		$data = array();
 
-		$sub_query = $this->getNestedQueryForChoices( $choices );
+		$query = "SELECT * FROM $questionTable WHERE ID IN ( SELECT DISTINCT( question_id ) as ID FROM $responseTable WHERE guest_id = %d )";
+		$query = $this->prepare( $query, array( $guest_id ) );
 
-		$query .= " AND guest_id IN ( $sub_query ) GROUP BY guest_id";
-
-		$query = $this->prepare( $query, array( $survey_id ) );
-
-		//echo $query;
-
-		// FIND THE TOTAL NUMBER OF ROWS
-		$count_query = "SELECT count(*) FROM (" . $query . ") AS NEWTABLE";
-		$data['num_rows'] = $this->get_var( $count_query );
-
-		$query .= $this->_limit_query( $page, $per_page );
-		$results = $this->get_results( $query );
-		foreach( $results as $row ){
-			array_push( $data['results'], $row->guest_id );
+		$questions = $this->get_results( $query );
+		foreach( $questions as $question ){
+			$data[ $question->ID ] = $question;
 		}
 		return $data;
 	}
-	*/
+	function getChoicesList( $guest_id ){
+		$responseTable = $this->getResponseDB()->getTable();
+		$choiceTable = $this->getChoiceDB()->getTable();
+
+		$data = array();
+
+		$query = "SELECT * FROM $choiceTable WHERE question_id IN ( SELECT DISTINCT( question_id ) as ID FROM $responseTable WHERE guest_id = %d )";
+		$query = $this->prepare( $query, array( $guest_id ) );
+
+		$choices = $this->get_results( $query );
+		foreach( $choices as $choice ){
+			$data[ $choice->ID ] = $choice;
+		}
+		return $data;
+	}
+	/* USED WHEN EACH RESPONSE IS VIEWED */
 
 }
 

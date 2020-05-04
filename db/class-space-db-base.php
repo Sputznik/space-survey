@@ -34,6 +34,23 @@ class SPACE_DB_BASE extends SPACE_BASE{
 		global $wpdb;
 		return $wpdb->prefix.'space_';
 	}
+
+	function getResponseDB(){
+		require_once( 'class-space-db-response.php' );
+		return SPACE_DB_RESPONSE::getInstance();
+	}
+	function getQuestionDB(){
+		require_once('class-space-db-question.php');
+		return SPACE_DB_QUESTION::getInstance();
+	}
+	function getGuestDB(){
+		require_once('class-space-db-guest.php');
+		return SPACE_DB_GUEST::getInstance();
+	}
+	function getChoiceDB(){
+		require_once('class-space-db-choice.php');
+		return SPACE_DB_CHOICE::getInstance();
+	}
 	/* GETTER AND SETTER FUNCTIONS */
 
 	// WRAPPER AROUND WPDB->QUERY
@@ -247,7 +264,7 @@ class SPACE_DB_BASE extends SPACE_BASE{
 
 	// DELETE MULTIPLE ROWS FILTERED BY WHERE QUERY
 	function delete_selected_rows( $col_formats, $col_values ){
-	
+
 		global $wpdb;
 
 		$query = 'Delete'.$this->_from_query().$this->_where_query( $col_formats );

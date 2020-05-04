@@ -80,7 +80,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	function json(){
 		global $wpdb;
 		$search = $_GET['term'];
-		$query = "SELECT ID, post_title FROM ".$wpdb->posts." WHERE post_title LIKE '%".$search."%' AND post_type='space_survey' ORDER BY post_title ASC LIMIT 0,10";
+		$query = "SELECT ID, post_title FROM ".$wpdb->posts." WHERE post_title LIKE '%".$search."%' AND post_type='space_survey' AND post_status='publish' ORDER BY post_title ASC LIMIT 0,10";
 		$posts = array();
 		foreach($wpdb->get_results($query) as $row){
 			array_push( $posts, array( 'id' => $row->ID, 'value'=> $row->post_title ) );
@@ -304,16 +304,6 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	function getQuestionsList( $survey_id ){
 
 		$data = array();
-		/*
-		$questionTable 	= $this->getQuestionDB()->getTable();
-		$pageTable		= $this->getPageDB()->getTable();
-		$relationTable 	= $this->getPageDB()->getRelationDB()->getTable();
-
-		$query = "SELECT * FROM $questionTable WHERE ID IN ( SELECT question_id FROM $relationTable WHERE page_id IN ( SELECT ID from $pageTable WHERE survey_id = %d ) )";
-
-		$query = $this->prepare( $query, array( $survey_id ) );
-
-		*/
 
 		/*
 		* PARAMS: SURVEY_ID, SEARCH_TERM, PAGE, ITEMS_PER_PAGE
