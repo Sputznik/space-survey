@@ -32,6 +32,7 @@ jQuery.fn.space_slides = function(){
 
 				},
 				error: function(response) {
+					console.log( response.responseText );
 					console.log( 'Cookie could not be created' );
 				}
 			});

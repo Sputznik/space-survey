@@ -117,7 +117,7 @@ class SPACE_DB_BASE extends SPACE_BASE{
 
 		$query .= implode( ', ', $place_holders );
 
-		$wpdb->query( $this->prepare( $query, $values ) );
+		return $wpdb->query( $this->prepare( $query, $values ) );
 
 	}
 

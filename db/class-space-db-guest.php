@@ -165,7 +165,7 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 			//echo "<pre>";
 
 			// INSERT MULTIPLE RESPONSES FOR THE GUEST AT ONCE USING SINGLE QUERY
-			$this->getResponseDB()->insert_rows( $responses );
+			return $this->getResponseDB()->insert_rows( $responses );
 
 		}
 

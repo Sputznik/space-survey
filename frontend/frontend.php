@@ -33,13 +33,18 @@
 
 				if( $this->isCookieDisabled( $data['survey_id'] ) ) throw new Exception("Cookie has been disabled");
 
-				$guest = $guest_db->get_row( $_COOKIE[ $cookie_name ] );
+				if( isset( $_COOKIE[ $cookie_name ] ) && $_COOKIE[ $cookie_name ] ){
 
-				if( !$guest ) throw new Exception('Guest does not exist');
+					$guest = $guest_db->get_row( $_COOKIE[ $cookie_name ] );
 
-				$data['guest_id'] = $guest->ID;
+					if( !$guest ) throw new Exception('Guest does not exist');
 
+					$data['guest_id'] = $guest->ID;
 
+				}
+				else{
+					throw new Exception('Guest does not exist');
+				}
 			}catch( Exception $e ){
 
 				$guestData = $guest_db->sanitize( array(
@@ -85,11 +90,17 @@
 
 				$guest_db = SPACE_DB_GUEST::getInstance();
 
-				$guest_db->saveResponses( $_POST );
+				$response = $guest_db->saveResponses( $_POST );
+
+				wp_send_json( $response );
+
+				//print_r( $response );
 
 			}
 
-			wp_die();
+			wp_send_json( $_POST );
+
+
 		}
 
 		function assets(){
