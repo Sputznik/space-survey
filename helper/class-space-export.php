@@ -71,7 +71,7 @@ class SPACE_EXPORT extends SPACE_BASE{
 			* IN THE LAST ITERATION APPEND THE DOWNLOAD LINK
 			*/
 			if( $step == $batches ){
-				$fileURL = $this->getFilePath( $file_slug )['url'];
+				$fileURL = $this->getFilePath( $file_slug )['url'] . '?v=' . rand(0, 100);
 				echo "<p>File has been exported successfully. <a target='_blank' href='$fileURL'>Download here.</a></p>";
 			}
 
