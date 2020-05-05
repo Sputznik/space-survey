@@ -18,10 +18,18 @@
 			<?php echo $this->page_html( $page );?>
 			<ul class='space-list space-list-inline'>
 				<?php if( $i > 0 ):?>
-				<li><button data-behaviour='space-slide-prev'><?php ( $settings['prev-text'] ) ? _e( $settings['prev-text'] ) : _e( 'Previous' ) ?></button></li>
+				<li>
+					<button data-behaviour='space-slide-prev'>
+						<?php ( isset( $settings['prev-text'] ) && $settings['prev-text'] ) ? _e( $settings['prev-text'] ) : _e( 'Previous' ) ?>
+					</button>
+				</li>
 				<?php endif;?>
 				<?php if( $i != $num_pages-1 ):?>
-				<li><button data-behaviour='space-slide-next'><?php ( $settings['next-text'] ) ?  _e( $settings['next-text'] ) : _e( 'Next' ) ?></button></li>
+				<li>
+					<button data-behaviour='space-slide-next'>
+						<?php ( isset( $settings['next-text'] ) && $settings['next-text'] ) ?  _e( $settings['next-text'] ) : _e( 'Next' ) ?>
+					</button>
+				</li>
 				<?php endif;?>
 			</ul>
 		</div>
