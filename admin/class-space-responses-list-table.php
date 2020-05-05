@@ -7,8 +7,8 @@
 		var $singular_edit_page;
 
 		var $filterChoices;
-
 		var $survey_id;
+		var $hide_zero_attempted;
 
 		function __construct(){
 
@@ -42,6 +42,9 @@
 				if( is_array( $this->filterChoices ) && count( $this->filterChoices ) ){
 					$choices_str = implode( ',', $this->filterChoices );
 					$export_link .= "&choices=$choices_str";
+				}
+				if( $this->hide_zero_attempted ){
+					$export_link .= "&hide-zero-attempted=1";
 				}
 				echo "<div class='alignleft actions'>";
 				echo "<a target='_blank' href='$export_link' class='button'>Export CSV</a>";
@@ -136,6 +139,7 @@
 
 			$this->filterChoices = $filterChoices;
 			$this->survey_id = $survey_id;
+			$this->hide_zero_attempted = $hide_zero_attempted;
 
 			/*
 			* SETTING COLUMNS
@@ -165,7 +169,7 @@
 				$search_term = $_GET['s'];
 			}
 
-			$queries = $survey_db->getResponsesQuery( $this->survey_id, $this->filterChoices, $hide_zero_attempted, $search_term, $page, $per_page );
+			$queries = $survey_db->getResponsesQuery( $this->survey_id, $this->filterChoices, $this->hide_zero_attempted, $search_term, $page, $per_page );
 
 			//echo "<pre>";
 			//print_r( $queries );

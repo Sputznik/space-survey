@@ -55,9 +55,10 @@
       'btn_text' 		 => 'Generate CSV',
       'batch_action' => 'export',
       'params'		   => array(
-        'survey_id'		  => $survey->ID,
-        'filterChoices'	=> implode( ',', $filterChoices ),
-        'per_page'		  => 100
+        'survey_id'		  			=> $survey->ID,
+        'filterChoices'				=> implode( ',', $filterChoices ),
+				'hide-zero-attempted' => $hide_zero_attempted ? 1 : 0,
+        'per_page'		  			=> 100
       )
     ) );
 

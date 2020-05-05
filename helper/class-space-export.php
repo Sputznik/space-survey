@@ -16,7 +16,7 @@ class SPACE_EXPORT extends SPACE_BASE{
 			$survey_id 			= $_GET['survey_id'];
 			$per_page				= $_GET['per_page'];
 			$filterChoices 	= isset( $_GET['filterChoices'] ) && $_GET['filterChoices'] ? explode( ',', $_GET['filterChoices'] ) : array();
-			$hide_zero_attempted 	= isset( $_GET['hide-zero-attempted'] ) && $_GET['hide-zero-attempted'] ? true : false;
+			$hide_zero_attempted 	= isset( $_GET['hide-zero-attempted'] ) && $_GET['hide-zero-attempted'] == '1' ? true : false;
 
 			$file_slug 			= 'space_survey' . $survey_id;
 
