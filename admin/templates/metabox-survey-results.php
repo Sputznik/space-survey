@@ -13,7 +13,8 @@
 		// RESULTS FORM
 		$results_form = new SPACE_RESULTS_FORM();
 		$results_form->display();
-		_e( "<a href='".admin_url( 'admin.php?page=space-export&survey='.$survey_id )."'>Generate CSV</a>" );
+		_e( "<p><a href='".admin_url( 'admin.php?page=space-export&survey_id='.$survey_id )."'>Generate CSV</a></p>" );
+		_e( "<p><a href='".admin_url( 'admin.php?page=space-responses&survey='.$survey_id )."'>View Responses</a></p>" );
 	}
 	else{
 		_e( '<p>Not valid for this survey</p>' );

@@ -22,9 +22,14 @@
     $search = $_GET['search'];
   }
 
+	$hide_zero_attempted = false;
+	if( isset( $_GET['hide-zero-attempted'] ) && $_GET['hide-zero-attempted'] == '1' ){
+		$hide_zero_attempted = true;
+	}
+
   $survey_db = SPACE_DB_SURVEY::getInstance();
   $survey = $survey_db->get_row( $survey_id );
-  $queries = $survey_db->getResponsesQuery( $survey_id, $filterChoices, $search );
+  $queries = $survey_db->getResponsesQuery( $survey_id, $filterChoices, $hide_zero_attempted, $search );
 
   $totGuests = $survey_db->get_var( $queries['count'] );
 

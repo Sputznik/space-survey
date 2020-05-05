@@ -132,7 +132,7 @@
 			return '<input type="checkbox" name="guests[]" value="'.$item->ID.'" />';
 		}
 
-		function prepare_items( $survey_id = 0, $filterChoices = array() ) {
+		function prepare_items( $survey_id = 0, $filterChoices = array(), $hide_zero_attempted = false ) {
 
 			$this->filterChoices = $filterChoices;
 			$this->survey_id = $survey_id;
@@ -165,7 +165,7 @@
 				$search_term = $_GET['s'];
 			}
 
-			$queries = $survey_db->getResponsesQuery( $this->survey_id, $this->filterChoices, $search_term, $page, $per_page );
+			$queries = $survey_db->getResponsesQuery( $this->survey_id, $this->filterChoices, $hide_zero_attempted, $search_term, $page, $per_page );
 
 			//echo "<pre>";
 			//print_r( $queries );

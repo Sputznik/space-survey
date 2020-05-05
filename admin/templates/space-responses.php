@@ -26,6 +26,11 @@
 			$choices_str = implode( ',', $filterChoices );
 			$url .= "&choices=$choices_str";
 		}
+
+		// hide-zero-attempted
+		if( isset( $_POST[ 'hide-zero-attempted' ] ) && $_POST[ 'hide-zero-attempted' ] == '1' ){
+			$url .= "&hide-zero-attempted=1";
+		}
 	}
 
 	// CHECK FOR SEARCH PARAMETER
@@ -67,6 +72,11 @@
 	}
 	SPACE_UTIL::getInstance()->browserData( 'rules', $rules );
 
+	$hide_zero_attempted = false;
+	if( isset( $_GET['hide-zero-attempted'] ) && $_GET['hide-zero-attempted'] == '1' ){
+		$hide_zero_attempted = true;
+	}
+
 ?>
 <h1 class='wp-heading-inline'>Responses</h1>
 <a href="#" class="page-title-action" data-behaviour="responses-filter-btn">Filter</a>
@@ -86,6 +96,7 @@
 
 		?>
 		<div class='survey-autocomplete' data-behaviour='space-autocomplete' data-field='<?php _e( wp_json_encode( $field ) );?>'></div>
+		<p><input type='checkbox' <?php if( $hide_zero_attempted ){ _e("checked='checked'");}?> name='hide-zero-attempted' value='1' />&nbsp;Hide guests who have not attempted</p>
 		<div data-behaviour='space-export-filters'></div>
 		<p><input type='submit' name='filters' class='button button-primary button-large' value='Apply Filters'></p>
 	</div>
@@ -95,7 +106,7 @@
 
 		$spaceResponsesTable = new SPACE_RESPONSES_LIST_TABLE;
 
-		$spaceResponsesTable->prepare_items( $survey['id'], $filterChoicesArr );
+		$spaceResponsesTable->prepare_items( $survey['id'], $filterChoicesArr, $hide_zero_attempted );
 
 		$spaceResponsesTable->search_box( 'Search', 'search-id' );
 

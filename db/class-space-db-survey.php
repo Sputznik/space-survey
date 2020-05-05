@@ -261,7 +261,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 	}
 
 	// COMMON REPO FOR GATHERING QUERIES FOR RESPONSES PER SURVEY
-	function getResponsesQuery( $survey_id, $filterChoices, $search_term = '', $page = 1, $per_page = 10 ){
+	function getResponsesQuery( $survey_id, $filterChoices, $hide_zero_attempted, $search_term = '', $page = 1, $per_page = 10 ){
 
 		$queries = array();
 
@@ -278,7 +278,18 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			$queries['filter_by_survey'] = " AND survey_id = %d";
 			$queries['common'] .= $queries['filter_by_survey'];
 			array_push( $params, $survey_id );
+
+			if( $hide_zero_attempted ){
+				$queries['filter_by_nonzero_attempts'] = " AND ID IN (
+					SELECT guest_id FROM $responsesTable WHERE guest_id IN (
+						SELECT ID FROM $guestTable WHERE survey_id = %d
+					) )";
+				$queries['common'] .= $queries['filter_by_nonzero_attempts'];
+				array_push( $params, $survey_id );
+			}
 		}
+
+
 
 		//print_r( $filterChoices );
 
@@ -297,6 +308,10 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			$queries['results'] .= $this->_limit_query( $page, $per_page );
 		}
 		$queries['count'] = $this->prepare( "SELECT COUNT(*)". $queries['common'], $params );
+
+		//echo "<pre>";
+		//print_r( $queries );
+		// echo "</pre>";
 
 		return $queries;
 	}
