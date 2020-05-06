@@ -23,7 +23,7 @@ jQuery.fn.space_slides = function(){
 					// SET GUEST ID WITHIN THE FORM
 					setGuestID( response.guest_id );
 
-					console.log( response.responses );
+					//console.log( response.responses );
 
 					// SET ANSWERS OF THE GUEST THAT WERE RECORDED PREVIOUSLY
 					jQuery.each( response.responses, function( i, row ){
@@ -45,6 +45,9 @@ jQuery.fn.space_slides = function(){
 			var $questionDiv = $el.find( '#q' + response.question_id ),
 				questionType = $questionDiv.data('type');
 
+			console.log( response );
+
+
 			switch( questionType ){
 
 				case 'checkbox-other':
@@ -61,6 +64,7 @@ jQuery.fn.space_slides = function(){
 
 				case 'checkbox':
 					var $questionInput = $questionDiv.find('input[value=' + response.choice_id + ']');
+					$questionInput. prop("checked", false);  // UNCHECK CHECKBOX IN CASE IT IS CHECKED BECAUSE OF CACHE
 					$questionInput.click();
 					break;
 
