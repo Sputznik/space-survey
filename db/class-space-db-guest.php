@@ -157,8 +157,11 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 
 			}
 
-			// DELETE ALL RESPONSES FOR THE PARTICULAR GUEST
-			$this->deleteResponses( $data['guest_id'] );
+			// DELETE ALL RESPONSES FOR THE PARTICULAR GUEST ONLY IF THE NEW ONES HAVE SOME DATA
+			if( is_array( $responses ) && count( $responses ) ){
+				$this->deleteResponses( $data['guest_id'] );
+			}
+
 
 			//echo "<pre>";
 			//print_r( $responses );
