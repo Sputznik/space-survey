@@ -87,12 +87,15 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 						case 'dropdown':
 
 						case 'radio':
-							$partialResponse = $this->getResponseDB()->sanitize( array(
-								'question_id'	=> $quest_id,
-								'guest_id'		=> $data['guest_id'],
-								'choice_id'		=> $quest['val']
-							) );
-							array_push( $responses, $partialResponse );
+							if( $quest['val'] ){
+								// ADD TO THE PARTIAL RESPONSE ONLY IF THE VALUE IS VALID
+								$partialResponse = $this->getResponseDB()->sanitize( array(
+									'question_id'	=> $quest_id,
+									'guest_id'		=> $data['guest_id'],
+									'choice_id'		=> $quest['val']
+								) );
+								array_push( $responses, $partialResponse );
+							}
 							break;
 
 						case 'checkbox-ranking':
