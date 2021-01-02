@@ -167,11 +167,13 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 	// UPDATE MULTIPLE PAGES ASSOCIATED WITH THE QUESTION
 	function updatePages( $survey_id, $pages ){
-		foreach( $pages as $page ){
-			// CHECK IF DATA MEETS THE MINIMUM REQUIREMENT
-			if( isset( $page['id'] ) && isset( $page['title'] ) && $page['title'] ){
-				$page['survey_id'] = $survey_id;
-				$this->getPageDB()->updateForSurvey( $page );
+		if( is_array( $pages ) && count( $pages ) ){
+			foreach( $pages as $page ){
+				// CHECK IF DATA MEETS THE MINIMUM REQUIREMENT
+				if( isset( $page['id'] ) && isset( $page['title'] ) && $page['title'] ){
+					$page['survey_id'] = $survey_id;
+					$this->getPageDB()->updateForSurvey( $page );
+				}
 			}
 		}
 	}
