@@ -37,23 +37,23 @@ class SPACE_EXPORT extends SPACE_BASE{
 			$questions = wp_unslash( $response_db->getQuestionsList( $survey_id ) );
 			$choices = wp_unslash( $response_db->getChoicesList( $survey_id ) );
 
+			/*
 			echo "<pre>";
 			print_r( $questions );
 			print_r( $choices );
 			echo "</pre>";
-
 			wp_die();
+			*/
 
 			//$questions = $survey_db->getQuestionsList( $survey_id );
 			//$choices = $survey_db->getChoicesList( $survey_id );
 
 			$queries = $survey_db->getResponsesQuery( $survey_id, $filterChoices, $hide_zero_attempted, '', $step, $per_page );
-			$guests = $survey_db->get_results( $queries['results'] );
+			//$guests = $survey_db->get_results( $queries['results'] );
 
 			echo "<pre>";
 			print_r( $queries );
 			echo "</pre>";
-
 			wp_die();
 
 			// ADD HEADER ROW FOR THE FIRST BATCH REQUEST ONLY
