@@ -72,21 +72,21 @@ class SPACE_EXPORT extends SPACE_BASE{
 			if( count( $guests ) ){
 				$question_ids = $this->getListQuestionIDs( $questions );
 
-				echo "<pre>";
-				print_r( $question_ids );
-				//print_r( $num_guests );
-				echo "</pre>";
-				wp_die();
-
 				foreach( $guests as $guest ){
 					$guestResponses = $survey_db->getGuestDB()->getResponses( $guest->ID );
-					$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
-					$this->addGuestResponses( $file_slug, $guest, $responses, $question_ids );
+
+					echo "<pre>";
+					print_r( $guestResponses );
+					//print_r( $num_guests );
+					echo "</pre>";
+
+					//$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
+					//$this->addGuestResponses( $file_slug, $guest, $responses, $question_ids );
 				}
 				$num_guests = count( $guests );
 				echo "<p>$num_guests guest responses have been added to the CSV file</p>";
 
-
+				wp_die();
 
 
 			}
