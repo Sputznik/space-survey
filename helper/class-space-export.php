@@ -49,10 +49,11 @@ class SPACE_EXPORT extends SPACE_BASE{
 			//$choices = $survey_db->getChoicesList( $survey_id );
 
 			$queries = $survey_db->getResponsesQuery( $survey_id, $filterChoices, $hide_zero_attempted, '', $step, $per_page );
-			//$guests = $survey_db->get_results( $queries['results'] );
+			$guests = $survey_db->get_results( $queries['results'] );
 
 			echo "<pre>";
 			print_r( $queries );
+			print_r( $guests );
 			echo "</pre>";
 			wp_die();
 
