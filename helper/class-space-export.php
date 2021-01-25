@@ -37,6 +37,13 @@ class SPACE_EXPORT extends SPACE_BASE{
 			$questions = wp_unslash( $response_db->getQuestionsList( $survey_id ) );
 			$choices = wp_unslash( $response_db->getChoicesList( $survey_id ) );
 
+			echo "<pre>";
+			print_r( $questions );
+			print_r( $choices );
+			echo "</pre>";
+
+			wp_die();
+
 			//$questions = $survey_db->getQuestionsList( $survey_id );
 			//$choices = $survey_db->getChoicesList( $survey_id );
 
