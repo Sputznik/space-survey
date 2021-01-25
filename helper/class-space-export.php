@@ -73,25 +73,26 @@ class SPACE_EXPORT extends SPACE_BASE{
 				$question_ids = $this->getListQuestionIDs( $questions );
 
 				foreach( $guests as $guest ){
-					try {
+
+					$cache_key = 'space_guests_' . $guest->ID;
+					$responses = get_transient( $cache_key );
+					if ( $responses === false ) {
 						$guestResponses = $survey_db->getGuestDB()->getResponses( $guest->ID );
-					} catch(Exception $e) {
-  					echo 'Message: ' .$e->getMessage();
+						$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
+						set_transient( $cache_key, $responses, 3600 * 1 );
 					}
 
-					echo "<pre>";
-					print_r( $guestResponses );
-					//print_r( $num_guests );
-					echo "</pre>";
-
-					//$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
-					//$this->addGuestResponses( $file_slug, $guest, $responses, $question_ids );
+					$this->addGuestResponses( $file_slug, $guest, $responses, $question_ids );
 				}
 				$num_guests = count( $guests );
 				echo "<p>$num_guests guest responses have been added to the CSV file</p>";
 
+				/*
+				echo "<pre>";
+				print_r( $guests );
+				echo "</pre>";
 				wp_die();
-
+				*/
 
 			}
 
