@@ -37,27 +37,15 @@ class SPACE_EXPORT extends SPACE_BASE{
 			$questions = wp_unslash( $response_db->getQuestionsList( $survey_id ) );
 			$choices = wp_unslash( $response_db->getChoicesList( $survey_id ) );
 
-			/*
-			echo "<pre>";
-			print_r( $questions );
-			print_r( $choices );
-			echo "</pre>";
-			wp_die();
-			*/
-
 			//$questions = $survey_db->getQuestionsList( $survey_id );
 			//$choices = $survey_db->getChoicesList( $survey_id );
 
 			$queries = $survey_db->getResponsesQuery( $survey_id, $filterChoices, $hide_zero_attempted, '', $step, $per_page );
 			$guests = $survey_db->get_results( $queries['results'] );
 
-			/*
-			echo "<pre>";
-			print_r( $queries );
-			print_r( $guests );
-			echo "</pre>";
-			wp_die();
-			*/
+			//echo "<pre>";
+			//print_r( $queries );
+			//echo "</pre>";
 
 			// ADD HEADER ROW FOR THE FIRST BATCH REQUEST ONLY
 			if( $step == 1 ){
@@ -71,29 +59,13 @@ class SPACE_EXPORT extends SPACE_BASE{
 			*/
 			if( count( $guests ) ){
 				$question_ids = $this->getListQuestionIDs( $questions );
-
 				foreach( $guests as $guest ){
-
-					$cache_key = 'space_guests_' . $guest->ID;
-					$responses = get_transient( $cache_key );
-					if ( $responses === false ) {
-						$guestResponses = $survey_db->getGuestDB()->getResponses( $guest->ID );
-						$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
-						set_transient( $cache_key, $responses, 3600 * 1 );
-					}
-
+					$guestResponses = $survey_db->getGuestDB()->getResponses( $guest->ID );
+					$responses = $this->getFormattedResponses( $guestResponses, $questions, $choices );
 					$this->addGuestResponses( $file_slug, $guest, $responses, $question_ids );
 				}
 				$num_guests = count( $guests );
 				echo "<p>$num_guests guest responses have been added to the CSV file</p>";
-
-				/*
-				echo "<pre>";
-				print_r( $guests );
-				echo "</pre>";
-				wp_die();
-				*/
-
 			}
 
 

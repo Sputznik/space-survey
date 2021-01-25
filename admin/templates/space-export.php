@@ -1,5 +1,7 @@
 <?php
 
+	$items_per_batch = 20;
+
   _e( "<h1 class='wp-heading-inline'>Export</h1>" );
 
   $survey_id = 0;
@@ -40,7 +42,7 @@
   if( $survey && $totGuests ){
 
     // CALCULATION OF THE BATCH REQUESTS
-    $batches = (int) ( $totGuests / 100 );
+    $batches = (int) ( $totGuests / $items_per_batch );
     $batches = $batches + 1;
 
     // SECONDARY TITLE
@@ -58,7 +60,7 @@
         'survey_id'		  			=> $survey->ID,
         'filterChoices'				=> implode( ',', $filterChoices ),
 				'hide-zero-attempted' => $hide_zero_attempted ? 1 : 0,
-        'per_page'		  			=> 100
+        'per_page'		  			=> $items_per_batch
       )
     ) );
 
