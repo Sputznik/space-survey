@@ -51,11 +51,13 @@ class SPACE_EXPORT extends SPACE_BASE{
 			$queries = $survey_db->getResponsesQuery( $survey_id, $filterChoices, $hide_zero_attempted, '', $step, $per_page );
 			$guests = $survey_db->get_results( $queries['results'] );
 
+			/*
 			echo "<pre>";
 			print_r( $queries );
 			print_r( $guests );
 			echo "</pre>";
 			wp_die();
+			*/
 
 			// ADD HEADER ROW FOR THE FIRST BATCH REQUEST ONLY
 			if( $step == 1 ){
@@ -76,6 +78,14 @@ class SPACE_EXPORT extends SPACE_BASE{
 				}
 				$num_guests = count( $guests );
 				echo "<p>$num_guests guest responses have been added to the CSV file</p>";
+
+
+				echo "<pre>";
+				print_r( $question_ids );
+				print_r( $num_guests );
+				echo "</pre>";
+				wp_die();
+
 			}
 
 
