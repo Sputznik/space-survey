@@ -43,9 +43,11 @@ class SPACE_EXPORT extends SPACE_BASE{
 			$queries = $survey_db->getResponsesQuery( $survey_id, $filterChoices, $hide_zero_attempted, '', $step, $per_page );
 			$guests = $survey_db->get_results( $queries['results'] );
 
-			//echo "<pre>";
-			//print_r( $queries );
-			//echo "</pre>";
+			echo "<pre>";
+			print_r( $queries );
+			echo "</pre>";
+
+			wp_die();
 
 			// ADD HEADER ROW FOR THE FIRST BATCH REQUEST ONLY
 			if( $step == 1 ){
