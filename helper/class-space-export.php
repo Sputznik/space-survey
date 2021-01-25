@@ -73,7 +73,11 @@ class SPACE_EXPORT extends SPACE_BASE{
 				$question_ids = $this->getListQuestionIDs( $questions );
 
 				foreach( $guests as $guest ){
-					$guestResponses = $survey_db->getGuestDB()->getResponses( $guest->ID );
+					try {
+						$guestResponses = $survey_db->getGuestDB()->getResponses( $guest->ID );
+					} catch(Exception $e) {
+  					echo 'Message: ' .$e->getMessage();
+					}
 
 					echo "<pre>";
 					print_r( $guestResponses );
