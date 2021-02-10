@@ -211,6 +211,15 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		wp_die();
 	}
 
+	function listSurveys( $question_id ){
+		global $wpdb;
+		$relationTable = $this->getPageQuestionRelationDB()->getTable();
+		$pageTable = $this->getPageDB()->getTable();
+		$query = "SELECT * FROM $wpdb->posts WHERE ID IN ( SELECT survey_id from $pageTable WHERE ID IN (SELECT page_id FROM $relationTable WHERE question_id = %d ) )";
+		$query = $this->prepare( $query, array( $question_id ) );
+		return $this->get_results( $query );
+	}
+
 }
 
 SPACE_DB_QUESTION::getInstance();

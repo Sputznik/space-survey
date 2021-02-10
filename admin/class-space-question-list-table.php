@@ -143,6 +143,16 @@
 					return $item->description;
 				case 'type':
 					return $item->type;
+				case 'surveys':
+					$question_db = SPACE_DB_QUESTION::getInstance();
+					$surveys = $question_db->listSurveys( $item->ID );
+					ob_start();
+					$url = admin_url( 'admin.php?page='.$_GET['page'] );
+					foreach( $surveys as $survey ){
+						$filter_by_survey_url = $url . '&survey=' . $survey->ID;
+						echo "<p><a href='$filter_by_survey_url'>" . $survey->post_title . "</a></p>";
+					}
+					return ob_get_clean();
 				default:
 					return print_r( $item, true ) ; //Show the whole array for troubleshooting purposes
 			}
@@ -164,7 +174,8 @@
 				'cb'		=> '<input type="checkbox" />',
 				'question' 	=> 'Title',
 				'desc'    	=> 'Description',
-				'type'      => 'Type'
+				'type'      => 'Type',
+				'surveys'		=> 'Surveys'
 			);
 			return $columns;
 		}

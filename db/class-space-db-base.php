@@ -39,18 +39,27 @@ class SPACE_DB_BASE extends SPACE_BASE{
 		require_once( 'class-space-db-response.php' );
 		return SPACE_DB_RESPONSE::getInstance();
 	}
+	function getPageQuestionRelationDB(){
+		require_once('class-space-db-page-question-relation.php');
+		return SPACE_DB_PAGE_QUESTION_RELATION::getInstance();
+	}
+	function getPageDB(){
+		require_once('class-space-db-page.php');
+		return SPACE_DB_PAGE::getInstance();
+	}
 	function getQuestionDB(){
 		require_once('class-space-db-question.php');
 		return SPACE_DB_QUESTION::getInstance();
-	}
-	function getGuestDB(){
-		require_once('class-space-db-guest.php');
-		return SPACE_DB_GUEST::getInstance();
 	}
 	function getChoiceDB(){
 		require_once('class-space-db-choice.php');
 		return SPACE_DB_CHOICE::getInstance();
 	}
+	function getGuestDB(){
+		require_once('class-space-db-guest.php');
+		return SPACE_DB_GUEST::getInstance();
+	}
+
 	/* GETTER AND SETTER FUNCTIONS */
 
 	// WRAPPER AROUND WPDB->QUERY
