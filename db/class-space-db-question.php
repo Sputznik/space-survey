@@ -12,7 +12,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		$this->setTypes( array(
 			'radio'						=> 'Radio Button',
 			'checkbox'				=> 'Checkboxes',
-			'checkbox-other'	=> 'Checkboxes With Other',
+			//'checkbox-other'	=> 'Checkboxes With Other',
 			'checkbox-ranking'	=> 'Checkboxes With Ranking',
 			'dropdown'				=> 'Dropdown',
 			'text'						=> 'Textbox'
@@ -117,13 +117,18 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			'type' 				=> $data['type'],
 			'author_id'		=> get_current_user_id(),
 			'parent' 			=> isset( $data['parent'] ) ? absint( $data['parent'] ) : 0,
-			'modified_on'	=> current_time('mysql', false)
+			'modified_on'	=> current_time('mysql', false),
+			'meta'				=> array()
 		);
 
-		if( isset( $data['limit'] ) ){
-			$questionData['meta'] = serialize( array( 'limit'	=> $data['limit'] ) );
+		// INCLUDE META INFORMATION
+		$metaFields = array( 'limit', 'limitError', 'otherFlag', 'otherText' );
+		foreach( $metaFields as $metaField ){
+			if( isset( $data[ $metaField ] ) ){
+				$questionData['meta'][ $metaField ] = $data[ $metaField ];
+			}
 		}
-
+		$questionData['meta'] = serialize( $questionData['meta'] );
 
 		/*
 		echo "<pre>";

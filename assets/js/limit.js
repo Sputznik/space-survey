@@ -4,19 +4,31 @@ jQuery.fn.space_limit_choices = function(){
 
     var $quest = jQuery( this ),
       meta     = $quest.data('meta') ? $quest.data('meta') : { limit: 0 },
-      limit    = meta['limit'];
+      limit    = meta['limit'],
+			errorMsg = meta['limitError'];
 
     function getCheckedNum(){
-      return $quest.find('input[type=checkbox]:checked').length;
+			var total = $quest.find('input[type=checkbox]:checked').length;
+			if( $quest.find('.space-choice-other input[type=text]').length &&
+				$quest.find('.space-choice-other input[type=text]').val() ){
+					total += 1;
+			}
+      return total;
     }
 
     if( limit > 0 ){
       $quest.find('input[type=checkbox]').click( function( ev ){
         if( getCheckedNum() > limit ){
           jQuery( this ).prop( 'checked', false );
-          alert( 'Please unselect some choices as you have crossed the maximum number of selection.' );
+          alert( errorMsg );
         }
       } );
+			$quest.find('.space-choice-other input[type=text]').focus( function( ev ){
+				if( getCheckedNum() > (limit-1) ){
+					alert( errorMsg );
+					jQuery( this ).prop( 'value', '' );
+				}
+			} );
     }
 
   });

@@ -27,13 +27,36 @@
 			'type'		=> 'file',
 			'help'		=> 'Choices from the CSV will override all the existing ones'
 		),
-		//METABOX FOR SETTING NUMBER CHECKBOXES TO BE DISPLAYED
+		// METABOX FOR SETTING NUMBER CHECKBOXES THAT CAN BE SELECTED
 		'limit'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field',
-			'label'		=> 'For limited selection',
+			'container_class'	=> 'space-form-field meta-field question-meta-field space-one',
+			'label'		=> 'Limit the number of selection',
 			'slug'		=> 'limit',
 			'type'		=> 'number',
-			'help'		=> 'Limit the number of selection'
+			'help'		=> '',
+			'value'		=> '0'
+		),
+		'limitError'	=> array(
+			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'label'						=> 'Error message when LIMIT is crossed',
+			'slug'						=> 'limitError',
+			'type'						=> 'textarea',
+			'value'						=> 'Please unselect some choices as you have crossed the maximum number of selection.',
+			'rows'						=> '2'
+		),
+		'otherFlag'	=> array(
+			'container_class'	=> 'space-form-field meta-field question-meta-field space-one',
+			'label'		=> 'Enable text input for checkboxes',
+			'slug'		=> 'otherFlag',
+			'type'		=> 'boolean',
+			'text'		=> 'Yes'
+		),
+		'otherText'	=> array(
+			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'label'						=> 'Placeholder text for OTHER input field',
+			'slug'						=> 'otherText',
+			'type'						=> 'text',
+			'value'						=> 'Other'
 		),
 		/*
 		'parent' => array(
@@ -124,6 +147,9 @@
 
 				$question_id = $question_db->insert( $question_data );
 			}
+
+			//print_r( $question_data );
+
 			// END OF UPDATING QUESTION MODEL
 
 			/*
@@ -166,9 +192,20 @@
 			$fields['title']['value'] = $row->title;
 			$fields['desc']['value'] = $row->description;
 			$fields['type']['value'] = $row->type;
-			$fields['limit']['value'] = isset( $meta_info['limit'] ) ? $meta_info['limit'] : "";
-			$fields['parent']['value'] = $row->parent;
-			$fields['order']['value'] = 0; //$row->rank;
+
+			// INCLUDE META INFORMATION
+			$metaFields = array( 'limit', 'limitError', 'otherFlag', 'otherText' );
+			foreach( $metaFields as $metaField ){
+				if( isset( $meta_info[$metaField] ) ){
+					$fields[$metaField]['value'] = $meta_info[$metaField];
+				}
+			}
+
+			//$fields['limit']['value'] = isset( $meta_info['limit'] ) ? $meta_info['limit'] : "";
+			//$fields['otherFlag']['value'] = isset( $meta_info['otherFlag'] ) ? $meta_info['otherFlag'] : "";
+			//$fields['otherText']['value'] = isset( $meta_info['otherText'] ) ? $meta_info['otherText'] : "";
+			//$fields['parent']['value'] = $row->parent;
+			//$fields['order']['value'] = 0; //$row->rank;
 
 			if( $row->parent ){
 				$parent_question = $question_db->get_row( $row->parent );
@@ -213,9 +250,11 @@
 
 		$form->display_field( $form->fields['limit'] );
 
-		//$form->display_field( $form->fields['parent'] );
+		$form->display_field( $form->fields['limitError'] );
 
-		//$form->display_field( $form->fields['order'] );
+		$form->display_field( $form->fields['otherFlag'] );
+
+		$form->display_field( $form->fields['otherText'] );
 
 	});
 
