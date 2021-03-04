@@ -255,3 +255,6 @@ textarea[data-behaviour~=space-autoresize]{
 	cursor: pointer;
 	border-radius: 3px;
 }
+
+/* HIDE PREVIEW BUTTON */
+body.post-type-space_survey #minor-publishing-actions{ display: none; }
