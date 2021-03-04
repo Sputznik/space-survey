@@ -79,10 +79,10 @@ jQuery.fn.space_choices = function(){
 				var $hiddenRank = repeater.createField({
 					element	: 'input',
 					attr	: {
-						'type'				: 'hidden',
-						'value'				: choice['rank'] ? choice['rank'] : 0,
+						'type'						: 'hidden',
+						'value'						: choice['menu_rank'] ? choice['menu_rank'] : 0,
 						'data-behaviour' 	: 'space-rank',
-						'name'				: 'choices[' + repeater.count + '][rank]'
+						'name'						: 'choices[' + repeater.count + '][menu_rank]'
 					},
 					append	: $list_item
 				});

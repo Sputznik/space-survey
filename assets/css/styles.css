@@ -17,3 +17,24 @@
 .space-choice.rank-field > .rank{ width: 46px; height: 46px; text-align: center; user-select:none; margin:0; }
 .space-choice.rank-field > .rank > span{ display: block; line-height: 28px; }
 /* CHECKBOX WITH RANKING */
+
+.space-list li button{ outline: none; }
+
+.space-slide .space-error{
+	padding: 20px;
+	padding-left: 10px;
+	border: #000 solid 1px;
+	border-left: #000 solid 10px;
+	background: #dcdde1;
+	font-size: 120%;
+	color: #000;
+	display: none;
+}
+
+.space-slide .space-question.error{
+	border: #000 solid 1px;
+	border-left: 0;
+	border-right: 0;
+	background: #333;
+	padding: 10px 20px 20px;
+}

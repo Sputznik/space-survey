@@ -40,9 +40,9 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 	function sanitize( $data ){
 
 		$pageData = array(
-			'title' 		=> sanitize_text_field( $data['title'] ),
-			'description' 	=> isset( $data['description'] ) ? stripslashes( $data['description'] ):'', // Storing HTML
-			'rank' 			=> isset( $data['rank'] ) ? absint( $data['rank'] ) : 0,
+			'title' 			=> sanitize_text_field( $data['title'] ),
+			'description' => isset( $data['description'] ) ? stripslashes( $data['description'] ):'', // Storing HTML
+			'menu_rank' 	=> isset( $data['menu_rank'] ) ? absint( $data['menu_rank'] ) : 0,
 			'survey_id'		=> absint( $data['survey_id'] ),
 		);
 		return $pageData;
@@ -110,12 +110,12 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 			if( isset( $page['questions'] ) && is_array( $page['questions'] ) ){
 				foreach( $page['questions'] as $question ){
 
-					if( isset( $question['id'] ) && $question['id'] && isset( $question['rank'] ) ){
+					if( isset( $question['id'] ) && $question['id'] && isset( $question['menu_rank'] ) ){
 
 						$relationData = array(
 							'page_id'			=> $page['id'],
 							'question_id'	=> $question['id'],
-							'rank'				=> $question['rank']
+							'menu_rank'		=> $question['menu_rank']
 						);
 
 						$relationData = $this->getRelationDB()->sanitize( $relationData );

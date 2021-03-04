@@ -3,7 +3,8 @@ jQuery.fn.space_slides = function(){
 
 	return this.each(function() {
 
-		var $el 		= jQuery( this );
+		var $el = jQuery( this );
+		var timeoutID;
 
 		/*
 		*	GET UNIQUE GUEST ID BY USING COOKIES
@@ -99,6 +100,8 @@ jQuery.fn.space_slides = function(){
 
 		function saveGuestData(){
 
+			console.log('save');
+
 			var form = $el.find('form');
 
 			//console.log( form.serialize() );
@@ -164,9 +167,30 @@ jQuery.fn.space_slides = function(){
 			jQuery( 'html, body' ).animate( {scrollTop : 0}, 1000 );
 		}
 
+		function startTimer() {
+			// wait 4 seconds before saving the guest data
+    	timeoutID = window.setTimeout( saveGuestData, 4000 );
+		}
+
+		function resetTimer(e) {
+    	window.clearTimeout( timeoutID );
+ 			startTimer();
+		}
+
 		function init(){
 
 			guestData();
+
+			/* ADD EVENT LISTENERS TO RESET TIMERS WHEN THE SURVEY FORM BECOMES ACTIVE */
+			this.addEventListener( "mousemove", resetTimer, false );
+			this.addEventListener( "mousedown", resetTimer, false );
+			this.addEventListener( "keypress", resetTimer, false );
+			this.addEventListener( "DOMMouseScroll", resetTimer, false );
+			this.addEventListener( "mousewheel", resetTimer, false );
+			this.addEventListener( "touchmove", resetTimer, false );
+			this.addEventListener( "MSPointerMove", resetTimer, false );
+
+    	startTimer();
 
 			$el.find('.space-slide').each( function( i, slide ){
 
@@ -174,6 +198,17 @@ jQuery.fn.space_slides = function(){
 				$slide.attr( 'data-slide', i );
 
 			});
+		}
+
+		function showErrorMessage( message ){
+			var $error = $el.find('.space-error');
+			$error.html( message );
+			$error.show();
+		}
+
+		function hideErrorMessage(){
+			var $error = $el.find('.space-error');
+			$error.hide();
 		}
 
 
@@ -189,14 +224,24 @@ jQuery.fn.space_slides = function(){
 				totalQuest	= $slide.find('.space-question.required:not(.hide)').length,
 				doneQuest	= $slide.find('.space-question.required.done:not(.hide)').length;
 
+			// REMOVE ERROR CLASS FROM FIELDS THAT ARE DONE AND REQUIRED
+			$slide.find('.space-question.required.done:not(.hide)').removeClass('error');
+
 			if( totalQuest == doneQuest ){
+				hideErrorMessage();
 				transitionSlide( $slide, $nextSlide );
 			}
 			else{
-				alert('Some required fields have not been filled');
+				var pendingQuests = $slide.find( '.space-question.required:not(.done):not(.hide)' );
+				if( pendingQuests.length ){
+					pendingQuests.addClass( 'error' );
+					var firstPendingQuest = pendingQuests.first();
+					jQuery( 'html, body' ).animate( { scrollTop : firstPendingQuest.offset().top-200 }, 1000 );
+				}
+
+				showErrorMessage( 'Some required fields have not been filled' );
+
 			}
-
-
 
 		});
 

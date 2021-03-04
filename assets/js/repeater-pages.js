@@ -116,9 +116,9 @@ jQuery.fn.space_pages = function(){
 					element	: 'input',
 					attr	: {
 						'type'						: 'hidden',
-						'value'						: page['rank'] ? page['rank'] : 0,
+						'value'						: page['menu_rank'] ? page['menu_rank'] : 0,
 						'data-behaviour' 	: 'space-pages-rank',
-						'name'						: 'pages[' + repeater.count + '][rank]'
+						'name'						: 'pages[' + repeater.count + '][menu_rank]'
 					},
 					append	: $list_item
 				});

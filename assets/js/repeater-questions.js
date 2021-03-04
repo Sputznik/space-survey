@@ -118,10 +118,10 @@ jQuery.fn.space_questions = function( parent_name ){
 				var $hiddenRank = repeater.createField({
 					element	: 'input',
 					attr	: {
-						'type'				: 'hidden',
-						'value'				: question['rank'] ? question['rank'] : repeater.count,
+						'type'						: 'hidden',
+						'value'						: question['menu_rank'] ? question['menu_rank'] : repeater.count,
 						'data-behaviour' 	: 'space-rank',
-						'name'				: parent_name+'[questions][' + repeater.count + '][rank]'
+						'name'						: parent_name+'[questions][' + repeater.count + '][menu_rank]'
 					},
 					append	: $content
 				});

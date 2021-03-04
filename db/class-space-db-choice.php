@@ -31,8 +31,8 @@ class SPACE_DB_CHOICE extends SPACE_DB_BASE{
 
 	function sanitize( $data ){
 		$choiceData = array(
-			'title' 		=> sanitize_text_field( $data['title'] ),
-			'rank' 			=> isset( $data['rank'] ) ? absint( $data['rank'] ) : 0,
+			'title' 			=> sanitize_text_field( $data['title'] ),
+			'menu_rank' 	=> isset( $data['menu_rank'] ) ? absint( $data['menu_rank'] ) : 0,
 			'question_id'	=> absint( $data['question_id'] ),
 		);
 		return $choiceData;

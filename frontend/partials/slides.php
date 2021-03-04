@@ -16,6 +16,7 @@
 		?>
 		<div class='<?php _e( $slide_class );?>'>
 			<?php echo $this->page_html( $page );?>
+			<div class="space-error">Some error to be displayed</div>
 			<ul class='space-list space-list-inline'>
 				<?php if( $i > 0 ):?>
 				<li>

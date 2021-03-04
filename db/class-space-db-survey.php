@@ -350,17 +350,17 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 		if( isset( $_POST['post_type'] ) && $_POST['post_type'] == 'space_survey' ){
 
-			/*
-			print_r( $survey_id );
-			echo "<pre>";
-			print_r( $_POST );
-			echo "</pre>";
-			wp_die();
-			*/
 
-			echo "<pre>";
-			print_r( $_FILES );
-			echo "</pre>";
+			//print_r( $survey_id );
+			//echo "<pre>";
+			//print_r( $_POST );
+			//echo "</pre>";
+			//wp_die();
+
+
+			//echo "<pre>";
+			//print_r( $_FILES );
+			//echo "</pre>";
 
 			// CHECK FILE NEEDS TO BE IMPORTED
 			if( $survey_id && isset( $_FILES['survey-file'] ) && $_FILES['survey-file'] && $_FILES['survey-file']['error'] == 0 ){

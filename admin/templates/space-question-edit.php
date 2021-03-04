@@ -100,7 +100,7 @@
 						$rank = 0;
 						foreach ( $arrayCsv as $row ) {
 							if( is_array( $row ) && count( $row ) ){
-								array_push( $_POST['choices'], array( 'title'	=> $row[ 0 ], 'id' => 0, 'rank' => $rank ) );
+								array_push( $_POST['choices'], array( 'title'	=> $row[ 0 ], 'id' => 0, 'menu_rank' => $rank ) );
 								$rank++;
 							}
 						}

@@ -38,9 +38,9 @@ class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
 
 	function sanitize( $data ){
 		$relationData = array(
-			'rank' 				=> isset( $data['rank'] ) ? absint( $data['rank'] ) : 0,
+			'menu_rank' 	=> isset( $data['menu_rank'] ) ? absint( $data['menu_rank'] ) : 0,
 			'page_id'			=> absint( $data['page_id'] ),
-			'question_id'		=> absint( $data['question_id'] ),
+			'question_id'	=> absint( $data['question_id'] ),
 		);
 		return $relationData;
 	}
