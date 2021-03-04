@@ -28,7 +28,17 @@
 				<?php if( $i != $num_pages-1 ):?>
 				<li>
 					<button data-behaviour='space-slide-next'>
-						<?php ( isset( $settings['next-text'] ) && $settings['next-text'] ) ?  _e( $settings['next-text'] ) : _e( 'Next' ) ?>
+					<?php
+						if( ( $i == 0 ) && isset( $settings['first-btn-text'] ) && !empty( $settings['first-btn-text'] ) ){
+							_e( $settings['first-btn-text'] );
+						}
+						elseif ( ( $i == $num_pages-2 ) && isset( $settings['last-btn-text'] ) && !empty( $settings['last-btn-text'] ) ) {
+							_e( $settings['last-btn-text'] );
+						}
+						else{
+							_e( isset( $settings['next-text'] ) && !empty( $settings['next-text'] ) ?  $settings['next-text'] : 'Next' );
+						}
+					?>
 					</button>
 				</li>
 				<?php endif;?>
