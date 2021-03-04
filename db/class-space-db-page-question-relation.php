@@ -28,7 +28,7 @@ class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
 			ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			page_id BIGINT(20) NOT NULL,
 			question_id BIGINT(20) NOT NULL,
-			rank INT DEFAULT 0,
+			menu_rank INT DEFAULT 0,
 			PRIMARY KEY(ID)
 		) $charset_collate;";
 
@@ -50,7 +50,7 @@ class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
 		$relationTable = $this->getTable();
 		$questionTable = $this->getQuestionDB()->getTable();
 
-		$query = "SELECT * FROM $relationTable r INNER JOIN $questionTable q ON r.question_id = q.ID WHERE r.page_id = %d ORDER BY r.rank ASC";
+		$query = "SELECT * FROM $relationTable r INNER JOIN $questionTable q ON r.question_id = q.ID WHERE r.page_id = %d ORDER BY r.menu_rank ASC";
 
 		$query = $this->prepare( $query, array( $page_id ) );
 
@@ -72,7 +72,12 @@ class SPACE_DB_PAGE_QUESTION_RELATION extends SPACE_DB_BASE{
 	}
 
 
-
+	function alter_table(){
+		$table = $this->getTable();
+		$sql = "ALTER TABLE $table CHANGE `rank` `menu_rank` INT DEFAULT 0;";
+		echo "Renamed rank columm in $table <br>";
+		return $this->query( $sql );
+	}
 
 }
 

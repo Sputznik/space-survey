@@ -210,6 +210,7 @@ textarea[data-behaviour~=space-autoresize]{
 	box-shadow: none;
 	margin-bottom: 20px;
 }
+#survey-pages.postbox .postbox-header,
 #survey-pages.postbox h2.hndle.ui-sortable-handle,
 #survey-pages.postbox button.handlediv{
 	display: none;

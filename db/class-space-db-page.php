@@ -28,7 +28,7 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 			ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			title VARCHAR(255) NOT NULL,
 			description TEXT,
-			rank INT DEFAULT 0,
+			menu_rank INT DEFAULT 0,
 			survey_id BIGINT(20) NOT NULL,
 			PRIMARY KEY(ID)
 		) $charset_collate;";
@@ -56,7 +56,7 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 				'survey_id'	=> '%d'
 			),
 			array( (int) $survey_id ),
-			'rank'
+			'menu_rank'
 		);
 
 		foreach( $pages as $page ){
@@ -127,8 +127,12 @@ class SPACE_DB_PAGE extends SPACE_DB_BASE{
 		}
 	}
 
-
-
+	function alter_table(){
+		$table = $this->getTable();
+		$sql = "ALTER TABLE $table CHANGE `rank` `menu_rank` INT DEFAULT 0;";
+		echo "Renamed rank columm in $table <br>";
+		return $this->query( $sql );
+	}
 
 }
 

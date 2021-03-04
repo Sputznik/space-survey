@@ -74,7 +74,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 				'question_id'	=> '%d'
 			),
 			array( (int)$question_id ),
-			'rank',
+			'menu_rank',
 			'ASC'
 		);
 	}
