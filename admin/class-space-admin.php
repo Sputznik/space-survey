@@ -126,6 +126,9 @@
 			} );
 			*/
 
+			add_filter( 'manage_space_survey_posts_columns', array( $this, 'manage_columns' ) );
+			add_action( 'manage_space_survey_posts_custom_column', array( $this, 'fill_column' ), 10, 2 );
+
 		}
 
 
@@ -427,6 +430,29 @@
 
 		function metabox_html( $post, $metabox ){
 			include( 'templates/metabox-'.$metabox['id'].'.php' );
+		}
+
+		function manage_columns( $columns ){
+			$columns['responses'] = 'Responses';
+			//$columns['num_questions'] = 'Number of Questions';
+			return $columns;
+		}
+
+		function fill_column( $column, $post_id ){
+
+			switch ( $column ) {
+				case 'responses' :
+					$survey_db = SPACE_DB_SURVEY::getInstance();
+					$totalGuests = $survey_db->totalGuests( $post_id );
+					if( $totalGuests ){
+						_e( "<p><a target='_blank' href='".admin_url( 'admin.php?page=space-export&survey_id='.$post_id )."'>Generate CSV</a></p>" );
+						_e( "<p><a href='".admin_url( 'admin.php?page=space-responses&survey='.$post_id )."'>View Responses ($totalGuests)</a></p>" );
+					}
+					else{
+						_e('<p>No responses</p>');
+					}
+					break;
+			}
 		}
 
 	}

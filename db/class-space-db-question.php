@@ -22,7 +22,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 
 		add_action( 'wp_ajax_space_questions', array( $this, 'ajaxQuestions' ) );
 
-
+		add_action( 'wp_ajax_space_import_choices_csv', array( $this, 'importChoicesCSV' ) );
 
 		require_once( 'class-space-db-choice.php' );
 		$this->setChoiceDB( SPACE_DB_CHOICE::getInstance() );
@@ -223,6 +223,38 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		$query = "SELECT * FROM $wpdb->posts WHERE ID IN ( SELECT survey_id from $pageTable WHERE ID IN (SELECT page_id FROM $relationTable WHERE question_id = %d ) )";
 		$query = $this->prepare( $query, array( $question_id ) );
 		return $this->get_results( $query );
+	}
+
+	function importChoicesCSV(){
+		/* UPDATE THE CHOICES DATA FROM THE CSV */
+		if( isset( $_FILES['file'] ) && $_FILES['file'] ){
+
+			$csv = SPACE_CSV::getInstance();
+
+			// UPLOAD THE CSV FILE
+			$movefile = $csv->upload( $_FILES['file'] );
+
+			// // CHECK IF UPLOAD PROCESS WAS COMPLETED WITHOUT ANY ERROR
+			if ( $movefile && !isset( $movefile['error'] ) ) {
+
+				// CONVERT THE UPLOADED FILE TO ARRAY FORMAT
+				$arrayCsv = $csv->convertToArray( $movefile['file'] );
+
+				$data = array();
+
+				foreach ( $arrayCsv as $row ) {
+					if( is_array( $row ) && count( $row ) ){
+						array_push( $data, $row[ 0 ] );
+					}
+				}
+
+				echo wp_json_encode( $data );
+
+				//SPACE_UTIL::getInstance()->test( $arrayCsv );
+
+			}
+		}
+		wp_die();
 	}
 
 }

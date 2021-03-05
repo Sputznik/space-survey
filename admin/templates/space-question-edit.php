@@ -24,16 +24,17 @@
 			'options'	=> $question_db->getTypes()
 		),
 
-		//METABOX FOR IMPORTING CHOICES FROM CSV FILE
+		/*METABOX FOR IMPORTING CHOICES FROM CSV FILE
 		'import_choices'	=> array(
 			'label'		=> 'Import Choices from CSV File',
 			'slug'		=> 'file',
 			'type'		=> 'file',
 			'help'		=> 'Choices from the CSV will override all the existing ones'
 		),
+		*/
 		// METABOX FOR SETTING NUMBER CHECKBOXES THAT CAN BE SELECTED
 		'limitFlag'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field top-decoration',
+			'container_class'	=> 'space-form-field meta-field question-meta-field',
 			'label'		=> 'Enable limited selection',
 			'slug'		=> 'limitFlag',
 			'type'		=> 'boolean',
@@ -56,7 +57,7 @@
 			'rows'						=> '2'
 		),
 		'otherFlag'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field space-one',
+			'container_class'	=> 'space-form-field meta-field question-meta-field',
 			'label'		=> 'Enable text input for checkboxes',
 			'slug'		=> 'otherFlag',
 			'type'		=> 'boolean',
@@ -115,7 +116,7 @@
 			// echo "</pre>";
 			// wp_die();
 
-			/* UPDATE THE CHOICES DATA FROM THE CSV */
+			/* UPDATE THE CHOICES DATA FROM THE CSV - no longer need this as this have been moved to ajax*
 			if( isset( $_FILES['file'] ) && $_FILES['file'] ){
 
 				$csv = SPACE_CSV::getInstance();
@@ -141,7 +142,7 @@
 					}
 				}
 			}
-
+			*/
 
 
 			/*
@@ -258,7 +259,7 @@
 
 		$form->display_field( $form->fields['type'] );
 
-		$form->display_field( $form->fields['import_choices'] );
+		//$form->display_field( $form->fields['import_choices'] );
 
 		foreach( getMetaFields() as $metaField ){
 			$form->display_field( $form->fields[ $metaField ] );
