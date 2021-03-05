@@ -301,3 +301,8 @@ body.post-type-space_survey #authordiv, body.post-type-space_survey #minor-publi
 .space-import-screen form .post-attributes-label{
 	font-size: 24px;
 }
+
+.space-page-item .space-boolean{
+	margin-bottom: 20px;
+	display: block;
+}

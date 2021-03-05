@@ -170,6 +170,10 @@ var SPACE_REPEATER = function( options ){
 
 		var $textarea = self.createField( field );
 
+		$textarea.html( field['attr']['value'] );
+
+		//wp.editor.remove( field['attr']['id'] );
+
 		// INITIALIZE WP EDITOR FOR THE TEXTAREA
 		wp.editor.initialize( field['attr']['id'], { tinymce: {height: 300}, quicktags: true } );
 
@@ -185,7 +189,10 @@ var SPACE_REPEATER = function( options ){
 		var $label = self.createField({
 			element	: 'label',
 			append	: field['append'],
-			html	: field['label']
+			html	: field['label'],
+			attr : {
+				class : 'space-boolean'
+			}
 		});
 
 		var $booleanField = self.createField({

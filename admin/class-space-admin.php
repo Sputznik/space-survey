@@ -215,12 +215,12 @@
 			foreach( $this->getMetaBoxes() as $meta_box ){
 
 				add_meta_box(
-					$meta_box['id'], 													// Unique ID
+					$meta_box['id'], 														// Unique ID
 					$meta_box['title'], 												// Box title
-					array( $this, 'metabox_html' ),//array( $this, $meta_box['box_html'], ), 							// Content callback
+					array( $this, 'metabox_html' ),
 					'space_survey',
 					isset( $meta_box['context'] ) ? $meta_box['context'] : 'normal', 	// Context
-					'default',															// Priority
+					'default',																	// Priority
 					$meta_box
 				);
 			}

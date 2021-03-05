@@ -75,6 +75,19 @@ jQuery.fn.space_pages = function(){
 				$textarea.space_autoresize();
 				if( page['title'] ){ $textarea.val( page['title'] ); }
 
+				// CREATE BOOLEAN FIELD FOR REQUIRED
+				var checked_flag = false;
+				if( page['description'] && page['description'].length ){
+					checked_flag = true;
+				}
+				var $desc_flag = repeater.createBooleanField({
+					attr	:  {
+						name	: 'has_desc[]',
+						checked : checked_flag
+					},
+					append	: $content,
+					label	: 'Has Description'
+				});
 
 				// PAGE DESCRIPTION
 				var $textarea_desc = repeater.createRichText({
@@ -134,6 +147,22 @@ jQuery.fn.space_pages = function(){
 						$list_item.remove();
 					}
 				});
+
+
+				// CHECK IF THE REQUIRED CHECKBOX IS CHECKED OR NOT TO HIDE/SHOW THE RULES REPEATER
+				var $desc_flag_checkbox = $desc_flag.find('input[type=checkbox]');
+				$desc_flag_checkbox.change( function(){
+					var $editor = $content.find('.wp-editor-wrap');
+					// IF REQUIRED THEN HIDE THE RULES OTHERWHISE SHOW THEM
+					if( $desc_flag_checkbox.prop('checked') ){
+						$editor.show();
+					}
+					else{
+						$editor.hide();
+					}
+				});
+				$desc_flag_checkbox.change(); // TO CHECK FOR THE FIRST TIME
+
 
 
 			},
