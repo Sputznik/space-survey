@@ -1,27 +1,106 @@
+var CONDITIONAL_METAFIELD = function( options ){
+	var self = {
+		options : jQuery.extend( {
+			$el							: null,
+			listen					: function(){ self.display(); },
+			checkCondition	: function(){ return false; },
+		}, options )
+	};
+
+	self.display = function(){
+		self.options.$el.hide();
+		if( self.options.checkCondition() ){
+			self.options.$el.show();
+		}
+	};
+
+	self.init = function(){
+		self.options.listen();
+		self.display();
+	};
+
+	self.init();
+	return self;
+}
+
 jQuery( document ).ready(function(){
 
-  jQuery( '.question-meta-field' ).each( function(){
+	jQuery( '.question-meta-field' ).each( function(){
 
-    var $el      = jQuery( this ),
-      $dropdown = jQuery( "select#type" );
+		var $el = jQuery( this );
 
-    //Display's Metabox
-    function showMeta( $dropdown ){
-      // Hides the metabox when the dropdown option gets changed
-      $el.hide();
+		var metaField = CONDITIONAL_METAFIELD( {
+			$el : $el,
+			checkCondition: function(){
+				var $dropdown 				= jQuery( "select#type" ),
+					get_selected_child 	= $dropdown.children( "option:selected" ).val().toLowerCase(),
+					checkbox_index 			= get_selected_child.indexOf( 'checkbox' );
 
-      // Gets the value of the selected field
-      var get_selected_child = $dropdown.children( "option:selected" ).val().toLowerCase();
-      var checkbox_index = get_selected_child.indexOf( 'checkbox' )
+	      // Shows the metabox when the dropdown option value is checkbox~
+	      if( checkbox_index != -1 && checkbox_index == 0  ){ return true; }
+				return false;
+			},
+			listen : function(){
+				jQuery( "select#type" ).change( function(){
+					metaField.display();
+				} );
+			}
+		} );
 
-      // Shows the metabox when the dropdown option value is checkbox~
-      if( checkbox_index != -1 && checkbox_index == 0  ){ $el.show(); }
-    }
+	} );
 
-    $dropdown.change(function(){ showMeta( $dropdown ); });
-    showMeta( $dropdown );
+	jQuery('.other-text-field').each( function(){
+ 	 	var $el = jQuery( this );
+		var metaField = CONDITIONAL_METAFIELD( {
+			$el : $el,
+			checkCondition: function(){
+				var $dropdown 				= jQuery( "select#type" ),
+					get_selected_child 	= $dropdown.children( "option:selected" ).val().toLowerCase(),
+					checkbox_index 			= get_selected_child.indexOf( 'checkbox' );
 
- } );
+				if( checkbox_index != -1 && checkbox_index == 0 && jQuery('input[name="otherFlag"]:checked').length > 0 ){
+					return true;
+				}
+				return false;
+			},
+			listen : function(){
+				jQuery('input[name="otherFlag"]').click( function(){
+					metaField.display();
+				} );
+				jQuery( "select#type" ).change( function(){
+					metaField.display();
+				} );
+			}
+		} );
+	} );
+
+	jQuery('.limit-sub-field').each( function(){
+ 	 	var $el = jQuery( this );
+		var metaField = CONDITIONAL_METAFIELD( {
+			$el : $el,
+			checkCondition: function(){
+				var $dropdown 				= jQuery( "select#type" ),
+					get_selected_child 	= $dropdown.children( "option:selected" ).val().toLowerCase(),
+					checkbox_index 			= get_selected_child.indexOf( 'checkbox' );
+
+				if( checkbox_index != -1 && checkbox_index == 0 && jQuery('input[name="limitFlag"]:checked').length > 0 ){
+					return true;
+				}
+				return false;
+			},
+			listen : function(){
+				jQuery('input[name="limitFlag"]').click( function(){
+					metaField.display();
+				} );
+				jQuery( "select#type" ).change( function(){
+					metaField.display();
+				} );
+			}
+		} );
+	} );
+
+
+
 
  jQuery('[data-behaviour~=space-form-table]').each( function(){
     var $form = jQuery( this );

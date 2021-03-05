@@ -1,5 +1,9 @@
 <?php
 
+	function getMetaFields(){
+		return array( 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText' );
+	}
+
 	$question_db = SPACE_DB_QUESTION::getInstance();
 
 	$form_fields = array(
@@ -28,16 +32,23 @@
 			'help'		=> 'Choices from the CSV will override all the existing ones'
 		),
 		// METABOX FOR SETTING NUMBER CHECKBOXES THAT CAN BE SELECTED
+		'limitFlag'	=> array(
+			'container_class'	=> 'space-form-field meta-field question-meta-field top-decoration',
+			'label'		=> 'Enable limited selection',
+			'slug'		=> 'limitFlag',
+			'type'		=> 'boolean',
+			'text'		=> 'Yes'
+		),
 		'limit'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field space-one',
-			'label'		=> 'Limit the number of selection',
+			'container_class'	=> 'space-form-field meta-field limit-sub-field',
+			'label'		=> 'The number of selection to be limited',
 			'slug'		=> 'limit',
 			'type'		=> 'number',
 			'help'		=> '',
 			'value'		=> '0'
 		),
 		'limitError'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'container_class'	=> 'space-form-field meta-field limit-sub-field bottom-decoration',
 			'label'						=> 'Error message when LIMIT is crossed',
 			'slug'						=> 'limitError',
 			'type'						=> 'textarea',
@@ -52,7 +63,7 @@
 			'text'		=> 'Yes'
 		),
 		'otherText'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'container_class'	=> 'space-form-field meta-field other-text-field',
 			'label'						=> 'Placeholder text for OTHER input field',
 			'slug'						=> 'otherText',
 			'type'						=> 'text',
@@ -194,8 +205,7 @@
 			$fields['type']['value'] = $row->type;
 
 			// INCLUDE META INFORMATION
-			$metaFields = array( 'limit', 'limitError', 'otherFlag', 'otherText' );
-			foreach( $metaFields as $metaField ){
+			foreach( getMetaFields() as $metaField ){
 				if( isset( $meta_info[$metaField] ) ){
 					$fields[$metaField]['value'] = $meta_info[$metaField];
 				}
@@ -244,17 +254,15 @@
 	/* CONTENT IN THE SETTINGS SECTION */
 	add_action( $current_page.'-settings-div', function( $form ){
 
+
+
 		$form->display_field( $form->fields['type'] );
 
 		$form->display_field( $form->fields['import_choices'] );
 
-		$form->display_field( $form->fields['limit'] );
-
-		$form->display_field( $form->fields['limitError'] );
-
-		$form->display_field( $form->fields['otherFlag'] );
-
-		$form->display_field( $form->fields['otherText'] );
+		foreach( getMetaFields() as $metaField ){
+			$form->display_field( $form->fields[ $metaField ] );
+		}
 
 	});
 
