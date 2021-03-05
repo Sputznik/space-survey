@@ -15,11 +15,6 @@
 					'title'		=> 'Settings',
 					'supports'	=>	array('editor')
 				),
-				array(
-					'id'		=> 'survey-results',
-					'title'		=> 'Results',
-					'supports'	=>	array('editor')
-				),
 			) );
 
 			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
