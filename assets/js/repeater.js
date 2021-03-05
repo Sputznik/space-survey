@@ -12,14 +12,14 @@ var SPACE_REPEATER = function( options ){
 		$list	: null,		// PARENT LIST THAT HOLDS THE CHOICES
 		$btn 	: null,		// BUTTON THAT ADDS MORE BLANK CHOICES TO THE LIST
 		options : jQuery.extend( {
-			$el				: null,
-			btn_text		: '+ Add Item',
+			$el							: null,
+			btn_text				: '+ Add Item',
 			close_btn_text	: '&times;',
-			list_id			: 'space-choices-list',
-			list_item_id	: 'space-choice-item',
-			init			: function(){},
-			addItem			: function(){},
-			reorder 		: function(){}
+			list_id					: 'space-choices-list',
+			list_item_id		: 'space-choice-item',
+			init						: function(){},
+			addItem					: function(){},
+			reorder 				: function(){}
 		}, options )
 	};
 

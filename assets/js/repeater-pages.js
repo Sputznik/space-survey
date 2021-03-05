@@ -179,6 +179,19 @@ jQuery.fn.space_pages = function(){
 			},
 		} );
 
+		var survey_id = jQuery('input[name=post_ID]').val(),
+			survey_url 	= window.browserData['urls']['survey_url'] + '&post=' + survey_id;
+
+		var importBtn = IMPORT_BUTTON({
+			$el						: $el,
+			btn_text			: 'Import',
+			form_title		: 'Import from JSON file',
+			ajax_url			: ajaxurl + '?action=space_survey_import_json&survey_id=' + survey_id,
+			ajaxResponse : function( surveyData ){
+				window.location.href = survey_url;
+			}
+		});
+
 		//console.log(  $el.closest('form').length );
 
 		// REORDER THE ENTIRE FORM BEFORE THE FORM IS UPDATED

@@ -90,12 +90,16 @@
 					//'box_html'	=> 'results_metabox_html',
 					'supports'	=>	array('editor')
 				),
+				/*
 				array(
 					'id'			=> 'survey-import-export',
-					'title'		=> 'Import & Export',
+					'title'		=> 'Export',
 					'context'	=> 'side'
 				)
+				*/
 			) );
+
+			add_action( 'post_submitbox_misc_actions', array( $this, 'export_button' ) );
 
 			add_action( 'init', array( $this, 'init' ) );
 
@@ -340,9 +344,17 @@
 			);
 
 			wp_enqueue_script(
+				'space-import-button',
+				plugins_url( $plugin_assets_folder.'js/import_button.js' ),
+				array( 'jquery'),
+				SPACE_SURVEY_VERSION,
+				true
+			);
+
+			wp_enqueue_script(
 				'space-repeater-choices',
 				plugins_url( $plugin_assets_folder.'js/repeater-choices.js' ),
-				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
+				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater', 'space-import-button' ),
 				SPACE_SURVEY_VERSION,
 				true
 			);
@@ -366,7 +378,7 @@
 			wp_enqueue_script(
 				'space-repeater-pages',
 				plugins_url( $plugin_assets_folder.'js/repeater-pages.js' ),
-				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater' ),
+				array( 'jquery', 'jquery-ui-sortable', 'space-autocomplete', 'space-autosize', 'space-repeater', 'space-import-button' ),
 				SPACE_SURVEY_VERSION,
 				true
 			);
@@ -452,6 +464,13 @@
 						_e('<p>No responses</p>');
 					}
 					break;
+			}
+		}
+
+		function export_button( $post ){
+			$survey_id = isset( $_GET['post'] ) ? $_GET['post'] : 0;
+			if( $post->post_type == 'space_survey' && $survey_id ){
+				include( 'templates/metabox-survey-export.php' );
 			}
 		}
 
