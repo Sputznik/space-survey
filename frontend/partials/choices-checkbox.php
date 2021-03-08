@@ -1,4 +1,17 @@
-<ul class='space-choices'>
+<?php
+	$questionMeta = unserialize( $question->meta );
+
+	$behaviours = array();
+	if( isset( $questionMeta['nullFlag'] ) && $questionMeta['nullFlag'] ){
+		array_push( $behaviours, 'space-null-choices' );
+	}
+
+	if( isset( $questionMeta['limitFlag'] ) && $questionMeta['limitFlag'] ){
+		array_push( $behaviours, 'space-limit-choices' );
+	}
+
+?>
+<ul class='space-choices' data-behaviour='<?php echo implode(' ', $behaviours );?>'>
 	<?php foreach( $question->choices as $choice ):?>
 	<li class='space-choice'>
 		<label>
@@ -7,7 +20,6 @@
 		</label>
 	</li>
 	<?php endforeach;?>
-	<?php $questionMeta = unserialize( $question->meta );?>
 	<?php if( isset( $questionMeta['otherFlag'] ) && isset( $questionMeta['otherText'] ) && !empty( $questionMeta['otherText'] ) ):?>
 	<li class='space-choice-other'>
 		<!--label style="margin-right: 10px;"><?php _e( 'Other' );?></label-->

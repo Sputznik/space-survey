@@ -9,7 +9,7 @@
 		function __construct( $formFields ){
 
 			$this->setCurrentPage( $_GET['page'] );
-			$this->setMetaFields( array( 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText' ) );
+			$this->setMetaFields( array( 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText', 'nullFlag' ) );
 			$this->setFormFields( $formFields );
 
 			// ACTION HOOKS FOR THE SECTIONS IN THE FORM
@@ -241,4 +241,21 @@
 			'type'						=> 'text',
 			'value'						=> 'Other'
 		),
+		'nullFlag'	=> array(
+			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'label'		=> 'Enable UNSELECT choice',
+			'slug'		=> 'nullFlag',
+			'type'		=> 'boolean',
+			'text'		=> 'Yes',
+			'help'		=> 'The first choice when selected will deselect all the other choices'
+		),
+		/*
+		'nullChoice'	=> array(
+			'label'		=> 'Un-Select All',
+			'slug'		=> 'nullChoice',
+			'type'		=> 'dropdown',
+			'help'		=> 'Pick up the choice for which the response is in negative',
+			'options'	=> array()
+		),
+		*/
 	) );

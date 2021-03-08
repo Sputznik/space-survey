@@ -1,8 +1,29 @@
+jQuery.fn.space_null_choices = function(){
+	return this.each(function() {
+
+		var $quest	 		= jQuery( this ).closest('.space-question'),
+			$all_choices 	= $quest.find( 'input[type=checkbox]' ),
+			$null_choice 	= $all_choices.first();
+
+		$quest.find('input[type=checkbox]').click( function( ev ){
+			var $current_choice = jQuery( this );
+			if( $current_choice.is( ":checked" ) ){
+				if( $current_choice.val() == $null_choice.val() ){
+					$all_choices.prop( 'checked', false );
+					$null_choice.prop( 'checked', true );
+				}
+				else{
+					$null_choice.prop( 'checked', false );
+				}
+			}
+		} );
+	} );
+};
 jQuery.fn.space_limit_choices = function(){
 
 	return this.each(function() {
 
-    var $quest = jQuery( this ),
+    var $quest = jQuery( this ).closest('.space-question'),
       meta     = $quest.data('meta') ? $quest.data('meta') : { limit: 0 },
       limit    = meta['limit'],
 			errorMsg = meta['limitError'];
@@ -37,8 +58,11 @@ jQuery.fn.space_limit_choices = function(){
 
 jQuery( document ).ready(function(){
 
-  jQuery('.space-question[data-type~=checkbox]').space_limit_choices();
-  jQuery('.space-question[data-type~=checkbox-other]').space_limit_choices();
+	jQuery('[data-behaviour~=space-limit-choices]').space_limit_choices();
+	jQuery('[data-behaviour~=space-null-choices]').space_null_choices();
+
+  //jQuery('.space-question[data-type~=checkbox]').space_limit_choices();
+  //jQuery('.space-question[data-type~=checkbox-other]').space_limit_choices();
 	jQuery('.space-question[data-type~=checkbox-ranking]').space_limit_choices();
 
 });

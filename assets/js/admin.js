@@ -199,4 +199,27 @@ jQuery( document ).ready(function(){
 
  });
 
+	/*
+	jQuery( '#nullChoice' ).each( function(){
+
+		var $el = jQuery( this );
+
+		function updateOptions(){
+			var number_choices = jQuery('li.space-choice-item').length;
+			for( var i=0; i<number_choices; i++ ){
+				var $choice = jQuery( '[name="choices[' + i + '][title]"]' );
+				if( $choice.val() ){
+					addOption( $choice.val() );
+				}
+			}
+		}
+
+		function addOption( option ){
+			$el.append('<option>' + option + '</option');
+		}
+
+		updateOptions();
+	} );
+	*/
+
 });

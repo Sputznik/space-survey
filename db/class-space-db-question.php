@@ -122,7 +122,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		);
 
 		// INCLUDE META INFORMATION
-		$metaFields = array( 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText' );
+		$metaFields = array( 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText', 'nullFlag' );
 		foreach( $metaFields as $metaField ){
 			if( isset( $data[ $metaField ] ) ){
 				$questionData['meta'][ $metaField ] = $data[ $metaField ];
