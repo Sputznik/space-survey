@@ -416,7 +416,13 @@ jQuery.fn.space_slides = function(){
 				if( rules.length ){
 					// IF THE FLAG IS TRUE THEN SHOW THE QUESTION OTHERWISE HIDE IT
 					if( flag ){ $questionDiv.removeClass('hide'); }
-					else{ $questionDiv.addClass('hide'); }
+					else{
+						$questionDiv.addClass( 'hide' );
+						// RESET THE QUESTIONS AFTER THEY ARE HIDDEN SO THAT THE VALUES ARE SAVED PROPERLY IN THE DB
+						$questionDiv.find( 'input[type=checkbox]' ).prop( 'checked', false );
+						$questionDiv.find( 'input[type=text]' ).val('');
+						$questionDiv.find( 'select' ).prop('selectedIndex',0);
+					}
 				}
 
 
