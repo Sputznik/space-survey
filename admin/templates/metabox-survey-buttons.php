@@ -21,6 +21,11 @@
       'type'  => 'text',
 			'default'	=> 'Finish'
     ),
+		'error-missing-text' => array(
+      'label' 	=> 'Error message for required fields',
+      'type'  	=> 'textarea',
+			'default'	=> 'Some required fields have not been filled. Please fill them and move to the next slide.'
+    ),
     'disable-cookie' => array(
       'label' => 'Disable cookies to allow user to submit multiple times',
       'type'  => 'boolean',
@@ -35,8 +40,12 @@
 	}
 
   function displayTextField( $field ){
-    _e('<input type="text" name="' . $field['name'] . '" value="' . $field['value'] . '" />');
+    _e('<input class="" type="text" name="' . $field['name'] . '" value="' . $field['value'] . '" />');
   }
+
+	function displayTextArea( $field ){
+		_e('<textarea class="large-text" name="' . $field['name'] . '">' . $field['value'] . '</textarea>');
+	}
 
   function displayBooleanField( $field ){
     $flag = false;
@@ -66,6 +75,11 @@
 				displayLabel( $field['label'] );
         displayTextField( $field );
         break;
+
+			case 'textarea':
+				displayLabel( $field['label'] );
+	      displayTextArea( $field );
+	      break;
 
       default:
         displayBooleanField( $field );

@@ -164,7 +164,7 @@ jQuery.fn.space_slides = function(){
 			$slide.removeClass('active');
 			$nextSlide.addClass('active');
 			$nextSlide.trigger('space_survey:slideEnters');
-			jQuery( 'html, body' ).animate( {scrollTop : 0}, 1000 );
+			jQuery( 'html, body' ).animate( {scrollTop : 0}, "fast" );
 		}
 
 		function startTimer() {
@@ -239,7 +239,12 @@ jQuery.fn.space_slides = function(){
 					jQuery( 'html, body' ).animate( { scrollTop : firstPendingQuest.offset().top-200 }, 1000 );
 				}
 
-				showErrorMessage( 'Some required fields have not been filled' );
+				var errorMessage = 'Some required fields have not been filled';
+				if( window.browserData['space_survey_settings']['error-missing-text'] != undefined ){
+					errorMessage = window.browserData['space_survey_settings']['error-missing-text'];
+				}
+
+				showErrorMessage( errorMessage );
 
 			}
 
