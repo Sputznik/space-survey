@@ -302,7 +302,7 @@ jQuery.fn.space_slides = function(){
 							$questionInputText 			= $questionDiv.find('input[type="text"]');
 
 					function validate_checkbox_other(){
-						if( $questionInputText.val().length || $questionDiv.find('input[type="checkbox"]:checked').length ){
+						if( ( $questionInputText.length && $questionInputText.val().length ) || $questionDiv.find('input[type="checkbox"]:checked').length ){
 							$questionDiv.addClass('done');
 						}
 						else{

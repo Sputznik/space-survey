@@ -23,10 +23,11 @@ jQuery.fn.space_limit_choices = function(){
 
 	return this.each(function() {
 
-    var $quest = jQuery( this ).closest('.space-question'),
-      meta     = $quest.data('meta') ? $quest.data('meta') : { limit: 0 },
-      limit    = meta['limit'],
-			errorMsg = meta['limitError'];
+    var $quest 			= jQuery( this ).closest('.space-question'),
+			$all_choices 	= $quest.find( 'input[type=checkbox]' ),
+      meta     			= $quest.data('meta') ? $quest.data('meta') : { limit: 0 },
+      limit    			= meta['limit'],
+			errorMsg 			= meta['limitError'];
 
     function getCheckedNum(){
 			var total = $quest.find('input[type=checkbox]:checked').length;
@@ -38,7 +39,13 @@ jQuery.fn.space_limit_choices = function(){
     }
 
     if( limit > 0 ){
-      $quest.find('input[type=checkbox]').click( function( ev ){
+
+			// CHECK IF NULL CHOICES IS ENABLED, IF YES THEN REMOVE THE FIRST CHOICE FROM THE LIMIT
+			if( $quest.find('[data-behaviour~=space-null-choices]') ){
+				$all_choices 	= $quest.find( 'input[type=checkbox]:not(:first)' );
+			}
+
+			$all_choices.click( function( ev ){
         if( getCheckedNum() > limit ){
           jQuery( this ).prop( 'checked', false );
           alert( errorMsg );
