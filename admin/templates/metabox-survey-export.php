@@ -9,10 +9,11 @@
 
 	if( $survey_id ){
 		$survey_db = SPACE_DB_SURVEY::getInstance();
+		$urls_util = SPACE_URLS::getInstance();
 		$totalGuests = $survey_db->totalGuests( $survey_id );
 		_e( "<ul style=''>" );
-		_e( "<li style='display: inline-block;'><a href='".admin_url( 'admin.php?page=space-export&survey_id='.$survey_id )."'>Generate CSV</a></li>" );
-		_e( "<li style='margin-left:15px;display: inline-block;'><a href='".admin_url( 'admin.php?page=space-responses&survey='.$survey_id )."'>View Responses ($totalGuests)</a></li>" );
+		_e( "<li style='display: inline-block;'><a href='" . $urls_util->csvs( $survey_id ) . "'>Generate CSV</a></li>" );
+		_e( "<li style='margin-left:15px;display: inline-block;'><a href='" . $urls_util->responses( $survey_id ) . "'>View Responses ($totalGuests)</a></li>" );
 		_e( "</ul>");
 	}
 ?>

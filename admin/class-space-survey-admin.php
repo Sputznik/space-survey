@@ -59,9 +59,10 @@
 				case 'responses' :
 					$survey_db = SPACE_DB_SURVEY::getInstance();
 					$totalGuests = $survey_db->totalGuests( $post_id );
+					$urls_util = SPACE_URLS::getInstance();
 					if( $totalGuests ){
-						_e( "<p><a target='_blank' href='".admin_url( 'admin.php?page=space-export&survey_id='.$post_id )."'>Generate CSV</a></p>" );
-						_e( "<p><a href='".admin_url( 'admin.php?page=space-responses&survey='.$post_id )."'>View Responses ($totalGuests)</a></p>" );
+						_e( "<p><a target='_blank' href='".$urls_util->csvs( $post_id )."'>Generate CSV</a></p>" );
+						_e( "<p><a href='".$urls_util->responses( $post_id )."'>View Responses ($totalGuests)</a></p>" );
 					}
 					else{
 						_e('<p>No responses</p>');

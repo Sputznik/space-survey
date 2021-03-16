@@ -51,13 +51,7 @@ jQuery.fn.space_slides = function(){
 
 			switch( questionType ){
 
-				case 'checkbox-other':
-					if( response.choice_text ){
-						var $questionInput = $questionDiv.find('input[type=text]');
-						$questionInput.val( response.choice_text );
-						$questionInput.change();
-					}
-
+				//case 'checkbox-other':
 
 				case 'radio':
 
@@ -65,8 +59,14 @@ jQuery.fn.space_slides = function(){
 
 				case 'checkbox':
 					var $questionInput = $questionDiv.find('input[value=' + response.choice_id + ']');
-					$questionInput. prop("checked", false);  // UNCHECK CHECKBOX IN CASE IT IS CHECKED BECAUSE OF CACHE
+					$questionInput.prop("checked", false);  // UNCHECK CHECKBOX IN CASE IT IS CHECKED BECAUSE OF CACHE
 					$questionInput.click();
+
+					if( response.choice_text ){
+						var $questionInput = $questionDiv.find('input[type=text]');
+						$questionInput.val( response.choice_text );
+						$questionInput.change();
+					}
 					break;
 
 				case 'dropdown':
@@ -276,6 +276,7 @@ jQuery.fn.space_slides = function(){
 					});
 					break;
 
+				/*
 				case 'checkbox-other':
 					var $questionInputText 	= $questionDiv.find('input[type="text"]'),
 					 $questionInputCheckbox = $questionDiv.find('input[type="checkbox"]');
@@ -292,13 +293,28 @@ jQuery.fn.space_slides = function(){
 					$questionInputCheckbox.click( function( ev ){ validate_checkbox_other(); });
 					$questionInputText.change( function( ev ){ validate_checkbox_other(); });
 					break;
-
+				*/
 
 				case 'checkbox-ranking':
 
 				case 'checkbox':
-					var $questionInput = $questionDiv.find('input[type="checkbox"]');
+					var $questionInputCheckbox 	= $questionDiv.find('input[type="checkbox"]'),
+							$questionInputText 			= $questionDiv.find('input[type="text"]');
 
+					function validate_checkbox_other(){
+						if( $questionInputText.val().length || $questionDiv.find('input[type="checkbox"]:checked').length ){
+							$questionDiv.addClass('done');
+						}
+						else{
+							$questionDiv.removeClass('done');
+						}
+					}
+
+					// TRACK ON CHECKBOX CLICK - IF THE INLINE NUMBER OF CHECKED CHECKBOXES ARE MORE THAN ZERO
+					$questionInputCheckbox.click( function( ev ){ validate_checkbox_other(); });
+					$questionInputText.change( function( ev ){ validate_checkbox_other(); });
+
+					/*
 					// TRACK ON CHECKBOX CLICK - IF THE INLINE NUMBER OF CHECKED CHECKBOXES ARE MORE THAN ZERO
 					$questionInput.click( function( ev ){
 
@@ -311,6 +327,8 @@ jQuery.fn.space_slides = function(){
 						}
 
 					});
+					*/
+
 					break;
 
 				case 'dropdown':
