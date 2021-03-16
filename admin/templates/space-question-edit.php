@@ -9,7 +9,7 @@
 		function __construct( $formFields ){
 
 			$this->setCurrentPage( $_GET['page'] );
-			$this->setMetaFields( array( 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText', 'nullFlag' ) );
+			$this->setMetaFields( array( 'defaultDropdownOption', 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText', 'nullFlag' ) );
 			$this->setFormFields( $formFields );
 
 			// ACTION HOOKS FOR THE SECTIONS IN THE FORM
@@ -45,10 +45,12 @@
 		* 3. PUSH DATA FROM DB TO FORM FIELDS
 		*/
 		function init( $form ){
+
 			// 1
 			if( isset( $_GET['ID'] ) && $_GET['ID'] && isset( $_GET['action'] ) && 'trash' == $_GET['action'] ){
 				$this->deleteAction();
 			}
+
 			// 2
 			if( isset( $_POST['publish'] ) ) {
 				$this->publishAction();
@@ -68,6 +70,10 @@
 			*/
 			$question_id = 0;
 			$question_data = $question_db->sanitize( $_POST );
+
+			//print_r( $question_data );
+			//wp_die();
+
 			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
 				$question_id = $_GET['ID'];
 				$question_db->update( $question_id, $question_data );
@@ -202,10 +208,17 @@
 			'type'		=> 'dropdown',
 			'options'	=> SPACE_DB_QUESTION::getInstance()->getTypes()
 		),
-
+		'defaultDropdownOption'	=> array(
+			'container_class'	=> 'space-form-field meta-field dropdown-meta-field',
+			'label'						=> 'Default Option',
+			'slug'						=> 'defaultDropdownOption',
+			'type'						=> 'text',
+			'value'						=> 'Please click here to select',
+			'rows'						=> '2'
+		),
 		// METABOX FOR SETTING NUMBER CHECKBOXES THAT CAN BE SELECTED
 		'limitFlag'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'container_class'	=> 'space-form-field meta-field checkbox-meta-field',
 			'label'		=> 'Enable limited selection',
 			'slug'		=> 'limitFlag',
 			'type'		=> 'boolean',
@@ -228,7 +241,7 @@
 			'rows'						=> '2'
 		),
 		'otherFlag'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'container_class'	=> 'space-form-field meta-field checkbox-meta-field',
 			'label'		=> 'Enable text input for checkboxes',
 			'slug'		=> 'otherFlag',
 			'type'		=> 'boolean',
@@ -242,7 +255,7 @@
 			'value'						=> 'Other'
 		),
 		'nullFlag'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field',
+			'container_class'	=> 'space-form-field meta-field checkbox-meta-field',
 			'label'		=> 'Enable UNSELECT choice',
 			'slug'		=> 'nullFlag',
 			'type'		=> 'boolean',

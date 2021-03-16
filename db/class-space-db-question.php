@@ -122,7 +122,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		);
 
 		// INCLUDE META INFORMATION
-		$metaFields = array( 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText', 'nullFlag' );
+		$metaFields = array( 'defaultDropdownOption', 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText', 'nullFlag' );
 		foreach( $metaFields as $metaField ){
 			if( isset( $data[ $metaField ] ) ){
 				$questionData['meta'][ $metaField ] = $data[ $metaField ];
@@ -130,13 +130,12 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		}
 		$questionData['meta'] = serialize( $questionData['meta'] );
 
-		/*
-		echo "<pre>";
-		print_r( $questionData );
-		print_r( wp_unslash( $questionData ) );
-		echo "</pre>";
-		*/
 
+		//echo "<pre>";
+		//print_r( $questionData );
+		//print_r( wp_unslash( $questionData ) );
+		//echo "</pre>";
+		
 		return $questionData;
 	}
 

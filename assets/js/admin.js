@@ -23,82 +23,75 @@ var CONDITIONAL_METAFIELD = function( options ){
 	return self;
 }
 
+function questionMetaField( $el, questionType ){
+	var metaField = CONDITIONAL_METAFIELD( {
+		$el : $el,
+		checkCondition: function(){
+			var $dropdown 				= jQuery( "select#type" ),
+				get_selected_child 	= $dropdown.children( "option:selected" ).val().toLowerCase(),
+				checkbox_index 			= get_selected_child.indexOf( questionType );
+
+			// Shows the metabox when the dropdown option value is checkbox~
+			if( checkbox_index != -1 && checkbox_index == 0  ){ return true; }
+			return false;
+		},
+		listen : function(){
+			jQuery( "select#type" ).change( function(){
+				metaField.display();
+			} );
+		}
+	} );
+	return metaField;
+}
+
+function subQuestionMetaField( $el, questionType, $checkboxFlag ){
+	var metaField = CONDITIONAL_METAFIELD( {
+		$el : $el,
+		checkCondition: function(){
+			var $dropdown 				= jQuery( "select#type" ),
+				get_selected_child 	= $dropdown.children( "option:selected" ).val().toLowerCase(),
+				checkbox_index 			= get_selected_child.indexOf( questionType );
+
+			if( checkbox_index != -1 && checkbox_index == 0 && $checkboxFlag.prop('checked') ){
+				return true;
+			}
+			return false;
+		},
+		listen : function(){
+			$checkboxFlag.click( function(){
+				metaField.display();
+			} );
+			jQuery( "select#type" ).change( function(){
+				metaField.display();
+			} );
+		}
+	} );
+	return metaField;
+}
+
 jQuery( document ).ready(function(){
 
-	jQuery( '.question-meta-field' ).each( function(){
+	/*
+	* QUESTION EDIT FORM
+	*/
+	jQuery( '.checkbox-meta-field' ).each( function(){
+		questionMetaField( jQuery(this), 'checkbox' );
+	} );
 
-		var $el = jQuery( this );
-
-		var metaField = CONDITIONAL_METAFIELD( {
-			$el : $el,
-			checkCondition: function(){
-				var $dropdown 				= jQuery( "select#type" ),
-					get_selected_child 	= $dropdown.children( "option:selected" ).val().toLowerCase(),
-					checkbox_index 			= get_selected_child.indexOf( 'checkbox' );
-
-	      // Shows the metabox when the dropdown option value is checkbox~
-	      if( checkbox_index != -1 && checkbox_index == 0  ){ return true; }
-				return false;
-			},
-			listen : function(){
-				jQuery( "select#type" ).change( function(){
-					metaField.display();
-				} );
-			}
-		} );
-
+	jQuery( '.dropdown-meta-field' ).each( function(){
+		questionMetaField( jQuery(this), 'dropdown' );
 	} );
 
 	jQuery('.other-text-field').each( function(){
- 	 	var $el = jQuery( this );
-		var metaField = CONDITIONAL_METAFIELD( {
-			$el : $el,
-			checkCondition: function(){
-				var $dropdown 				= jQuery( "select#type" ),
-					get_selected_child 	= $dropdown.children( "option:selected" ).val().toLowerCase(),
-					checkbox_index 			= get_selected_child.indexOf( 'checkbox' );
-
-				if( checkbox_index != -1 && checkbox_index == 0 && jQuery('input[name="otherFlag"]:checked').length > 0 ){
-					return true;
-				}
-				return false;
-			},
-			listen : function(){
-				jQuery('input[name="otherFlag"]').click( function(){
-					metaField.display();
-				} );
-				jQuery( "select#type" ).change( function(){
-					metaField.display();
-				} );
-			}
-		} );
+ 	 	subQuestionMetaField( jQuery( this ), 'checkbox', jQuery( 'input[name="otherFlag"]' ) );
 	} );
 
 	jQuery('.limit-sub-field').each( function(){
- 	 	var $el = jQuery( this );
-		var metaField = CONDITIONAL_METAFIELD( {
-			$el : $el,
-			checkCondition: function(){
-				var $dropdown 				= jQuery( "select#type" ),
-					get_selected_child 	= $dropdown.children( "option:selected" ).val().toLowerCase(),
-					checkbox_index 			= get_selected_child.indexOf( 'checkbox' );
-
-				if( checkbox_index != -1 && checkbox_index == 0 && jQuery('input[name="limitFlag"]:checked').length > 0 ){
-					return true;
-				}
-				return false;
-			},
-			listen : function(){
-				jQuery('input[name="limitFlag"]').click( function(){
-					metaField.display();
-				} );
-				jQuery( "select#type" ).change( function(){
-					metaField.display();
-				} );
-			}
-		} );
+		subQuestionMetaField( jQuery( this ), 'checkbox', jQuery( 'input[name="limitFlag"]' ) );
 	} );
-
+	/*
+	* QUESTION EDIT FORM
+	*/
 
 
 
