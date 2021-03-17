@@ -10,14 +10,14 @@ jQuery.fn.space_slides = function(){
 		function guestData( callbackFunction ){
 
 			jQuery.ajax({
-				type:'GET',
-				url	: space_settings.ajax_url,
-				dataType: 'json',
-				data:{
+				type			:	'GET',
+				url				: space_settings.ajax_url,
+				dataType	: 'json',
+				data:	{
 					action		: 'space_survey_guest',
-					survey_id 	: getSurveyID()
+					survey_id : getSurveyID()
 				},
-				success: function( response ){
+				success	: function( response ){
 
 					// SET GUEST ID WITHIN THE FORM
 					setGuestID( response.guest_id );
@@ -329,5 +329,5 @@ jQuery.fn.space_slides = function(){
 jQuery( document ).ready( function(){
 
 	jQuery('[data-behaviour~=space-slides]').space_slides();
-
+	
 });
