@@ -217,10 +217,19 @@
 				SPACE_SURVEY_VERSION,
 				true
 			);
+
+			wp_enqueue_script(
+				'space-autosave',
+				plugins_url( $plugin_assets_folder.'js/autosave.js' ),
+				array( 'jquery'),
+				SPACE_SURVEY_VERSION,
+				true
+			);
+
 			wp_enqueue_script(
 				'space-admin-script',
 				plugins_url( $plugin_assets_folder.'js/admin.js' ),
-				array( 'jquery'),
+				array( 'jquery', 'space-autosave' ),
 				SPACE_SURVEY_VERSION,
 				true
 			);

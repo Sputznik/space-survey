@@ -192,27 +192,64 @@ jQuery( document ).ready(function(){
 
  });
 
-	/*
-	jQuery( '#nullChoice' ).each( function(){
+ jQuery('[data-behaviour~=space-ajax-form').each( function(){
 
-		var $el = jQuery( this );
+	 var $form 		= jQuery( this ).closest( 'form' ),
+	 	$submit_btn = $form.find( 'input[type=submit]' ),
+	 	$loader			= null,
+		autosave		= null;
 
-		function updateOptions(){
-			var number_choices = jQuery('li.space-choice-item').length;
-			for( var i=0; i<number_choices; i++ ){
-				var $choice = jQuery( '[name="choices[' + i + '][title]"]' );
-				if( $choice.val() ){
-					addOption( $choice.val() );
+	 function showLoader(){
+		 $loader 		= jQuery( document.createElement( 'span' ) );
+		 $loader.addClass( 'spinner is-active' );
+		 $loader.appendTo( $submit_btn.parent() );
+		 $submit_btn.attr( 'disabled', true );
+	 }
+
+	 function hideLoader(){
+		 $loader.remove();
+		 $submit_btn.attr( 'disabled', false );
+	 }
+
+	 function getFormData(){
+		 var formData = $form.serializeArray();
+		 formData.push( {
+			 	'name'	: $submit_btn.attr( 'name' ),
+			 	'value'	: $submit_btn.val()
+		 	} );
+			return formData;
+	 }
+
+	 function save(){
+		 // SHOW LOADER
+		 showLoader();
+
+		 // AJAX CALL
+		 jQuery.ajax( {
+				'type' 		: $form.attr( 'method' ),
+				'url'			:	$form.attr( 'action' ),
+				'data'		: getFormData(),
+				'success'	:	function( data ){
+					hideLoader();
+
+					var $script = jQuery( data ).find('script#redirect');
+					if( $script.length ){
+						eval( $script.html() );
+					}
 				}
-			}
-		}
+			} );
+	 }
 
-		function addOption( option ){
-			$el.append('<option>' + option + '</option');
-		}
+	 $form.submit( function( ev ){
+		 ev.preventDefault();
+		 autosave.save();
+		} );
 
-		updateOptions();
+		autosave = SPACE_AUTOSAVE({
+			duration	: 5000,
+			save			: save
+		} );
+
 	} );
-	*/
 
-});
+} );

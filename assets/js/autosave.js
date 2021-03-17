@@ -1,6 +1,6 @@
 /*
 * EXAMPLE OF THE IMPLEMENTATION:
-* AUTOSAVE({
+* SPACE_AUTOSAVE({
 *		duration: 2000,
 * 	save: saveCallbackFunction
 * } );

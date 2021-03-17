@@ -101,7 +101,7 @@
 			* INSERTION HAS BEEN DONE SO FAR. IS THIS IS A NEW QUESTION, THEN HANDLE REDIRECTION TO EDIT THE NEW QUESTION
 			*/
 			if( !isset( $_GET['ID'] ) && $question_id ){
-				_e( "<script>location.href='?page=space-question-edit&ID=$question_id';</script>" );
+				_e( "<script id='redirect'>location.href='?page=space-question-edit&ID=$question_id';</script>" );
 			}
 		}
 
