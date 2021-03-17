@@ -70,6 +70,6 @@ jQuery( document ).ready(function(){
 
   //jQuery('.space-question[data-type~=checkbox]').space_limit_choices();
   //jQuery('.space-question[data-type~=checkbox-other]').space_limit_choices();
-	jQuery('.space-question[data-type~=checkbox-ranking]').space_limit_choices();
+	//jQuery('.space-question[data-type~=checkbox-ranking]').space_limit_choices();
 
 });

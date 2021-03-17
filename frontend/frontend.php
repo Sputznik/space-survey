@@ -115,9 +115,25 @@
 			);
 
 			wp_enqueue_script(
+				'space-autosave',
+				plugins_url( $plugin_assets_folder.'js/autosave.js' ),
+				array( 'jquery'),
+				SPACE_SURVEY_VERSION,
+				true
+			);
+
+			wp_enqueue_script(
 				'space-slides',
 				plugins_url( $plugin_assets_folder.'js/slides.js' ),
-				array( 'jquery'),
+				array( 'jquery' ),
+				SPACE_SURVEY_VERSION,
+				true
+			);
+
+			wp_enqueue_script(
+				'space-frontend',
+				plugins_url( $plugin_assets_folder.'js/frontend.js' ),
+				array( 'jquery', 'space-autosave', 'space-slides' ),
 				SPACE_SURVEY_VERSION,
 				true
 			);

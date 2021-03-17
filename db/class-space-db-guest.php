@@ -103,6 +103,9 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 							break;
 
 						case 'checkbox-ranking':
+
+							//echo "checkbox ranking";
+
 							if( is_array( $quest['val'] ) ){
 								foreach( $quest['val'] as $choice_id_rank ){
 
