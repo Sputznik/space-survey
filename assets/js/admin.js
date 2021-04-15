@@ -192,6 +192,7 @@ jQuery( document ).ready(function(){
 
  });
 
+	/*
  jQuery('[data-behaviour~=space-ajax-form').each( function(){
 
 	 var $form 		= jQuery( this ).closest( 'form' ),
@@ -251,5 +252,5 @@ jQuery( document ).ready(function(){
 		} );
 
 	} );
-
+	*/
 } );
