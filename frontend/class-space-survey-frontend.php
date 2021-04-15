@@ -45,7 +45,18 @@
 		}
 
 		function data_behaviours( $question ){
-			$questionMeta = unserialize( $question->meta );
+
+			//echo $question->meta;
+
+			$question_db = SPACE_DB_QUESTION::getInstance();
+
+			$questionMeta = $question_db->getMetaInfo( wp_unslash( $question ) );
+
+			//print_r( $question_db );
+
+			//print_r( $questionMeta );
+
+			//$questionMeta = $question->meta;
 
 			$behaviours = array();
 			if( isset( $questionMeta['nullFlag'] ) && $questionMeta['nullFlag'] ){

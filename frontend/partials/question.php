@@ -24,12 +24,14 @@
 		}
 	}
 
-	//print_r( $this->survey->rules );
+	//echo $question->meta;
 
-
+	//_e( wp_json_encode( wp_unslash( unserialize( $question->meta ) ) ) );
+	$question_db = SPACE_DB_QUESTION::getInstance();
+	$questionMeta = $question_db->getMetaInfo( wp_unslash( $question ) );
 
 ?>
-<div id='<?php _e( 'q'.$question->ID );?>' data-meta='<?php  _e( wp_json_encode( unserialize( $question->meta ) ) );?>' data-rules='<?php _e( wp_json_encode( $question->rules ) );?>' data-type='<?php _e( $question->type );?>' class='<?php _e( $question_class );?>'>
+<div id='<?php _e( 'q'.$question->ID );?>' data-meta='<?php _e( wp_json_encode( $questionMeta ) );?>' data-rules='<?php _e( wp_json_encode( $question->rules ) );?>' data-type='<?php _e( $question->type );?>' class='<?php _e( $question_class );?>'>
 	<h5><?php _e( $question->title );?></h5>
 	<div class='space-desc'><?php _e( $question->description );?></div>
 	<?php echo $this->choices_html( $question );?>

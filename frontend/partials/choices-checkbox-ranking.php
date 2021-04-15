@@ -1,9 +1,9 @@
 <?php
+	$question_db = SPACE_DB_QUESTION::getInstance();
+	$questionMeta = $question_db->getMetaInfo( wp_unslash( $question ) );
 
-	$questionMeta = unserialize( $question->meta );
 
-
-
+	//echo $this->data_behaviours( $question );
 
 
 ?>

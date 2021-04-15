@@ -128,14 +128,14 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 				$questionData['meta'][ $metaField ] = $data[ $metaField ];
 			}
 		}
-		$questionData['meta'] = serialize( $questionData['meta'] );
+		$questionData['meta'] = wp_json_encode( $questionData['meta'] ); //serialize( wp_slash( $questionData['meta'] ) );
 
 
 		//echo "<pre>";
 		//print_r( $questionData );
 		//print_r( wp_unslash( $questionData ) );
 		//echo "</pre>";
-		
+
 		return $questionData;
 	}
 
@@ -143,10 +143,17 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 	function getMetaInfo( $row ){
 		$meta_info = array();
 		if( isset( $row->meta ) && $row->meta ){
-			$meta_info = unserialize( $row->meta );
+			$meta_info = json_decode( $row->meta, true );
+			//echo $row->meta;
+			//echo "<pre>";
+			//print_r( $meta_info );
+			//echo "</pre>";
 		}
 		return $meta_info;
+
 	}
+
+
 
 	/*
 	* USED IN class-space-question-list-table.php AND WITHIN THE SAME CLASS
