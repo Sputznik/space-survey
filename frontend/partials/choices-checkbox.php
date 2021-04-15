@@ -6,7 +6,7 @@
 
 
 ?>
-<ul class='space-choices' data-behaviour='<?php //echo $this->data_behaviours( $question );?>'>
+<ul class='space-choices' data-behaviour='<?php echo $this->data_behaviours( $question );?>'>
 	<?php foreach( $question->choices as $choice ):?>
 	<li class='space-choice'>
 		<label>
