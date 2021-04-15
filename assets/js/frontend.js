@@ -160,7 +160,7 @@ jQuery.fn.space_slides = function(){
 			guestData( function(){
 				// SET UP AUTOSAVE AFTER THE GUEST DATA IS SET IN THE FORM
 				autosave = SPACE_AUTOSAVE( {
-					duration: 4000,
+					duration: 10000,
 					save		: saveGuestData
 				} );
 			} );
@@ -329,5 +329,5 @@ jQuery.fn.space_slides = function(){
 jQuery( document ).ready( function(){
 
 	jQuery('[data-behaviour~=space-slides]').space_slides();
-	
+
 });

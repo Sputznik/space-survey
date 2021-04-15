@@ -1,4 +1,13 @@
-<ul class='space-choices'>
+<?php
+
+	$questionMeta = unserialize( $question->meta );
+
+
+
+
+
+?>
+<ul class='space-choices' data-behaviour='<?php echo $this->data_behaviours( $question );?>'>
 	<?php foreach( $question->choices as $choice ):?>
 	<li class='space-choice rank-field'>
 		<label class="choice-type">

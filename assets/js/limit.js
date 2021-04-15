@@ -11,6 +11,7 @@ jQuery.fn.space_null_choices = function(){
 				if( $current_choice.val() == $null_choice.val() ){
 					$all_choices.prop( 'checked', false );
 					$null_choice.prop( 'checked', true );
+					$all_choices.trigger( 'selection:changed' );
 				}
 				else{
 					$null_choice.prop( 'checked', false );

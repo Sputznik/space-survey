@@ -10,6 +10,10 @@ jQuery.fn.space_rank_choices = function(){
 		// TRACK CLICK EVENT OF CHECKBOXES WITHIN THIS QUESTION
 		$quest.find('input[type=checkbox]').click( function( ev ){ updateRanksForAll( ev ); });
 
+		$quest.on( 'selection:changed', function( ev ){
+			updateRanksForAll( ev );
+		} );
+
 		// GET THE LABEL THAT SHOWS THE RANK ELEMENT OF A PARTICULAR CHECKBOX
 		//function getRankElement( $choiceEl ){ return $choiceEl.closest( 'li.space-choice.rank-field' ).find( 'label.rank' ); }
 

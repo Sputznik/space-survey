@@ -44,6 +44,20 @@
 			return ob_get_clean();
 		}
 
+		function data_behaviours( $question ){
+			$questionMeta = unserialize( $question->meta );
+
+			$behaviours = array();
+			if( isset( $questionMeta['nullFlag'] ) && $questionMeta['nullFlag'] ){
+				array_push( $behaviours, 'space-null-choices' );
+			}
+
+			if( isset( $questionMeta['limitFlag'] ) && $questionMeta['limitFlag'] ){
+				array_push( $behaviours, 'space-limit-choices' );
+			}
+			return implode(' ', $behaviours );
+		}
+
 		function html(){
 			ob_start();
 			include( "partials/slides.php" );

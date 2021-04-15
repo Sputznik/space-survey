@@ -1,17 +1,10 @@
 <?php
 	$questionMeta = unserialize( $question->meta );
 
-	$behaviours = array();
-	if( isset( $questionMeta['nullFlag'] ) && $questionMeta['nullFlag'] ){
-		array_push( $behaviours, 'space-null-choices' );
-	}
-
-	if( isset( $questionMeta['limitFlag'] ) && $questionMeta['limitFlag'] ){
-		array_push( $behaviours, 'space-limit-choices' );
-	}
+	
 
 ?>
-<ul class='space-choices' data-behaviour='<?php echo implode(' ', $behaviours );?>'>
+<ul class='space-choices' data-behaviour='<?php echo $this->data_behaviours( $question );?>'>
 	<?php foreach( $question->choices as $choice ):?>
 	<li class='space-choice'>
 		<label>
