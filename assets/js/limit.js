@@ -42,7 +42,7 @@ jQuery.fn.space_limit_choices = function(){
     if( limit > 0 ){
 
 			// CHECK IF NULL CHOICES IS ENABLED, IF YES THEN REMOVE THE FIRST CHOICE FROM THE LIMIT
-			if( $quest.find('[data-behaviour~=space-null-choices]') ){
+			if( $quest.find('[data-behaviour~=space-null-choices]').length ){
 				$all_choices 	= $quest.find( 'input[type=checkbox]:not(:first)' );
 			}
 
@@ -55,6 +55,7 @@ jQuery.fn.space_limit_choices = function(){
 			$quest.find('.space-choice-other input[type=text]').focus( function( ev ){
 				if( getCheckedNum() > (limit-1) ){
 					alert( errorMsg );
+					jQuery( this ).blur();
 					jQuery( this ).prop( 'value', '' );
 				}
 			} );
