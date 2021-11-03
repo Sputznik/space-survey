@@ -1,7 +1,8 @@
 <?php
 
 	$defaultOption = 'Please click here to select';
-	$questionMeta = unserialize( $question->meta );
+	$question_db = SPACE_DB_QUESTION::getInstance();
+	$questionMeta = $question_db->getMetaInfo( wp_unslash( $question ) );
 	if( isset( $questionMeta[ 'defaultDropdownOption' ] ) ){
 		$defaultOption = $questionMeta[ 'defaultDropdownOption' ];
 	}
