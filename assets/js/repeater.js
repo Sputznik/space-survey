@@ -167,7 +167,7 @@ var SPACE_REPEATER = function( options ){
 		field['element'] = 'textarea';
 		field['attr'] = field['attr'] ? field['attr'] : {};
 		field['attr']['id'] = field['attr']['id'] ? field['attr']['id'] : 'sample-id';
-		field['attr']['html'] = field['attr']['value'] ? '';
+		field['attr']['html'] = field['attr']['value'] ? field['attr']['value'] : '';
 
 		var $textarea = self.createField( field );
 
