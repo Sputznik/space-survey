@@ -171,7 +171,7 @@ var SPACE_REPEATER = function( options ){
 		var $textarea = self.createField( field );
 
 		// INITIALIZE WP EDITOR FOR THE TEXTAREA
-		wp.editor.initialize( field['attr']['id'], { tinymce: {height: 300}, quicktags: true } );
+		//wp.editor.initialize( field['attr']['id'], { tinymce: {height: 300}, quicktags: true } );
 
 		return $textarea;
 

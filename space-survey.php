@@ -3,7 +3,7 @@
 	Plugin Name: Space Survey
 	Plugin URI: https://sputznik.com/
 	Description: A survey plugin.
-	Version: 1.0.0
+	Version: 2.2.2
 	Author: Sputznik
 	Author URI: https://sputznik.com/
 	*/
@@ -13,7 +13,7 @@
 		exit;
 	}
 	//Constant changes all the js and css version on the go
-	define( 'SPACE_SURVEY_VERSION', '2.2.1' );	//2.1.1. 
+	define( 'SPACE_SURVEY_VERSION', '2.2.2' );	//2.1.1. 
 
 	$inc_files = array(
 		'class-space-base.php',
