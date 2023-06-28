@@ -9,11 +9,20 @@
       'label' => 'Next Button Text',
       'type'  => 'text'
     ),
+    /*
+    'notify-email' => array(
+      'label' => 'Notification Email',
+      'type'  => 'text'
+    ),
+    */
     'disable-cookie' => array(
       'label' => 'Disable cookies to allow user to submit multiple times',
       'type'  => 'boolean'
-    )
+    ),
+
   );
+
+  $fields_arr = apply_filters( 'space_surey_settings_fields', $fields_arr );
 
   global $post;
 
