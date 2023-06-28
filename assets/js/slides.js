@@ -45,7 +45,7 @@ jQuery.fn.space_slides = function(){
 			var $questionDiv = $el.find( '#q' + response.question_id ),
 				questionType = $questionDiv.data('type');
 
-			console.log( response );
+			//console.log( response );
 
 
 			switch( questionType ){
@@ -109,10 +109,10 @@ jQuery.fn.space_slides = function(){
 				dataType: 'json',
 				data	: form.serialize(),
 				success	: function( response ){
-					console.log( response );
+					//console.log( response );
 				},
 				error: function(response) {
-					console.log( response );
+					//console.log( response );
 				}
 			});
 
