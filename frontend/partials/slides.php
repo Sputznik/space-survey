@@ -3,6 +3,9 @@
 	$survey_id = $this->survey->ID;
 	$pages = $this->survey->pages;
 	$settings = get_post_meta( $survey_id, 'survey_settings', true );
+
+	SPACE_UTIL::getInstance()->browserData( 'settings', $settings );
+
 ?>
 <div data-behaviour='space-slides' data-id='<?php _e( $survey_id );?>'>
 	<form>
