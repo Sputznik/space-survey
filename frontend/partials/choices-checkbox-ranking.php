@@ -1,4 +1,13 @@
-<ul class='space-choices'>
+<?php
+	$question_db = SPACE_DB_QUESTION::getInstance();
+	$questionMeta = $question_db->getMetaInfo( wp_unslash( $question ) );
+
+
+	//echo $this->data_behaviours( $question );
+
+
+?>
+<ul class='space-choices' data-behaviour='<?php echo $this->data_behaviours( $question );?>'>
 	<?php foreach( $question->choices as $choice ):?>
 	<li class='space-choice rank-field'>
 		<label class="choice-type">

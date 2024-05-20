@@ -75,6 +75,19 @@ jQuery.fn.space_pages = function(){
 				$textarea.space_autoresize();
 				if( page['title'] ){ $textarea.val( page['title'] ); }
 
+				// CREATE BOOLEAN FIELD FOR REQUIRED
+				var checked_flag = false;
+				if( page['description'] && page['description'].length ){
+					checked_flag = true;
+				}
+				var $desc_flag = repeater.createBooleanField({
+					attr	:  {
+						name	: 'has_desc[]',
+						checked : checked_flag
+					},
+					append	: $content,
+					label	: 'Has Description'
+				});
 
 				// PAGE DESCRIPTION
 				var $textarea_desc = repeater.createRichText({
@@ -116,9 +129,9 @@ jQuery.fn.space_pages = function(){
 					element	: 'input',
 					attr	: {
 						'type'						: 'hidden',
-						'value'						: page['rank'] ? page['rank'] : 0,
+						'value'						: page['menu_rank'] ? page['menu_rank'] : 0,
 						'data-behaviour' 	: 'space-pages-rank',
-						'name'						: 'pages[' + repeater.count + '][rank]'
+						'name'						: 'pages[' + repeater.count + '][menu_rank]'
 					},
 					append	: $list_item
 				});
@@ -136,6 +149,22 @@ jQuery.fn.space_pages = function(){
 				});
 
 
+				// CHECK IF THE REQUIRED CHECKBOX IS CHECKED OR NOT TO HIDE/SHOW THE RULES REPEATER
+				var $desc_flag_checkbox = $desc_flag.find('input[type=checkbox]');
+				$desc_flag_checkbox.change( function(){
+					var $editor = $content.find('.wp-editor-wrap');
+					// IF REQUIRED THEN HIDE THE RULES OTHERWHISE SHOW THEM
+					if( $desc_flag_checkbox.prop('checked') ){
+						$editor.show();
+					}
+					else{
+						$editor.hide();
+					}
+				});
+				$desc_flag_checkbox.change(); // TO CHECK FOR THE FIRST TIME
+
+
+
 			},
 			reorder: function( repeater ){
 				/*
@@ -149,6 +178,19 @@ jQuery.fn.space_pages = function(){
 				});
 			},
 		} );
+
+		var survey_id = jQuery('input[name=post_ID]').val(),
+			survey_url 	= window.browserData['urls']['survey_url'] + '&post=' + survey_id;
+
+		var importBtn = IMPORT_BUTTON({
+			$el						: $el,
+			btn_text			: 'Import',
+			form_title		: 'Import from JSON file',
+			ajax_url			: ajaxurl + '?action=space_survey_import_json&survey_id=' + survey_id,
+			ajaxResponse : function( surveyData ){
+				window.location.href = survey_url;
+			}
+		});
 
 		//console.log(  $el.closest('form').length );
 

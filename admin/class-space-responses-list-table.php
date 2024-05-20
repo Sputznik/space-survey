@@ -38,14 +38,7 @@
 
 		protected function export_button(){
 			if( $this->survey_id ){
-				$export_link = admin_url( "admin.php?page=space-export&survey_id=$this->survey_id" );
-				if( is_array( $this->filterChoices ) && count( $this->filterChoices ) ){
-					$choices_str = implode( ',', $this->filterChoices );
-					$export_link .= "&choices=$choices_str";
-				}
-				if( $this->hide_zero_attempted ){
-					$export_link .= "&hide-zero-attempted=1";
-				}
+				$export_link = SPACE_URLS::getInstance()->csvs( $this->survey_id, $this->filterChoices, $this->hide_zero_attempted );
 				echo "<div class='alignleft actions'>";
 				echo "<a target='_blank' href='$export_link' class='button'>Export CSV</a>";
 				echo "</div>";
@@ -100,7 +93,7 @@
 				case 'meta':
 					return $item->meta;
 				case 'survey':
-					return get_the_title( $item->survey_id );
+					return "<a href='".SPACE_URLS::getInstance()->responses( $item->survey_id )."'>" . get_the_title( $item->survey_id ) . "</a>";
 				case 'tot_questions':
 					return SPACE_DB_GUEST::getInstance()->totalQuestionsAttempted( $item->ID );
 				default:

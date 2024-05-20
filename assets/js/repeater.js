@@ -12,14 +12,14 @@ var SPACE_REPEATER = function( options ){
 		$list	: null,		// PARENT LIST THAT HOLDS THE CHOICES
 		$btn 	: null,		// BUTTON THAT ADDS MORE BLANK CHOICES TO THE LIST
 		options : jQuery.extend( {
-			$el				: null,
-			btn_text		: '+ Add Item',
+			$el							: null,
+			btn_text				: '+ Add Item',
 			close_btn_text	: '&times;',
-			list_id			: 'space-choices-list',
-			list_item_id	: 'space-choice-item',
-			init			: function(){},
-			addItem			: function(){},
-			reorder 		: function(){}
+			list_id					: 'space-choices-list',
+			list_item_id		: 'space-choice-item',
+			init						: function(){},
+			addItem					: function(){},
+			reorder 				: function(){}
 		}, options )
 	};
 
@@ -173,6 +173,10 @@ var SPACE_REPEATER = function( options ){
 
 		var $textarea = self.createField( field );
 
+		$textarea.html( field['attr']['value'] );
+
+		//wp.editor.remove( field['attr']['id'] );
+
 		// INITIALIZE WP EDITOR FOR THE TEXTAREA
 		wp.editor.initialize( field['attr']['id'], { tinymce: {height: 300}, quicktags: true } );
 
@@ -188,7 +192,10 @@ var SPACE_REPEATER = function( options ){
 		var $label = self.createField({
 			element	: 'label',
 			append	: field['append'],
-			html	: field['label']
+			html	: field['label'],
+			attr : {
+				class : 'space-boolean'
+			}
 		});
 
 		var $booleanField = self.createField({

@@ -75,12 +75,16 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 
 		$responses = array();
 
+		//echo "<pre>";
+		//print_r( $data['quest'] );
+		//echo "</pre>";
+
 		// CHECK IF GUEST ID AND QUESTION WITH RESPONSES HAS BEEN PASSED
 		if( isset( $data['guest_id'] ) && isset( $data['quest'] ) && is_array( $data['quest'] ) ){
 
 			foreach( $data['quest'] as $quest_id => $quest ){
 
-				if( is_array( $quest ) && isset( $quest['type'] ) && isset( $quest['val'] ) ){
+				if( is_array( $quest ) && isset( $quest['type'] ) && ( isset( $quest['val'] ) || isset( $quest['other'] ) ) ){
 
 					switch( $quest['type'] ){
 
@@ -99,6 +103,9 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 							break;
 
 						case 'checkbox-ranking':
+
+							//echo "checkbox ranking";
+
 							if( is_array( $quest['val'] ) ){
 								foreach( $quest['val'] as $choice_id_rank ){
 
@@ -117,7 +124,10 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 							}
 							break;
 
-						case 'checkbox-other':
+						//case 'checkbox-other':
+
+						case 'checkbox':
+
 							// save other text
 							if( isset( $quest['other'] ) &&  $quest['other'] ){
 								$partialResponse = $this->getResponseDB()->sanitize( array(
@@ -128,7 +138,6 @@ class SPACE_DB_GUEST extends SPACE_DB_BASE{
 								array_push( $responses, $partialResponse );
 							}
 
-						case 'checkbox':
 							if( is_array( $quest['val'] ) ){
 								foreach( $quest['val'] as $choice_id ){
 									$partialResponse = $this->getResponseDB()->sanitize( array(

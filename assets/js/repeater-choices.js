@@ -79,10 +79,10 @@ jQuery.fn.space_choices = function(){
 				var $hiddenRank = repeater.createField({
 					element	: 'input',
 					attr	: {
-						'type'				: 'hidden',
-						'value'				: choice['rank'] ? choice['rank'] : 0,
+						'type'						: 'hidden',
+						'value'						: choice['menu_rank'] ? choice['menu_rank'] : 0,
 						'data-behaviour' 	: 'space-rank',
-						'name'				: 'choices[' + repeater.count + '][rank]'
+						'name'						: 'choices[' + repeater.count + '][menu_rank]'
 					},
 					append	: $list_item
 				});
@@ -110,6 +110,18 @@ jQuery.fn.space_choices = function(){
 				});
 			},
 		} );
+
+		IMPORT_BUTTON({
+			$el						: $el,
+			repeater			: repeater,
+			btn_text			: 'Import Choices',
+			ajax_url			: ajaxurl + '?action=space_import_choices_csv',
+			ajaxResponse 	: function( choicesArray ){
+				for( i=0; i<choicesArray.length; i++ ){
+					repeater.addItem( { ID:0, title: choicesArray[i] } );
+				}
+			}
+		});
 
 	});
 };

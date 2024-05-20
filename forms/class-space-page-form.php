@@ -24,6 +24,11 @@ class SPACE_PAGE_FORM extends SPACE_FORM{
 
 		_e( "<div class='space-box' data-behaviour='space-pages'></div>" );
 
+		$urls = array(
+			'survey_url' => admin_url('post.php?action=edit')
+		);
+		$this->json( 'urls', $urls );
+
 	}
 
 

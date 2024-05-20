@@ -56,16 +56,22 @@ class SPACE_FORM{
 			_e('<input name="'.$field['slug'].'" type="text" id="'.$field['slug'].'" value="'.$field['value'].'">');
 		}
 
-		/*
-		if( $field['type'] == 'meta-field' ){
-			_e( '<div class="meta-field">' );
-			_e( '<p><strong><label for="'.$field['slug'].'">'.$field['title'].'</label></strong></p>' );
-			_e('<input name="'.$field['slug'].'" type="text" id="'.$field['slug'].'" value="'.$field['value'].'">');
-			_e( '</div>' );
+
+		if( $field['type'] == 'boolean' ){
+
+			_e('<label>');
+			_e('<input name="'.$field['slug'].'" type="checkbox" id="'.$field['slug'].'" value="1"');
+			if( $field['value'] == '1' ){
+				_e(' checked="checked" ');
+			}
+			_e(' />');
+			_e('&nbsp;' . $field['text']);
+			_e('</label>');
 		}
-		*/
+
 
 		if( $field['type'] == 'number' ){
+			//print_r( $field );
 			_e('<input name="'.$field['slug'].'" type="number" id="'.$field['slug'].'" value="'.$field['value'].'">');
 		}
 
@@ -74,7 +80,14 @@ class SPACE_FORM{
 		}
 
 		if( $field['type'] == 'textarea' ){
-			_e('<textarea placeholder="'.$field['placeholder'].'" name="'.$field['slug'].'"  style="width:100%;padding:10px;" rows="10">'.$field['value'].'</textarea>');
+			_e('<textarea ');
+			if( isset( $field['placeholder'] ) ){
+				_e(' placeholder="'.$field['placeholder'].'" ');
+			}
+			if( isset( $field['rows'] ) ){
+				_e(' rows="'.$field['rows'].'" ');
+			}
+			_e(' name="'.$field['slug'].'"  style="width:100%;padding:10px;">'.$field['value'].'</textarea>');
 		}
 
 		if( $field['type'] == 'autocomplete' ){

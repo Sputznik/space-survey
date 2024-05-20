@@ -44,6 +44,31 @@
 			return ob_get_clean();
 		}
 
+		function data_behaviours( $question ){
+
+			//echo $question->meta;
+
+			$question_db = SPACE_DB_QUESTION::getInstance();
+
+			$questionMeta = $question_db->getMetaInfo( wp_unslash( $question ) );
+
+			//print_r( $question_db );
+
+			//print_r( $questionMeta );
+
+			//$questionMeta = $question->meta;
+
+			$behaviours = array();
+			if( isset( $questionMeta['nullFlag'] ) && $questionMeta['nullFlag'] ){
+				array_push( $behaviours, 'space-null-choices' );
+			}
+
+			if( isset( $questionMeta['limitFlag'] ) && $questionMeta['limitFlag'] ){
+				array_push( $behaviours, 'space-limit-choices' );
+			}
+			return implode(' ', $behaviours );
+		}
+
 		function html(){
 			ob_start();
 			include( "partials/slides.php" );

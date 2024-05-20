@@ -1,13 +1,30 @@
 <?php
 
   $fields_arr = array(
-    'prev-text' => array(
+		'first-btn-text' => array(
+      'label' => 'First Button Text',
+      'type'  => 'text',
+			'default'	=> 'Next'
+    ),
+		'prev-text' => array(
       'label' => 'Previous Button Text',
-      'type'  => 'text'
+      'type'  => 'text',
+			'default'	=> 'Previous'
     ),
     'next-text' => array(
       'label' => 'Next Button Text',
-      'type'  => 'text'
+      'type'  => 'text',
+			'default'	=> 'Next'
+    ),
+		'last-btn-text' => array(
+      'label' => 'Last Button Text',
+      'type'  => 'text',
+			'default'	=> 'Finish'
+    ),
+		'error-missing-text' => array(
+      'label' 	=> 'Error message for required fields',
+      'type'  	=> 'textarea',
+			'default'	=> 'Some required fields have not been filled. Please fill them and move to the next slide.'
     ),
     /*
     'notify-email' => array(
@@ -17,49 +34,63 @@
     */
     'disable-cookie' => array(
       'label' => 'Disable cookies to allow user to submit multiple times',
-      'type'  => 'boolean'
-    ),
-
+      'type'  => 'boolean',
+			'default'	=> 0
+    )
   );
 
   $fields_arr = apply_filters( 'space_surey_settings_fields', $fields_arr );
 
   global $post;
 
-  function displayTextField($name_attr, $value_attr, $label){
-    _e('<input type="text" name="' . $name_attr . '" placeholder="' . $label . '" value="' . $value_attr . '" />');
+	function displayLabel( $label ){
+		_e('<p><label>'.$label.'</label></p>');
+	}
+
+  function displayTextField( $field ){
+    _e('<input class="" type="text" name="' . $field['name'] . '" value="' . $field['value'] . '" />');
   }
 
-  function displayBooleanField($name_attr, $value_attr, $label){
+	function displayTextArea( $field ){
+		_e('<textarea class="large-text" name="' . $field['name'] . '">' . $field['value'] . '</textarea>');
+	}
+
+  function displayBooleanField( $field ){
     $flag = false;
-    if($value_attr){ $flag = true; }
+    if( $field['value'] ){ $flag = true; }
 
-    $field = '<input type="checkbox" name="' . $name_attr . '" value="1"';
+    $booleanField = '<input type="checkbox" name="' . $field['name'] . '" value="1"';
     if( $flag ){
-      $field .= 'checked="checked"';
+      $booleanField .= 'checked="checked"';
     }
-    $field .= ' />';
+    $booleanField .= ' />';
 
-    _e($field);
-    _e( $label );
+    _e( $booleanField );
+    _e( $field['label'] );
   }
 
   $data = get_post_meta( $post->ID, 'survey_settings', true );
 
   foreach( $fields_arr as $slug => $field ){
 
-    $name_attr = "survey_settings[".$slug."]";
-    $value_attr = isset( $data[ $slug ] ) ? $data[ $slug ] : '';
+    $field['name'] = "survey_settings[".$slug."]";
+    $field['value'] = isset( $data[ $slug ] ) && !empty( $data[ $slug ] ) ? $data[ $slug ] : $field['default'];
 
-    _e('<div style="margin-bottom: 20px;">');
+		_e('<div style="margin-bottom: 20px;">');
 
     switch ($field['type']) {
       case 'text':
-        displayTextField($name_attr, $value_attr, $field['label']);
+				displayLabel( $field['label'] );
+        displayTextField( $field );
         break;
 
+			case 'textarea':
+				displayLabel( $field['label'] );
+	      displayTextArea( $field );
+	      break;
+
       default:
-        displayBooleanField($name_attr, $value_attr, $field['label']);
+        displayBooleanField( $field );
         break;
     }
 

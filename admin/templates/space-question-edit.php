@@ -1,8 +1,197 @@
 <?php
 
-	$question_db = SPACE_DB_QUESTION::getInstance();
+	class SPACE_QUESTION_EDIT{
 
-	$form_fields = array(
+		var $metaFields;
+		var $formFields;
+		var $currentPage;
+
+		function __construct( $formFields ){
+
+			$this->setCurrentPage( $_GET['page'] );
+			$this->setMetaFields( array( 'defaultDropdownOption', 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText', 'nullFlag' ) );
+			$this->setFormFields( $formFields );
+
+			// ACTION HOOKS FOR THE SECTIONS IN THE FORM
+			add_action( $this->getCurrentPage().'-form-init', array( $this, 'init' ) );
+			add_action( $this->getCurrentPage().'-body-div', array( $this, 'body_section' ) );
+			add_action( $this->getCurrentPage().'-settings-div', array( $this, 'settings_section' ) );
+			add_action( $this->getCurrentPage().'-delete-div', array( $this, 'trash_section' ) );
+			add_action( $this->getCurrentPage().'-publish-div', array( $this, 'publish_section' ) );
+
+
+			$form = new SPACE_ADMIN_FORM(
+				$this->getFormFields(), 			// FORM FIELDS THAT NEEDS TO BE DISPLAYED WITHIN THE FORM PASSED FOR LATER REFERENCE
+				isset( $_GET['ID'] ) ? 'Edit Question' : 'Add New Question', 		// PAGE TITLE BEFORE THE FORM BEGINS
+				$this->getCurrentPage()
+			);
+			$form->display();							// DISPLAY THE 2 COLUMN FORM
+
+		}
+
+		/* GETTER & SETTER FUNCTIONS */
+		function getMetaFields(){ return $this->metaFields; }
+		function setMetaFields( $metaFields ){ $this->metaFields = $metaFields; }
+		function getFormFields(){ return $this->formFields; }
+		function setFormFields( $formFields ){ $this->formFields = $formFields; }
+		function getCurrentPage(){ return $this->currentPage; }
+		function setCurrentPage( $currentPage ){ $this->currentPage = $currentPage; }
+		/* GETTER & SETTER FUNCTIONS */
+
+		/*
+		* FOLLOWING IS THE SEQUENCE OF ACTIONS
+		* 1. CHECK FOR DELETE ACTION
+		* 2. SAVING FORM DATA INTO DB WHEN THE METHOD:POST IS INVOKED.
+		* 3. PUSH DATA FROM DB TO FORM FIELDS
+		*/
+		function init( $form ){
+
+			// 1
+			if( isset( $_GET['ID'] ) && $_GET['ID'] && isset( $_GET['action'] ) && 'trash' == $_GET['action'] ){
+				$this->deleteAction();
+			}
+
+			// 2
+			if( isset( $_POST['publish'] ) ) {
+				$this->publishAction();
+			}
+			// 3
+			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
+				$this->pushDataAction( $_GET['ID'], $form );
+			}
+		}
+
+		function publishAction(){
+			$question_db = SPACE_DB_QUESTION::getInstance();
+
+			/*
+			* UPDATE QUESTION MODEL
+			* CHECK USING $_GET['ID'] - IF DATA EXISTS THEN IT NEEDS TO BE UPDATED OR IT NEEDS TO BE INSERTED
+			*/
+			$question_id = 0;
+			$question_data = $question_db->sanitize( $_POST );
+
+			//print_r( $question_data );
+			//wp_die();
+
+			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
+				$question_id = $_GET['ID'];
+				$question_db->update( $question_id, $question_data );
+			}
+			else{
+				$question_id = $question_db->insert( $question_data );
+			}
+			//print_r( $question_data );
+			// END OF UPDATING QUESTION MODEL
+
+			/*
+			* UPDATE CHOICE MODEL
+			*/
+			if( $question_id && isset( $_POST[ 'choices' ] ) ){
+				// UPDATE OR ADD NEW CHOICES
+				$question_db->updateChoices( $question_id, $_POST[ 'choices' ] );
+			}
+			if( $question_id && isset( $_POST['choices_delete'] ) && $_POST['choices_delete'] ){
+				// $_POST['choices_delete'] HAS A COMMA SEPERATED STRING OF CHOICE IDs THAT ARE NO LONGER NEEDED
+				$question_db->deleteChoices( explode(',', $_POST['choices_delete'] ) );
+			}
+			// END OF UPDATING CHOICE MODEL
+
+			/*
+			* INSERTION HAS BEEN DONE SO FAR. IS THIS IS A NEW QUESTION, THEN HANDLE REDIRECTION TO EDIT THE NEW QUESTION
+			*/
+			if( !isset( $_GET['ID'] ) && $question_id ){
+				_e( "<script id='redirect'>location.href='?page=space-question-edit&ID=$question_id';</script>" );
+			}
+		}
+
+		/*
+		* GET DATA FROM THE TABLE/DB USING THE ID AND FILL IT INSIDE THE FORM FIELDS
+		*/
+		function pushDataAction( $question_id, $form ){
+			$question_db = SPACE_DB_QUESTION::getInstance();
+			$fields = $form->getFields();
+
+			$row = $question_db->get_row( $question_id );
+			$meta_info = $question_db->getMetaInfo( $row );
+
+			$fields['title']['value'] = $row->title;
+			$fields['desc']['value'] = $row->description;
+			$fields['type']['value'] = $row->type;
+
+			// INCLUDE META INFORMATION
+			foreach( $this->getMetaFields() as $metaField ){
+				if( isset( $meta_info[$metaField] ) ){
+					$fields[$metaField]['value'] = $meta_info[$metaField];
+				}
+			}
+
+			$form->setFields( wp_unslash( $fields ) );
+		}
+
+		/*
+		* CONTENT IN THE MAIN BODY
+		*/
+		function body_section( $form ){
+			$form->display_field( $form->fields['title'] );
+			$form->display_field( $form->fields['desc'] );
+
+			// GET LIST OF CHOICES FROM THE QUESTION TABLE
+			$choices = array();
+			if( isset( $_GET['ID'] ) ){
+				$choices = SPACE_DB_QUESTION::getInstance()->listChoices( $_GET['ID'] );
+			}
+
+			// DISPLAYS THE LIST OF CHOICES IN A REPEATER SECTION
+			require_once( plugin_dir_path(__FILE__).'../../forms/class-space-choice-form.php' );
+			$choice_form = new SPACE_CHOICE_FORM( $choices );
+			$choice_form->display();
+		}
+
+		/*
+		* SETTINGS SECTION IN THE SIDEBAR
+		*/
+		function settings_section( $form ){
+			$form->display_field( $form->fields['type'] );
+
+			// LIST OF META FIELDS
+			foreach( $this->getMetaFields() as $metaField ){
+				$form->display_field( $form->fields[ $metaField ] );
+			}
+		}
+
+		/*
+		* SECTION BELOW THE SETTINGS SECTION IN THE SIDEBAR
+		*/
+		function trash_section( $form ){
+			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
+				_e('<a class="submitdelete" href="?page='.$_GET['page'].'&ID='.$_GET['ID'].'&action=trash">Move to Trash</a>');
+			}
+		}
+
+		/*
+		* PUBLISH OR UPDATE BUTTON
+		*/
+		function publish_section( $form ){
+			$button_value = ( isset( $_GET['ID'] ) && $_GET['ID'] ) ? "Update" : "Publish";
+			$button_class = "button button-primary button-large";
+			_e( '<input type="submit" name="publish" id="publish" class="' . $button_class . '" value="' . $button_value . '">' );
+		}
+
+		/*
+		* DELETE BY ROW ID
+		* AFTER DELETING THE ROW, REDIRECT TO THE MAIN LIST
+		* REDIRECTING USING JS AS WP REDIRECT WAS CAUSING CONFLICTS WITH HEADER INFORMATION ALREADY BEING SENT
+		*/
+		function deleteAction(){
+			SPACE_DB_QUESTION::getInstance()->delete_row( $_GET['ID'] );
+			_e( "<script>location.href='?page=space-questions';</script>" );
+			wp_die();
+		}
+
+	}
+
+	new SPACE_QUESTION_EDIT( array(
 		'title'	=> array(
 			'placeholder'	=> 'Enter question here',
 			'slug'			=> 'title',
@@ -17,233 +206,69 @@
 			'label'		=> 'Question Type',
 			'slug'		=> 'type',
 			'type'		=> 'dropdown',
-			'options'	=> $question_db->getTypes()
+			'options'	=> SPACE_DB_QUESTION::getInstance()->getTypes()
 		),
-
-		//METABOX FOR IMPORTING CHOICES FROM CSV FILE
-		'import_choices'	=> array(
-			'label'		=> 'Import Choices from CSV File',
-			'slug'		=> 'file',
-			'type'		=> 'file',
-			'help'		=> 'Choices from the CSV will override all the existing ones'
+		'defaultDropdownOption'	=> array(
+			'container_class'	=> 'space-form-field meta-field dropdown-meta-field',
+			'label'						=> 'Default Option',
+			'slug'						=> 'defaultDropdownOption',
+			'type'						=> 'text',
+			'value'						=> 'Please click here to select',
+			'rows'						=> '2'
 		),
-		//METABOX FOR SETTING NUMBER CHECKBOXES TO BE DISPLAYED
+		// METABOX FOR SETTING NUMBER CHECKBOXES THAT CAN BE SELECTED
+		'limitFlag'	=> array(
+			'container_class'	=> 'space-form-field meta-field checkbox-meta-field',
+			'label'		=> 'Enable limited selection',
+			'slug'		=> 'limitFlag',
+			'type'		=> 'boolean',
+			'text'		=> 'Yes'
+		),
 		'limit'	=> array(
-			'container_class'	=> 'space-form-field meta-field question-meta-field',
-			'label'		=> 'For limited selection',
+			'container_class'	=> 'space-form-field meta-field limit-sub-field',
+			'label'		=> 'The number of selection to be limited',
 			'slug'		=> 'limit',
 			'type'		=> 'number',
-			'help'		=> 'Limit the number of selection'
+			'help'		=> '',
+			'value'		=> '0'
+		),
+		'limitError'	=> array(
+			'container_class'	=> 'space-form-field meta-field limit-sub-field bottom-decoration',
+			'label'						=> 'Error message when LIMIT is crossed',
+			'slug'						=> 'limitError',
+			'type'						=> 'textarea',
+			'value'						=> 'Please unselect some choices as you have crossed the maximum number of selection.',
+			'rows'						=> '2'
+		),
+		'otherFlag'	=> array(
+			'container_class'	=> 'space-form-field meta-field checkbox-meta-field',
+			'label'		=> 'Enable text input for checkboxes',
+			'slug'		=> 'otherFlag',
+			'type'		=> 'boolean',
+			'text'		=> 'Yes'
+		),
+		'otherText'	=> array(
+			'container_class'	=> 'space-form-field meta-field other-text-field',
+			'label'						=> 'Placeholder text for OTHER input field',
+			'slug'						=> 'otherText',
+			'type'						=> 'text',
+			'value'						=> 'Other'
+		),
+		'nullFlag'	=> array(
+			'container_class'	=> 'space-form-field meta-field checkbox-meta-field',
+			'label'		=> 'Enable UNSELECT choice',
+			'slug'		=> 'nullFlag',
+			'type'		=> 'boolean',
+			'text'		=> 'Yes',
+			'help'		=> 'The first choice when selected will deselect all the other choices'
 		),
 		/*
-		'parent' => array(
-			'label'			=> 'Parent',
-			'slug'			=> 'parent',
-			'type'			=> 'autocomplete',
-			'placeholder'	=> 'Type title of the question here',
-			'url'			=> admin_url( 'admin-ajax.php' )."?action=space_questions"
+		'nullChoice'	=> array(
+			'label'		=> 'Un-Select All',
+			'slug'		=> 'nullChoice',
+			'type'		=> 'dropdown',
+			'help'		=> 'Pick up the choice for which the response is in negative',
+			'options'	=> array()
 		),
-		'order' => array(
-			'label'	=> 'Order',
-			'slug'	=> 'rank',
-			'type'	=> 'number',
-			'default'	=> '0'
-		)
 		*/
-	);
-
-	// CURRENT PAGE - USED WITHIN THE ACTION HOOKS
-	$current_page = $_GET['page'];
-
-	add_action( $current_page.'-form-init', function( $form ){
-
-		$question_db = SPACE_DB_QUESTION::getInstance();
-
-		/*
-		* DELETE ACTION HAS BEEN CHOSEN - DELETE BY ROW ID
-		* AFTER DELETING THE ROW, REDIRECT TO THE MAIN LIST
-		* REDIRECTING USING JS AS WP REDIRECT WAS CAUSING CONFLICTS WITH HEADER INFORMATION ALREADY BEING SENT
-		*/
-		if( isset( $_GET['ID'] ) && $_GET['ID'] && isset( $_GET['action'] ) && 'trash' == $_GET['action'] ){
-			$question_db->delete_row( $_GET['ID'] );
-			_e( "<script>location.href='?page=space-questions';</script>" );
-			wp_die();
-		}
-
-		/*
-		* SAVING FORM DATA INTO DB WHEN THE METHOD:POST IS INVOKED.
-		* CHOOSE BETWEEN UPDATING OR INSERTING THE ROW IN THE DATABASE BASED ON THE PRESENCE OF THE ID
-		*/
-		if( isset( $_POST['publish'] ) ) {
-			//
-			// echo "<pre>";
-			// print_r( $_POST );
-			// echo "</pre>";
-			// wp_die();
-
-			/* UPDATE THE CHOICES DATA FROM THE CSV */
-			if( isset( $_FILES['file'] ) && $_FILES['file'] ){
-
-				$csv = SPACE_CSV::getInstance();
-
-				// UPLOAD THE CSV FILE
-				$movefile = $csv->upload( $_FILES['file'] );
-
-				// // CHECK IF UPLOAD PROCESS WAS COMPLETED WITHOUT ANY ERROR
-				if ( $movefile && !isset( $movefile['error'] ) ) {
-
-					// CONVERT THE UPLOADED FILE TO ARRAY FORMAT
-					$arrayCsv = $csv->convertToArray( $movefile['file'] );
-
-					if( is_array( $arrayCsv ) && count( $arrayCsv ) ){
-						$_POST['choices'] = array();
-						$rank = 0;
-						foreach ( $arrayCsv as $row ) {
-							if( is_array( $row ) && count( $row ) ){
-								array_push( $_POST['choices'], array( 'title'	=> $row[ 0 ], 'id' => 0, 'rank' => $rank ) );
-								$rank++;
-							}
-						}
-					}
-				}
-			}
-
-
-
-			/*
-			* UPDATE QUESTION MODEL
-			* CHECK USING $_GET['ID'] - IF DATA EXISTS THEN IT NEEDS TO BE UPDATED OR IT NEEDS TO BE INSERTED
-			*/
-			$question_id = 0;
-			$question_data = $question_db->sanitize( $_POST );
-			if( isset( $_GET['ID'] ) && $_GET['ID'] ){
-				$question_id = $_GET['ID'];
-				$question_db->update( $question_id, $question_data );
-			}
-			else{
-
-				$question_id = $question_db->insert( $question_data );
-			}
-			// END OF UPDATING QUESTION MODEL
-
-			/*
-			* UPDATE CHOICE MODEL
-			*/
-			if( $question_id && isset( $_POST[ 'choices' ] ) ){
-
-				// UPDATE OR ADD NEW CHOICES
-				$question_db->updateChoices( $question_id, $_POST[ 'choices' ] );
-			}
-			if( $question_id && isset( $_POST['choices_delete'] ) && $_POST['choices_delete'] ){
-
-				// $_POST['choices_delete'] HAS A COMMA SEPERATED STRING OF CHOICE IDs THAT ARE NO LONGER NEEDED
-				$question_db->deleteChoices( explode(',', $_POST['choices_delete'] ) );
-			}
-
-			if( !isset( $_GET['ID'] ) && $question_id ){
-				// INSERTTION HAS BEEN DONE SO FAR - NEW QUESTION, SO HANDLE REDIRECTION TO EDIT THE NEW QUESTION
-				_e( "<script>location.href='?page=space-question-edit&ID=$question_id';</script>" );
-			}
-			// END OF UPDATING CHOICE MODEL
-
-			/*
-			echo "<pre>";
-			print_r( $_POST['choices'] );
-			echo "</pre>";
-			*/
-		}
-
-		/*
-		* IF ID HAS BEEN PASSED THEN GET DATA FROM THE TABLE/DB AND FILL IT INSIDE THE FORM FIELDS
-		*/
-		if( isset( $_GET['ID'] ) && $_GET['ID'] ){
-			$row = $question_db->get_row( $_GET['ID'] );
-
-			$meta_info = $question_db->getMetaInfo( $row );
-
-			$fields = $form->getFields();
-
-			$fields['title']['value'] = $row->title;
-			$fields['desc']['value'] = $row->description;
-			$fields['type']['value'] = $row->type;
-			$fields['limit']['value'] = isset( $meta_info['limit'] ) ? $meta_info['limit'] : "";
-			$fields['parent']['value'] = $row->parent;
-			$fields['order']['value'] = 0; //$row->rank;
-
-			if( $row->parent ){
-				$parent_question = $question_db->get_row( $row->parent );
-				$fields['parent']['autocomplete_value'] = $parent_question->title;
-			}
-
-			$form->setFields( wp_unslash( $fields ) );
-		}
-
-
-	});
-
-	/* CONTENT IN THE MAIN BODY */
-	add_action( $current_page.'-body-div', function( $form ){
-
-		$form->display_field( $form->fields['title'] );
-
-		$form->display_field( $form->fields['desc'] );
-
-		require_once( plugin_dir_path(__FILE__).'../../forms/class-space-choice-form.php' );
-
-		$question_db = SPACE_DB_QUESTION::getInstance();
-
-		// GET LIST OF CHOICES FROM THE QUESTION
-		$choices = array();
-		if( isset( $_GET['ID'] ) ){
-			$choices = $question_db->listChoices( $_GET['ID'] );
-		}
-
-		$choice_form = new SPACE_CHOICE_FORM( $choices );
-
-		$choice_form->display();
-
-	});
-
-	/* CONTENT IN THE SETTINGS SECTION */
-	add_action( $current_page.'-settings-div', function( $form ){
-
-		$form->display_field( $form->fields['type'] );
-
-		$form->display_field( $form->fields['import_choices'] );
-
-		$form->display_field( $form->fields['limit'] );
-
-		//$form->display_field( $form->fields['parent'] );
-
-		//$form->display_field( $form->fields['order'] );
-
-	});
-
-	/* CONTENT BELOW THE SETTINGS SECTION */
-	add_action( $current_page.'-delete-div', function( $form ){
-
-		if( isset( $_GET['ID'] ) && $_GET['ID'] ){
-			_e('<a class="submitdelete" href="?page='.$_GET['page'].'&ID='.$_GET['ID'].'&action=trash">Move to Trash</a>');
-		}
-	});
-
-	/* PUBLISH OR UPDATE BUTTON */
-	add_action( $current_page.'-publish-div', function( $form ){
-
-		if( isset( $_GET['ID'] ) && $_GET['ID'] ){
-			_e('<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="Update">');
-		}
-		else{
-			_e('<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="Publish">');
-		}
-
-	});
-
-	$form = new SPACE_ADMIN_FORM(
-		$form_fields, 										// FORM FIELDS THAT NEEDS TO BE DISPLAYED WITHIN THE FORM PASSED FOR LATER REFERENCE
-		isset( $_GET['ID'] ) ? 'Edit Question' : 'Add New Question', 		// PAGE TITLE BEFORE THE FORM BEGINS
-		$current_page
-	);
-
-	// DISPLAY THE 2 COLUMN FORM
-	$form->display();
+	) );

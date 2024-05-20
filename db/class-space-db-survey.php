@@ -30,6 +30,8 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 		add_action( 'wp_ajax_space_survey_settings_json', array( $this, 'settingsJson' ) );
 
+		add_action( 'wp_ajax_space_survey_import_json', array( $this, 'importJson' ) );
+
 	}
 
 	function settingsJson(){
@@ -350,20 +352,23 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 
 		if( isset( $_POST['post_type'] ) && $_POST['post_type'] == 'space_survey' ){
 
-			/*
-			print_r( $survey_id );
-			echo "<pre>";
-			print_r( $_POST );
-			echo "</pre>";
-			wp_die();
-			*/
 
-			echo "<pre>";
-			print_r( $_FILES );
-			echo "</pre>";
+			//print_r( $survey_id );
+			//echo "<pre>";
+			//print_r( $_POST );
+			//echo "</pre>";
+			//wp_die();
+
+
+			//echo "<pre>";
+			//print_r( $_FILES );
+			//echo "</pre>";
 
 			// CHECK FILE NEEDS TO BE IMPORTED
 			if( $survey_id && isset( $_FILES['survey-file'] ) && $_FILES['survey-file'] && $_FILES['survey-file']['error'] == 0 ){
+				/*
+
+				MOVED TO AJAX
 
 				$survey_json_str = file_get_contents( $_FILES['survey-file']['tmp_name'] );
 
@@ -381,6 +386,7 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 				if( isset( $survey_json[ 'rules' ] ) ){
 					$this->updateRules( $survey_id, $survey_json[ 'rules' ] );
 				}
+				*/
 			}
 			else{
 				// NORMAL UPDATION OF THE POST
@@ -426,6 +432,39 @@ class SPACE_DB_SURVEY extends SPACE_DB_BASE{
 			//wp_die();
 		}
 
+	}
+
+	function importJson(){
+
+		$data = array();
+
+		if( isset( $_GET['survey_id'] ) && isset( $_FILES['file'] ) && $_FILES['file'] ){
+
+			$survey_id = $_GET['survey_id'];
+
+			$survey_json_str = file_get_contents( $_FILES['file']['tmp_name'] );
+
+			// Convert JSON string to Array
+			$survey_json = json_decode( $survey_json_str, true );
+
+			// ONLY NEEDED FOR DEBUGGING
+			$data = array( 'id' => $survey_id, 'data' => $survey_json );
+
+			if( isset( $survey_json[ 'pages' ] ) ){
+				$this->updatePages( $survey_id, wp_unslash( $survey_json[ 'pages' ] ) );
+			}
+
+			if( isset( $survey_json[ 'required_questions' ] ) ){
+				$this->updateRequiredQuestions( $survey_id, $survey_json[ 'required_questions' ] );
+			}
+
+			if( isset( $survey_json[ 'rules' ] ) ){
+				$this->updateRules( $survey_id, $survey_json[ 'rules' ] );
+			}
+
+		}
+
+		return wp_send_json( $data );
 	}
 
 }

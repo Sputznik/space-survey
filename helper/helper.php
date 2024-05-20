@@ -5,7 +5,8 @@
 		'class-space-util.php',
 		'class-space-export.php',
 		'class-space-batch-process.php',
-		'class-space-csv.php'
+		'class-space-csv.php',
+		'class-space-urls.php'
 	);
 
 	foreach( $inc_files as $inc_file ){

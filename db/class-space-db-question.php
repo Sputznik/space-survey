@@ -12,7 +12,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 		$this->setTypes( array(
 			'radio'						=> 'Radio Button',
 			'checkbox'				=> 'Checkboxes',
-			'checkbox-other'	=> 'Checkboxes With Other',
+			//'checkbox-other'	=> 'Checkboxes With Other',
 			'checkbox-ranking'	=> 'Checkboxes With Ranking',
 			'dropdown'				=> 'Dropdown',
 			'text'						=> 'Textbox'
@@ -22,7 +22,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 
 		add_action( 'wp_ajax_space_questions', array( $this, 'ajaxQuestions' ) );
 
-
+		add_action( 'wp_ajax_space_import_choices_csv', array( $this, 'importChoicesCSV' ) );
 
 		require_once( 'class-space-db-choice.php' );
 		$this->setChoiceDB( SPACE_DB_CHOICE::getInstance() );
@@ -74,7 +74,7 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 				'question_id'	=> '%d'
 			),
 			array( (int)$question_id ),
-			'rank',
+			'menu_rank',
 			'ASC'
 		);
 	}
@@ -117,20 +117,24 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 			'type' 				=> $data['type'],
 			'author_id'		=> get_current_user_id(),
 			'parent' 			=> isset( $data['parent'] ) ? absint( $data['parent'] ) : 0,
-			'modified_on'	=> current_time('mysql', false)
+			'modified_on'	=> current_time('mysql', false),
+			'meta'				=> array()
 		);
 
-		if( isset( $data['limit'] ) ){
-			$questionData['meta'] = serialize( array( 'limit'	=> $data['limit'] ) );
+		// INCLUDE META INFORMATION
+		$metaFields = array( 'defaultDropdownOption', 'limitFlag', 'limit', 'limitError', 'otherFlag', 'otherText', 'nullFlag' );
+		foreach( $metaFields as $metaField ){
+			if( isset( $data[ $metaField ] ) ){
+				$questionData['meta'][ $metaField ] = $data[ $metaField ];
+			}
 		}
+		$questionData['meta'] = wp_json_encode( $questionData['meta'] ); //serialize( wp_slash( $questionData['meta'] ) );
 
 
-		/*
-		echo "<pre>";
-		print_r( $questionData );
-		print_r( wp_unslash( $questionData ) );
-		echo "</pre>";
-		*/
+		//echo "<pre>";
+		//print_r( $questionData );
+		//print_r( wp_unslash( $questionData ) );
+		//echo "</pre>";
 
 		return $questionData;
 	}
@@ -139,10 +143,17 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 	function getMetaInfo( $row ){
 		$meta_info = array();
 		if( isset( $row->meta ) && $row->meta ){
-			$meta_info = unserialize( $row->meta );
+			$meta_info = json_decode( $row->meta, true );
+			//echo $row->meta;
+			//echo "<pre>";
+			//print_r( $meta_info );
+			//echo "</pre>";
 		}
 		return $meta_info;
+
 	}
+
+
 
 	/*
 	* USED IN class-space-question-list-table.php AND WITHIN THE SAME CLASS
@@ -208,6 +219,47 @@ class SPACE_DB_QUESTION extends SPACE_DB_BASE{
 
 		print_r( wp_json_encode( $final_data ) );
 
+		wp_die();
+	}
+
+	function listSurveys( $question_id ){
+		global $wpdb;
+		$relationTable = $this->getPageQuestionRelationDB()->getTable();
+		$pageTable = $this->getPageDB()->getTable();
+		$query = "SELECT * FROM $wpdb->posts WHERE ID IN ( SELECT survey_id from $pageTable WHERE ID IN (SELECT page_id FROM $relationTable WHERE question_id = %d ) )";
+		$query = $this->prepare( $query, array( $question_id ) );
+		return $this->get_results( $query );
+	}
+
+	function importChoicesCSV(){
+		/* UPDATE THE CHOICES DATA FROM THE CSV */
+		if( isset( $_FILES['file'] ) && $_FILES['file'] ){
+
+			$csv = SPACE_CSV::getInstance();
+
+			// UPLOAD THE CSV FILE
+			$movefile = $csv->upload( $_FILES['file'] );
+
+			// // CHECK IF UPLOAD PROCESS WAS COMPLETED WITHOUT ANY ERROR
+			if ( $movefile && !isset( $movefile['error'] ) ) {
+
+				// CONVERT THE UPLOADED FILE TO ARRAY FORMAT
+				$arrayCsv = $csv->convertToArray( $movefile['file'] );
+
+				$data = array();
+
+				foreach ( $arrayCsv as $row ) {
+					if( is_array( $row ) && count( $row ) ){
+						array_push( $data, $row[ 0 ] );
+					}
+				}
+
+				echo wp_json_encode( $data );
+
+				//SPACE_UTIL::getInstance()->test( $arrayCsv );
+
+			}
+		}
 		wp_die();
 	}
 

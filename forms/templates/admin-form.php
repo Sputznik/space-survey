@@ -5,7 +5,7 @@
 */
 ?>
 <h1><?php _e( $this->getPageTitle() );?></h1>
-<form action="<?php _e( $_SERVER['REQUEST_URI'] );?>" method="POST" enctype="multipart/form-data">
+<form action="<?php _e( $_SERVER['REQUEST_URI'] );?>" data-behaviour="space-ajax-form" method="POST" enctype="multipart/form-data">
 	<div id="poststuff">
 		<div id="post-body" class="metabox-holder columns-2">
 

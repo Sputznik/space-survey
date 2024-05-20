@@ -16,6 +16,12 @@ class SPACE_UTIL extends SPACE_BASE{
 		<?php
 	}
 
+	function test( $data ){
+		echo "<pre>";
+		print_r( $data );
+		echo "</pre>";
+	}
+
 
 }
 
