@@ -14,7 +14,7 @@
 	$question_class = 'space-question';
 	if( in_array( $question->ID, $required_questions ) ){
 		$question_class .= ' required';
-		$question->title .= ' *';
+		$question->title .= ' <span class="required-sign">*</span>';
 	}
 	else{
 		$question_class .= ' not-required';

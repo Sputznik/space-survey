@@ -43,7 +43,8 @@ var SPACE_REPEATER = function( options ){
 		self.$btn = self.createField({
 			element	: 'button',
 			attr: {
-				class: 'button'
+				class: 'button',
+				type : 'button'
 			},
 			html	: self.options.btn_text,
 			append	: self.options.$el
@@ -101,7 +102,8 @@ var SPACE_REPEATER = function( options ){
 		var $button = self.createField({
 			element	: 'button',
 			attr	:{
-				'class'	: 'space-close-btn'
+				'class'	: 'space-close-btn',
+				'type' 	: 'button'
 			},
 			html	: self.options.close_btn_text,
 			append	: $list_item
@@ -167,6 +169,7 @@ var SPACE_REPEATER = function( options ){
 		field['element'] = 'textarea';
 		field['attr'] = field['attr'] ? field['attr'] : {};
 		field['attr']['id'] = field['attr']['id'] ? field['attr']['id'] : 'sample-id';
+		field['html'] = field['attr']['value'] ? field['attr']['value'] : '';
 
 		var $textarea = self.createField( field );
 

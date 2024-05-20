@@ -26,12 +26,20 @@
       'type'  	=> 'textarea',
 			'default'	=> 'Some required fields have not been filled. Please fill them and move to the next slide.'
     ),
+    /*
+    'notify-email' => array(
+      'label' => 'Notification Email',
+      'type'  => 'text'
+    ),
+    */
     'disable-cookie' => array(
       'label' => 'Disable cookies to allow user to submit multiple times',
       'type'  => 'boolean',
 			'default'	=> 0
     )
   );
+
+  $fields_arr = apply_filters( 'space_surey_settings_fields', $fields_arr );
 
   global $post;
 
